@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+   
+             <TextView
+                android:id="@+id/textLabelAsciiData"
+                android:layout_width="wrap_content"
+            style="@style/aRobotLeftRightText"
+                android:layout_height="wrap_content"
+                android:text="Azimuth, Pitch, Roll" />
+    <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+             >
+
+            <TextView
+                android:id="@+id/textLabelAzimuth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+            style="@style/aRobotLeftRightText"
+                android:text="Azimuth: " />
+
+            <TextView
+                android:id="@+id/textAzimuth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+            style="@style/aRobotLeftRightText"
+                android:text="0" > 
+                <!-- android:textAppearance="?android:attr/textAppearanceMedium" -->
+                />
+            </TextView>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+           style="@style/aRobotLeftRightText"
+                 android:text="Pitch: " />
+
+            <TextView
+                android:id="@+id/textPitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+            style="@style/aRobotLeftRightText"
+                android:text="0" > <!-- android:textAppearance="?android:attr/textAppearanceMedium" -->
+                />
+            </TextView>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:baselineAligned="true" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+           style="@style/aRobotLeftRightText"
+                 android:text="Roll: " />
+
+            <TextView
+                android:id="@+id/textRoll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+            style="@style/aRobotLeftRightText"
+                android:text="0" > <!-- android:textAppearance="?android:attr/textAppearanceMedium" -->
+                />
+            </TextView>
+        </TableRow>
+    
+
+</TableLayout>

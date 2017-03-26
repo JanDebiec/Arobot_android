@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="motor_type_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="motor_type_options">
+        <item>2*PWM</item>
+        <item>Sign + PWM</item>
+    </string-array>
+
+    <string-array name="fusion_period_options">
+        <item>30</item>
+        <item>60</item>
+        <item>100</item>
+        <item>200</item>
+    </string-array>
+
+    <string-array name="fusion_period_values">
+        <item>30</item>
+        <item>60</item>
+        <item>100</item>
+        <item>200</item>
+    </string-array>
+
+    <string-array name="update_sensor_freq_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="update_sensor_freq_options">
+        <item>fastest</item>
+        <item>game</item>
+        <item>normal</item>
+        <item>UI</item>
+    </string-array>
+
+    <string-array name="fusion_content_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="fusion_content_options">
+        <item>accel+magn</item>
+        <item>rotation</item>
+        <item>fusion</item>
+        <item>fusion-filtered</item>
+    </string-array>
+
+    <string-array name="saving_content_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="saving_content_options">
+        <item>accel+magn</item>
+        <item>rotation</item>
+        <item>fusion</item>
+        <item>fusion-filtered</item>
+    </string-array>
+
+</resources>

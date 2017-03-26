@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="DEFAULT_FILTER_COEFFICIENT">"0.98"</string>
+    <string name="PREFS_KEY_FILTER_FACTOR">"PREFS_KEY_FILTER_FACTOR"</string>
+    
+    <string name="DEFAULT_PWM_MINIMAL">"20"</string>
+    <string name="PREFS_KEY_PWM_MINIMAL">"PREFS_KEY_PWM_MINIMAL"</string>
+    
+    <string name="DEFAULT_PWM_MAXIMAL">"90"</string>
+    <string name="PREFS_KEY_PWM_MAXIMAL">"PREFS_KEY_PWM_MAXIMAL"</string>
+    
+    <string name="DEFAULT_FUSION_TIMER_PERIOD">"2"</string>
+    <string name="PREFS_KEY_FUSION_TIMER_PERIOD">"PREFS_KEY_FUSION_TIMER_PERIOD"</string>
+   
+    <string name="DEFAULT_FUSION_CONTENT">"2"</string>
+    <string name="PREFS_KEY_FUSION_CONTENT">"PREFS_KEY_FUSION_CONTENT"</string>
+      
+    <string name="DEFAULT_SAVING_CONTENT">"2"</string>
+    <string name="PREFS_KEY_SAVING_CONTENT">"PREFS_KEY_SAVING_CONTENT"</string>
+      
+    <string name="DEFAULT_SENSOR_DELAY">"2"</string>
+    <string name="PREFS_KEY_SENSOR_DELAY">"PREFS_KEY_SENSOR_DELAY"</string>
+      
+    <string name="DEFAULT_MOTOR_TYPE">"0"</string>
+    <string name="PREFS_KEY_MOTOR_TYPE">"PREFS_KEY_MOTOR_TYPE"</string>
+          
+    <string name="DEFAULT_ROLL_OFFSET">"45"</string>
+    <string name="PREFS_KEY_ROLL_OFFSET">"PREFS_KEY_ROLL_OFFSET"</string>
+
+    <string name="DEFAULT_AMPLIFICATION">"1.0"</string>
+    <string name="PREFS_KEY_AMPLIFICATION">"PREFS_KEY_AMPLIFICATION"</string>
+</resources>
+

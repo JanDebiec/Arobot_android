@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion tools.cSV
+    buildToolsVersion tools.bTV
+
+    defaultConfig {
+        applicationId "de.jandrotek.android.arobot.app.arobotbt"
+        minSdkVersion 18
+//        minSdkVersion 15
+        targetSdkVersion 22
+
+        testApplicationId "de.jandrotek.android.arobot.app.arobotbt.test"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+//    buildToolsVersion '25.0.0'
+    buildToolsVersion '25.0.0'
+}
+
+dependencies {
+    compile supportDependencies.appCompat
+//    compile 'com.android.support:support-v4:22.0.0'
+    compile project(':core')
+}

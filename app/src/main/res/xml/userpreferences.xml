@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+ 
+    <PreferenceCategory android:title="@string/pref_robot_motor_title" >
+        <ListPreference
+            android:defaultValue="@string/DEFAULT_MOTOR_TYPE"
+            android:dialogTitle="Motor interface type"
+            android:entries="@array/motor_type_options"
+            android:entryValues="@array/motor_type_values"
+            android:key="@string/PREFS_KEY_MOTOR_TYPE"
+            android:summary="Select motor control signals"
+            android:title="Robot motor type" />
+        <EditTextPreference
+            android:defaultValue="@string/DEFAULT_ROLL_OFFSET"
+            android:dialogTitle="offset on Roll Value"
+            android:numeric="integer"
+            android:maxLength="2"
+            android:key="@string/PREFS_KEY_ROLL_OFFSET"
+            android:summary="position for Roll = 0"
+            android:title="Roll Offset" />
+        <EditTextPreference
+            android:defaultValue="@string/DEFAULT_PWM_MINIMAL"
+            android:dialogTitle="minimal PWM value"
+            android:numeric="integer"
+            android:maxLength="2"
+            android:key="@string/PREFS_KEY_PWM_MINIMAL"
+            android:summary="minimal PWM value sent to motor"
+            android:title="PWM minimal value" />
+        <EditTextPreference
+            android:defaultValue="@string/DEFAULT_PWM_MAXIMAL"
+            android:dialogTitle="maximal PWM value"
+            android:key="@string/PREFS_KEY_PWM_MAXIMAL"
+            android:numeric="integer"
+            android:maxLength="3"
+            android:summary="maximal PWM value sent to motor"
+            android:title="PWM maximal value" />
+        <EditTextPreference
+            android:defaultValue="@string/DEFAULT_AMPLIFICATION"
+            android:dialogTitle="Controller amplification"
+            android:key="@string/PREFS_KEY_AMPLIFICATION"
+            android:inputType="numberDecimal"
+            android:maxLength="5"
+            android:summary="Controller Amplification"
+            android:title="Controller Amplification" />
+        </PreferenceCategory>
+
+    
+    <PreferenceCategory android:title="@string/pref_sensores_settings_title" >
+        <ListPreference
+            android:defaultValue="@string/DEFAULT_SENSOR_DELAY"
+            android:dialogTitle="Refresh sensor frequency"
+            android:entries="@array/update_sensor_freq_options"
+            android:entryValues="@array/update_sensor_freq_values"
+            android:key="@string/PREFS_KEY_SENSOR_DELAY"
+            android:summary="Frequency at which sensors send new data"
+            android:title="Refresh signal frequency" />
+
+        <ListPreference
+            android:defaultValue="@string/DEFAULT_FUSION_TIMER_PERIOD"
+            android:dialogTitle="Fusion timer period"
+            android:entries="@array/fusion_period_options"
+            android:entryValues="@array/fusion_period_values"
+            android:key="@string/PREFS_KEY_FUSION_TIMER_PERIOD"
+            android:summary="perion [ms] at which new fusion data will be calculated"
+            android:title="Fusion timer calculation period" />
+
+        <ListPreference
+            android:defaultValue="@string/DEFAULT_FUSION_CONTENT"
+            android:dialogTitle="Content to use in calculation"
+            android:entries="@array/fusion_content_options"
+            android:entryValues="@array/fusion_content_values"
+            android:key="@string/PREFS_KEY_FUSION_CONTENT"
+            android:summary="Type of data which can be used in fusion calculation"
+            android:title="sensors data to calculating results" />
+    
+        <EditTextPreference
+            android:defaultValue="@string/DEFAULT_FILTER_COEFFICIENT"
+            android:dialogTitle="Filter Factor"
+            android:key="@string/PREFS_KEY_FILTER_FACTOR"
+            android:inputType="numberDecimal"
+            android:maxLength="5"
+            android:summary="Factor result = factor*newValue + (1-factor)*oldValue"
+            android:title="Filter Low-pass settings" />
+    </PreferenceCategory>
+ 
+    
+    <PreferenceCategory android:title="@string/pref_various_title" >
+    
+            <ListPreference
+            android:defaultValue="@string/DEFAULT_SAVING_CONTENT"
+            android:dialogTitle="Content to save"
+            android:entries="@array/saving_content_options"
+            android:entryValues="@array/saving_content_values"
+            android:key="@string/PREFS_KEY_SAVING_CONTENT"
+            android:summary="Kind of data which can be saved in memory"
+            android:title="sensors data to save" />
+    </PreferenceCategory>
+            
+</PreferenceScreen>

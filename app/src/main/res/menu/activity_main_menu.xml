@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.atd.android.arobot.arobobt.MainActivity" >
+
+    <item android:id="@+id/connect_device"
+          android:icon="@drawable/ic_action_bluetooth"
+          android:title="@string/insecure_connect"
+          android:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/start_stop_saving"
+          android:icon="@drawable/ic_action_save"
+          android:title="@string/savingSensorDataAction"
+          android:showAsAction="ifRoom|withText" />
+        
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_settings"/>
+
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_about"/>
+
+</menu>

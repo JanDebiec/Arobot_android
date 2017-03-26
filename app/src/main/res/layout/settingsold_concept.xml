@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <!-- settings for sensors types -->
+        <TextView
+            android:id="@+id/textViewSaving"
+            style="@style/aRobotFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_saving" />
+
+        <RadioGroup
+            android:id="@+id/radioSaveData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <RadioButton
+                android:id="@+id/radionative"
+                style="@style/aRobotRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="native" />
+
+            <RadioButton
+                android:id="@+id/radioAccMagn"
+                style="@style/aRobotRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Acc/Magn" />
+
+            <RadioButton
+                android:id="@+id/radioGyro"
+                style="@style/aRobotRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gyro" />
+
+            <RadioButton
+                android:id="@+id/radioFusion"
+                style="@style/aRobotRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fusion" />
+        </RadioGroup>
+
+
+    <!-- settings for delay bewtween sensor reads  -->
+            <LinearLayout
+        android:id="@+id/layoutSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textViewDelay"
+            style="@style/aRobotFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/param_delay" />
+
+        <RadioGroup
+            android:id="@+id/radioDelay"
+            style="@style/aRobotRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delay"
+            android:onClick="onSensorSelectorClick" >
+
+            <RadioButton
+                android:id="@+id/delay_fastest"
+                style="@style/aRobotRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="fastest" />
+
+            <RadioButton
+                android:id="@+id/delay_game"
+                style="@style/aRobotRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="game" />
+
+            <RadioButton
+                android:id="@+id/delay_normal"
+                style="@style/aRobotRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="normal" />
+
+            <RadioButton
+                android:id="@+id/delay_ui"
+                style="@style/aRobotRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ui" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/textViewFactor"
+            style="@style/aRobotFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/param_factor" />
+
+        <EditText
+            android:id="@+id/editFactor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" >
+
+            <requestFocus />
+        </EditText>
+    </LinearLayout>
+        
+</LinearLayout>

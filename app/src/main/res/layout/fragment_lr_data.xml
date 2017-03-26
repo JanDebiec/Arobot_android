@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/textLabelLeftRightData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+            style="@style/aRobotLeftRightText"
+        android:text="@string/textLabelLeftRightData"
+        android:gravity="center" />
+
+    <TableRow
+        android:id="@+id/tableRow13"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textLabelPitch"
+            style="@style/aRobotLeftRightText"
+            android:text="Pitch"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="        " />
+
+        <TextView
+            android:id="@+id/textLabelRoll"
+            style="@style/aRobotLeftRightText"
+            android:text="Roll"
+            android:layout_weight="1"
+            android:gravity="center"/>
+
+            <!-- android:textAppearance="?android:attr/textAppearanceMedium" -->
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right" >
+
+        <TextView
+            android:id="@+id/textPitch"
+            style="@style/aRobotLeftRightText"
+            android:text="0.00"
+        android:layout_weight="1"
+        android:gravity="right" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="        " />
+
+        <TextView
+            android:id="@+id/textRoll"
+            style="@style/aRobotLeftRightText"
+            android:text="0.00"
+            android:layout_weight="1"
+            android:gravity="right" />
+
+            <!-- android:textAppearance="?android:attr/textAppearanceMedium" -->
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow11"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right" >
+
+        <TextView
+            android:id="@+id/textLabelLeft"
+            style="@style/aRobotLeftRightText"
+            android:text="@string/textLabelLeft"
+        android:layout_weight="1"
+        android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="        " />
+
+        <TextView
+            android:id="@+id/textLabelRight"
+            style="@style/aRobotLeftRightText"
+            android:text="@string/textLabelRight"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+            <!-- android:textAppearance="?android:attr/textAppearanceMedium" -->
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right" >
+
+        <TextView
+            android:id="@+id/textLeft"
+            style="@style/aRobotLeftRightText"
+            android:text="0.00"
+            android:layout_weight="1"
+            android:gravity="right" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="        " />
+
+        <TextView
+            android:id="@+id/textRight"
+            style="@style/aRobotLeftRightText"
+            android:text="0.00"
+            android:layout_weight="1"
+            android:gravity="right" />
+
+        <!-- android:textAppearance="?android:attr/textAppearanceMedium" -->
+    </TableRow>
+
+</TableLayout>
