@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    compileSdkVersion tools.cSV
+    buildToolsVersion tools.bTV
 
     defaultConfig {
         applicationId "de.jandrotek.android.arobot.tab"
         minSdkVersion 18
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
 
@@ -24,11 +24,14 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':core')
-    compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.android.support:design:24.0.0'
+    compile project(':libbluetooth')
+//    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile supportDependencies.appCompat
+    compile supportDependencies.design
+//    compile 'com.android.support:design:24.0.0'
     testCompile 'junit:junit:4.12'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support:support-annotations:24.0.0'
-    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+//    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+//    androidTestCompile 'com.android.support.test:runner:0.5'
+//    androidTestCompile 'com.android.support:support-annotations:24.0.0'
+//    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }

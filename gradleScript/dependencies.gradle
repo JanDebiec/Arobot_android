@@ -1,8 +1,8 @@
 ext {
     //Version
-    supportLibrary = '24.0.0'
-    buildToolsVersion = '24.0.0'
-    compileSdkVersion = "android-24"
+    supportLibrary = '25.0.0'
+    buildToolsVersion = '25.0.0'
+    compileSdkVersion = "android-25"
 
     tools = [
             bTV: "${buildToolsVersion}",

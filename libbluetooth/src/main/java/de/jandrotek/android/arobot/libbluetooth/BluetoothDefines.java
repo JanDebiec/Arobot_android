@@ -1,4 +1,4 @@
-package de.jandrotek.android.arobot.tab;
+package de.jandrotek.android.arobot.libbluetooth;
 
 import java.util.UUID;
 

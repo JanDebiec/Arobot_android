@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package de.jandrotek.android.arobot.tab;
+package de.jandrotek.android.arobot.libbluetooth;
 
 import android.bluetooth.BluetoothAdapter;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * These are the BT- Defines for main Activity,
@@ -46,16 +47,16 @@ public class BTDefs {
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the chat services
     public BluetoothService mChatService = null;
-    private MovementActivity mActivity;
+//    private MovementActivity mActivity;
+    private AppCompatActivity mActivity;
 
-    private BTDefs(MovementActivity activity){
-    	mActivity = activity;
-        mBluetoothAdapter = mActivity.getBluetoothAdapter();
+    private BTDefs( BluetoothAdapter bluetoothAdapter){
+        mBluetoothAdapter = bluetoothAdapter;
 
     }
 
-	public static BTDefs newInstance(MovementActivity activity) {
-		BTDefs connector = new BTDefs(activity);
+	public static BTDefs newInstance( BluetoothAdapter bluetoothAdapter) {
+		BTDefs connector = new BTDefs(bluetoothAdapter);
 		return connector;
 	}
 

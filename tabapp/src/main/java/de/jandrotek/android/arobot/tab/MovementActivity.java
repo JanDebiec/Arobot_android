@@ -36,10 +36,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.google.android.gms.appindexing.Action;
+//import com.google.android.gms.appindexing.Action;
 
-import de.jandrotek.android.arobot.core.MoveCmdCalculator;
 import de.jandrotek.android.arobot.core.SensorCalc;
+//import de.jandrotek.android.arobot.libbluetooth;
+import de.jandrotek.android.arobot.libbluetooth.BTDefs;
+import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
+import de.jandrotek.android.arobot.libbluetooth.BluetoothFragment;
+import de.jandrotek.android.arobot.libbluetooth.BluetoothService;
 
 import static android.R.drawable.ic_media_pause;
 import static android.R.drawable.ic_media_play;
