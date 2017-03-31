@@ -1,5 +1,6 @@
 package de.jandrotek.android.arobot.tab;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -443,7 +444,37 @@ public class MovementActivity extends AppCompatActivity {
             // Otherwise, setup the chat session
         } else {
             if (mBTService == null)
-                createBTService(mHandler);
+                mBTService = createBTService(mHandler);
+        }
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case SHOW_PREFERENCES:
+                updateFromPreferences();
+                //TODO: check what to do after coming back,
+                // if one fragment was already running
+//                recreateFragment(mFragmentIndexAct);
+                break;
+            case BTDefs.REQUEST_CONNECT_DEVICE:
+                // When DeviceListActivity returns with a device to connect
+                if (resultCode == Activity.RESULT_OK) {
+                    connectDevice(data, false);
+                } //TODO: if no paired devices, then show available
+                break;
+            case BTDefs.REQUEST_ENABLE_BT:
+                // When the request to enable Bluetooth returns
+                if (resultCode == Activity.RESULT_OK) {
+                    // Bluetooth is now enabled, so set up a chat session
+                    createBTService(mHandler);//setupChat();
+                } else {
+                    // User did not enable Bluetooth or an error occurred
+                    Log.d(TAG, "BT not enabled");
+                    Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
         }
 
     }
