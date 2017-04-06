@@ -17,6 +17,8 @@ import java.text.DecimalFormat;
 import java.util.Timer;
 
 //import android.app.FragmentTransaction;
+import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
+import de.jandrotek.android.arobot.libbluetooth.BluetoothService;
 
 //import android.content.SharedPreferences;
 
