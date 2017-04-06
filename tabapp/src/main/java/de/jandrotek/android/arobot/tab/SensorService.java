@@ -83,6 +83,7 @@ class SensorService
     private long mTimestamp;
 
     private Timer mFuseTimer = null;
+    private Timer mTestTimer = null;
     private boolean mRunTimerTask = false;
     private long lastUpdate = System.currentTimeMillis();
     private long actualTime = System.currentTimeMillis();
@@ -90,7 +91,7 @@ class SensorService
     float[] data2Tx = new float[7];
     private boolean mUpdateUi = true;
 
-
+    private Handler mTestHandler;
     private int mState;
 
     public void setLoopActive(boolean mLoopActive) {
@@ -156,7 +157,18 @@ class SensorService
         xM = new float[9];
         yM = new float[9];
         zM = new float[9];
+
+        mTestHandler = new Handler();
+        mTestHandler.post(runnableTestThread);
     }
+
+    private Runnable runnableTestThread = new Runnable(){
+        @Override
+        public  void run(){
+            Log.d(TAG, "runnableThread");
+            mTestHandler.postDelayed(runnableTestThread, 100);
+        }
+    };
 
     void initListeners(int selectedSensorDelay) {
         if (BuildConfig.DEBUG) Log.d(TAG, "initListeners");
@@ -226,11 +238,18 @@ class SensorService
                     1000, mTimerPeriod);
             mRunTimerTask = true;
         }
+        if (mTestTimer == null) {
+            mTestTimer = new Timer();
+            mTestTimer.scheduleAtFixedRate(
+                    new SensorService.testTask(),
+                    1000, mTimerPeriod);
+        }
     }
 
     public void setUpdateUi(boolean flag){
 
     }
+
 
     private class SensorThread extends HandlerThread
 //    private class SensorThread extends Thread
@@ -314,7 +333,7 @@ class SensorService
                     bNewData = false;
                 }
                 try {
-                    Thread.sleep(5);
+                    Thread.sleep(20);
                 } catch(Exception e){
                     e.getLocalizedMessage();
                 }
@@ -484,8 +503,16 @@ class SensorService
         return mResult;
     }
 
+    class testTask extends TimerTask{
+        @Override
+        public void run() {
+            if (BuildConfig.DEBUG)Log.d(TAG, "timerTask run");
+        }
+    }
+
     class calculateFusedOrientationTask extends TimerTask {
         public void run() {
+            if (BuildConfig.DEBUG)Log.d(TAG, "calculateFusedOrientationTask run");
             if (mRunTimerTask) {
 //                float mOneMinusCoeff = 1.0f - mFilterCoeff;
 
