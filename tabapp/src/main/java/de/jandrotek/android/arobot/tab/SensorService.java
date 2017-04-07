@@ -45,6 +45,7 @@ class SensorService
     private int mCounterSensorMagnet;
     private int mCounterSensorGlobal;
     private int mCounterSensorFusion;
+    private int mCounterUiUpdate;
     // angular speeds from gyro
     private float[] mGyro = new float[3];
 
@@ -169,6 +170,7 @@ class SensorService
         mCounterSensorMagnet = 0;
         mCounterSensorGlobal = 0;
         mCounterSensorFusion = 0;
+        mCounterUiUpdate = 0;
 
         mTestHandler = new Handler();
         mTestHandler.post(runnableTestThread);
@@ -181,12 +183,14 @@ class SensorService
                     + " SGyro " + mCounterSensorGyro
                     + " SMagnet " + mCounterSensorMagnet
                     + " SGlobal " + mCounterSensorGlobal
-                    + " Fusion " + mCounterSensorFusion);
+                    + " Fusion " + mCounterSensorFusion
+                    + " Ui " + mCounterUiUpdate);
             mCounterSensorAcc = 0;
             mCounterSensorGyro = 0;
             mCounterSensorMagnet = 0;
             mCounterSensorGlobal = 0;
             mCounterSensorFusion = 0;
+            mCounterUiUpdate = 0;
             if(mState >= STATE_INITIALIZED) {
                 mTestHandler.postDelayed(runnableTestThread, 1000);
             }
@@ -300,10 +304,10 @@ class SensorService
         }
 
         public void onSensorChanged(SensorEvent event) {
+            // workout in the run() function of the SensorThread
             mSensorType = event.sensor.getType();
             bNewData = true;
             mNewEvent = event;
-            // workout in run function of thread
         }
 
 
@@ -332,6 +336,7 @@ class SensorService
             while (mLoopAllowed) {
 //            while (mLoopActive) {
                 if(bNewData && mLoopActive){
+                    bNewData = false;
                     mCounterSensorGlobal++;
                     // workout the new data
                     switch (mSensorType) {
@@ -359,7 +364,6 @@ class SensorService
                             System.arraycopy(mNewEvent.values, 0, mMagnet, 0, 3);
                             break;
                     }
-                    bNewData = false;
                 }
                 try {
                     Thread.sleep(20);
@@ -642,6 +646,7 @@ class SensorService
 
     private Runnable updateOreintationDisplayTask = new Runnable() {
         public void run() {
+            mCounterUiUpdate++;
             //float[] data2Tx = new float[7];// 0,1,2 normal, 3,4 left right
             data2Tx[3] = mMoveCmd[3];
             data2Tx[4] = mMoveCmd[4];

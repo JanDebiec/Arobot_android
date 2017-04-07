@@ -16,11 +16,8 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.Timer;
 
-//import android.app.FragmentTransaction;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothService;
-
-//import android.content.SharedPreferences;
 
 public class SensorMovementFragment extends Fragment
 //        implements SensorRx.Callbacks {
@@ -31,43 +28,36 @@ public class SensorMovementFragment extends Fragment
     DecimalFormat d = ArobotDefines.d;
     // selecting child fragments
     //private static final int SELECTED_LEFTRIGHT_CHILD = 2;
-    private static final int SELECTED_ASCIIDATA_CHILD = 1;
-    private static final int SELECTED_TILTVIEW_CHILD = 0;
+//    private static final int SELECTED_ASCIIDATA_CHILD = 1;
+//    private static final int SELECTED_TILTVIEW_CHILD = 0;
 
 
     /// Model's members
     private SensorService mSensorData = null;
-//    private SensorRx mSensorData = null;
-//    private MoveCmdCalculator mMovCalculator; // for use in RxSensor
 
-             public void setSensorMoveController(SensorMovementController mSensorMoveController) {
-                 this.mSensorMoveController = mSensorMoveController;
-             }
+    public void setSensorMoveController(SensorMovementController mSensorMoveController) {
+     this.mSensorMoveController = mSensorMoveController;
+    }
 
-             private SensorMovementController mSensorMoveController;
+    private SensorMovementController mSensorMoveController;
     private ArobotSettings mArobotSettings; //TODO move to Activity
 
 
     /// Control's members
     private Context mContext;
-//    private SensorManager mSensorManager = null;
-    private boolean mSavingSensorData = false;
+//    private boolean mSavingSensorData = false;
     public float[] mSensorReceivedData;
-    private PrintWriter mPrintWriter;
+//    private PrintWriter mPrintWriter;
     public int mSelectedSensorDelay;
     private int mRollOffsset;
-    private float mFilterFactor;
-    public int mSelectedSavingContent;
-    public int mSelectedDisplayContent = 2;
-    private int mSelectedChildFragmentID;
+//    private float mFilterFactor;
+//    public int mSelectedSavingContent;
+//    public int mSelectedDisplayContent = 2;
+//    private int mSelectedChildFragmentID;
     public boolean mPrefsCreated = false;
     private int mTimerPeriod;
     private boolean mMovementEnabled = false;
     private Timer mBlinkTimer;
-//	private static final int BLINK_PERIOD = 1000;
-//	private boolean mRunBlinkTask = false;
-//	private boolean mBlinkOn = false;
-//	private int mSavingDataSeconds = 0;
 
 
 
@@ -75,9 +65,6 @@ public class SensorMovementFragment extends Fragment
         return mMovementEnabled;
     }
 
-//    public void setMovementEnabled(boolean movementEnabled) {
-//        mMovementEnabled = movementEnabled;
-//    }
 
     public void setBTService(BluetoothService BTService) {
         mBTService = BTService;
@@ -88,13 +75,11 @@ public class SensorMovementFragment extends Fragment
 
     /// View's members
     private TiltView mTilter;
-    //	private RadioGroup mContentSelector;
     private OnNavigationListener mOnNavigationListener;
 
     public static SensorMovementFragment newInstance(int sectionNumber, Context context) {
         SensorMovementFragment fragment = new SensorMovementFragment();
         Bundle args = new Bundle();
-//        args.putInt(PlaceholderFragment.ARG_SECTION_NUMBER, sectionNumber);
         fragment.setContext(context);
         fragment.setArguments(args);
         return fragment;
@@ -111,16 +96,11 @@ public class SensorMovementFragment extends Fragment
             if (BuildConfig.DEBUG) Log.i(TAG, "onCreate");
             setRetainInstance(true);// onDestroy will not be called
 
-//            mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-//            mMovCalculator = new MoveCmdCalculator();
             mArobotSettings = ((MovementActivity) getActivity()).getArobotSettings();
             mBlinkTimer = new Timer();
 
-//            mSensorMoveController = new SensorMovementController(mSensorManager);
             updateParams();
 
-            //mSensorData.initListeners(mSelectedSensorDelay);
-//            mSensorMoveController.init();
             mSensorReceivedData = new float[7];
             mSensorReceivedData[0] = (float) 0.95;
             mSensorReceivedData[1] = (float) 0.95;
@@ -136,7 +116,6 @@ public class SensorMovementFragment extends Fragment
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreateView");
         View v = inflater.inflate(R.layout.fragment_sensor_movement, parent, false);
         mTilter = (TiltView)v.findViewById(R.id.tiltView);
-//        mTilter = new TiltView(getActivity());
 
         return v;
 
@@ -230,7 +209,7 @@ public class SensorMovementFragment extends Fragment
 
     public void updateParams() {
         mSelectedSensorDelay = mArobotSettings.getPrefsSensorDelay();// = SensorManager.SENSOR_DELAY_FASTEST;
-        mFilterFactor = mArobotSettings.getFilterFactor();
+//        mFilterFactor = mArobotSettings.getFilterFactor();
 //        mSelectedSavingContent = mArobotSettings.getPrefsSavingContent();
         mTimerPeriod = mArobotSettings.getPrefsTimerPeriod();
 //        mRollOffsset = mArobotSettings.getPrefsRollOffset();
