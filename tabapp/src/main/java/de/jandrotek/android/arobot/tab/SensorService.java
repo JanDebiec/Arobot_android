@@ -39,6 +39,12 @@ class SensorService
     private Sensor mAccelSensor;
     private Sensor mGyroSensor;
     private Sensor mMagnetSensor;
+
+    private int mCounterSensorAcc;
+    private int mCounterSensorGyro;
+    private int mCounterSensorMagnet;
+    private int mCounterSensorGlobal;
+    private int mCounterSensorFusion;
     // angular speeds from gyro
     private float[] mGyro = new float[3];
 
@@ -92,7 +98,6 @@ class SensorService
     private boolean mUpdateUi = true;
 
     private Handler mTestHandler;
-    private int mState;
 
     public void setLoopActive(boolean mLoopActive) {
         this.mLoopActive = mLoopActive;
@@ -102,6 +107,7 @@ class SensorService
     private boolean mSensorsRegistered = false;
     private boolean mLoopAllowed = false;
     // Constants that indicate the current service state
+    private int mState;
     private static final int STATE_NONE = 0;       // we're doing nothing
     private static final int STATE_INITIALIZED = 1;     // now listening for incoming connections
     private static final int STATE_STARTED = 2;     // now listening for incoming connections
@@ -158,6 +164,12 @@ class SensorService
         yM = new float[9];
         zM = new float[9];
 
+        mCounterSensorAcc = 0;
+        mCounterSensorGyro = 0;
+        mCounterSensorMagnet = 0;
+        mCounterSensorGlobal = 0;
+        mCounterSensorFusion = 0;
+
         mTestHandler = new Handler();
         mTestHandler.post(runnableTestThread);
     }
@@ -165,8 +177,19 @@ class SensorService
     private Runnable runnableTestThread = new Runnable(){
         @Override
         public  void run(){
-            Log.d(TAG, "runnableThread");
-            mTestHandler.postDelayed(runnableTestThread, 100);
+            if (BuildConfig.DEBUG)Log.d(TAG, "runnableThread SAcc " + mCounterSensorAcc
+                    + " SGyro " + mCounterSensorGyro
+                    + " SMagnet " + mCounterSensorMagnet
+                    + " SGlobal " + mCounterSensorGlobal
+                    + " Fusion " + mCounterSensorFusion);
+            mCounterSensorAcc = 0;
+            mCounterSensorGyro = 0;
+            mCounterSensorMagnet = 0;
+            mCounterSensorGlobal = 0;
+            mCounterSensorFusion = 0;
+            if(mState >= STATE_INITIALIZED) {
+                mTestHandler.postDelayed(runnableTestThread, 1000);
+            }
         }
     };
 
@@ -187,6 +210,7 @@ class SensorService
                 mLoopAllowed = true;
             }
             setState(STATE_INITIALIZED);
+            mTestHandler.postDelayed(runnableTestThread, 1000);
         }
 
     }
@@ -213,6 +237,7 @@ class SensorService
             mSensorThread.cancel();
             mSensorThread = null;
             setState(STATE_NONE);
+            if (BuildConfig.DEBUG) Log.d(TAG, "stopThread, state=" + mState);
         }
     }
 
@@ -238,12 +263,12 @@ class SensorService
                     1000, mTimerPeriod);
             mRunTimerTask = true;
         }
-        if (mTestTimer == null) {
-            mTestTimer = new Timer();
-            mTestTimer.scheduleAtFixedRate(
-                    new SensorService.testTask(),
-                    1000, mTimerPeriod);
-        }
+//        if (mTestTimer == null) {
+//            mTestTimer = new Timer();
+//            mTestTimer.scheduleAtFixedRate(
+//                    new SensorService.testTask(),
+//                    1000, mTimerPeriod);
+//        }
     }
 
     public void setUpdateUi(boolean flag){
@@ -307,17 +332,20 @@ class SensorService
             while (mLoopAllowed) {
 //            while (mLoopActive) {
                 if(bNewData && mLoopActive){
+                    mCounterSensorGlobal++;
                     // workout the new data
                     switch (mSensorType) {
                         case Sensor.TYPE_ACCELEROMETER:
                             // copy new accelerometer data into accel array
                             // then calculate new orientation
+                            mCounterSensorAcc ++;
                             System.arraycopy(mNewEvent.values, 0, mAccel, 0, 3);
                             mTimestampAccel = mNewEvent.timestamp;
                             calculateAccMagOrientation();
                             break;
 
                         case Sensor.TYPE_GYROSCOPE:
+                            mCounterSensorGyro++;
                             // process gyro data
                             mTimestampGyro = mNewEvent.timestamp;
                             System.arraycopy(mNewEvent.values, 0, mGyro, 0, 3);
@@ -325,6 +353,7 @@ class SensorService
                             break;
 
                         case Sensor.TYPE_MAGNETIC_FIELD:
+                            mCounterSensorMagnet++;
                             // copy new magnetometer data into magnet array
                             mTimestampMagnet = mNewEvent.timestamp;
                             System.arraycopy(mNewEvent.values, 0, mMagnet, 0, 3);
@@ -503,17 +532,17 @@ class SensorService
         return mResult;
     }
 
-    class testTask extends TimerTask{
-        @Override
-        public void run() {
-            if (BuildConfig.DEBUG)Log.d(TAG, "timerTask run");
-        }
-    }
+//    class testTask extends TimerTask{
+//        @Override
+//        public void run() {
+//            if (BuildConfig.DEBUG)Log.d(TAG, "timerTask run");
+//        }
+//    }
 
     class calculateFusedOrientationTask extends TimerTask {
         public void run() {
-            if (BuildConfig.DEBUG)Log.d(TAG, "calculateFusedOrientationTask run");
             if (mRunTimerTask) {
+                mCounterSensorFusion++;
 //                float mOneMinusCoeff = 1.0f - mFilterCoeff;
 
 				/*
