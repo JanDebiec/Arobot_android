@@ -634,10 +634,10 @@ class SensorService
                 // update sensor output in GUI
                 // add timing results for UI-task
                 actualTime = System.currentTimeMillis();
-                if ((actualTime - lastUpdate > eUpdateUITime) && (mUpdateUi)) {
-                    lastUpdate = actualTime;
+//                if ((actualTime - lastUpdate > eUpdateUITime) && (mUpdateUi)) {
+//                    lastUpdate = actualTime;
                     mHandler.post(updateOreintationDisplayTask);
-                }
+//                }
             } else {
                 cancel();
             }
