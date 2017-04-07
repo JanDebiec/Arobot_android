@@ -117,6 +117,11 @@ class SensorService
 
     private Handler mHandler;
 
+//    private boolean bNewData = false;
+//    private int mSensorType;
+//    private SensorEvent mNewEvent;
+
+
     public void setFragment(SensorMovementFragment mFragment) {
         this.mFragment = mFragment;
     }
@@ -128,6 +133,9 @@ class SensorService
     }
 
     private SensorCalc mCalculator;
+
+//    private static JDTestThread mTestSensorThread;
+//    private boolean bJdThreadEnable;
 
     SensorService(SensorManager sm) {
 //    public SensorService(Context context, Handler handler, SensorManager sm) {
@@ -174,6 +182,7 @@ class SensorService
 
         mTestHandler = new Handler();
         mTestHandler.post(runnableTestThread);
+
     }
 
     private Runnable runnableTestThread = new Runnable(){
@@ -267,12 +276,6 @@ class SensorService
                     1000, mTimerPeriod);
             mRunTimerTask = true;
         }
-//        if (mTestTimer == null) {
-//            mTestTimer = new Timer();
-//            mTestTimer.scheduleAtFixedRate(
-//                    new SensorService.testTask(),
-//                    1000, mTimerPeriod);
-//        }
     }
 
     public void setUpdateUi(boolean flag){
@@ -281,7 +284,6 @@ class SensorService
 
 
     private class SensorThread extends HandlerThread
-//    private class SensorThread extends Thread
             implements SensorEventListener
     {
         private boolean bNewData = false;
@@ -535,13 +537,6 @@ class SensorService
 
         return mResult;
     }
-
-//    class testTask extends TimerTask{
-//        @Override
-//        public void run() {
-//            if (BuildConfig.DEBUG)Log.d(TAG, "timerTask run");
-//        }
-//    }
 
     class calculateFusedOrientationTask extends TimerTask {
         public void run() {
