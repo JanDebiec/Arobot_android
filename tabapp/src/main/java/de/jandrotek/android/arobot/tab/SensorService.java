@@ -23,13 +23,13 @@ import static android.os.SystemClock.sleep;
  */
 
 class SensorService
-//        implements SensorEventListener
+        implements SensorEventListener
 {
     // Debugging
     private static final String TAG = "SensorService";
     public static DecimalFormat d = new DecimalFormat("#0.0");
 //    private final Handler mHandler;
-    private SensorThread mSensorThread = null;
+//    private SensorThread mSensorThread = null;
     private SensorCalc mSensorCalc = null;
     private SensorManager mSensorManager = null;
     private boolean mSensorRegistered = false;
@@ -41,6 +41,7 @@ class SensorService
     private Sensor mMagnetSensor;
 
     private int mCounterSensorAcc;
+    private int mCounterSensorAccRaw;
     private int mCounterSensorGyro;
     private int mCounterSensorMagnet;
     private int mCounterSensorGlobal;
@@ -117,9 +118,12 @@ class SensorService
 
     private Handler mHandler;
 
-//    private boolean bNewData = false;
-//    private int mSensorType;
+    private boolean bNewData = false;
+    private int mSensorType;
 //    private SensorEvent mNewEvent;
+    private long mTimestampGyro;
+    private long mTimestampMagnet;
+    private long mTimestampAccel;
 
 
     public void setFragment(SensorMovementFragment mFragment) {
@@ -134,16 +138,9 @@ class SensorService
 
     private SensorCalc mCalculator;
 
-//    private static JDTestThread mTestSensorThread;
-//    private boolean bJdThreadEnable;
-
     SensorService(SensorManager sm) {
-//    public SensorService(Context context, Handler handler, SensorManager sm) {
-//        mHandler = handler;
         mHandler = new Handler();
-//        mCalculator = new SensorCalc();
         mSensorManager = sm;
-//        mBTMessCreator = new TxMessage();
         mLeftRightCmd = new float[2];
 //        mBTMessage = new byte[TxMessage.BTMessageLenght];
 
@@ -174,6 +171,7 @@ class SensorService
         zM = new float[9];
 
         mCounterSensorAcc = 0;
+        mCounterSensorAccRaw = 0;
         mCounterSensorGyro = 0;
         mCounterSensorMagnet = 0;
         mCounterSensorGlobal = 0;
@@ -183,18 +181,31 @@ class SensorService
         mTestHandler = new Handler();
         mTestHandler.post(runnableTestThread);
 
+        initListeners(SensorManager.SENSOR_DELAY_FASTEST);
+        registerSensors();
+
+        if (mFuseTimer == null) {
+            mFuseTimer = new Timer();
+            mFuseTimer.scheduleAtFixedRate(
+                    new SensorService.calculateFusedOrientationTask(),
+                    2000, mTimerPeriod);
+            mRunTimerTask = true;
+        }
     }
 
     private Runnable runnableTestThread = new Runnable(){
         @Override
         public  void run(){
-            if (BuildConfig.DEBUG)Log.d(TAG, "runnableThread SAcc " + mCounterSensorAcc
+            if (BuildConfig.DEBUG)Log.d(TAG,
+                    "SAdccRaw " + mCounterSensorAccRaw
+                    + " SAcc " + mCounterSensorAcc
                     + " SGyro " + mCounterSensorGyro
                     + " SMagnet " + mCounterSensorMagnet
                     + " SGlobal " + mCounterSensorGlobal
                     + " Fusion " + mCounterSensorFusion
                     + " Ui " + mCounterUiUpdate);
             mCounterSensorAcc = 0;
+            mCounterSensorAccRaw = 0;
             mCounterSensorGyro = 0;
             mCounterSensorMagnet = 0;
             mCounterSensorGlobal = 0;
@@ -218,10 +229,7 @@ class SensorService
         }
 
         if(mState < STATE_INITIALIZED) {
-            if(mSensorThread == null) {
-                mSensorThread = new SensorThread();
                 mLoopAllowed = true;
-            }
             setState(STATE_INITIALIZED);
             mTestHandler.postDelayed(runnableTestThread, 1000);
         }
@@ -241,147 +249,58 @@ class SensorService
     }
 
 
-    public synchronized void stopThread() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "stopThread");
-
-        if (mSensorThread != null) {
-            mLoopAllowed = false;
-            sleep(100);
-            mSensorThread.cancel();
-            mSensorThread = null;
-            setState(STATE_NONE);
-            if (BuildConfig.DEBUG) Log.d(TAG, "stopThread, state=" + mState);
-        }
-    }
-
-    public synchronized void startThread(){
-        if (BuildConfig.DEBUG) Log.d(TAG, "startThread(), state=" + mState);
-        if(mState < STATE_INITIALIZED){
-            if(mSensorThread == null) {
-                mSensorThread = new SensorThread();
-                mLoopAllowed = true;
-            }
-            setState(STATE_INITIALIZED);
-        }
-        if(mState < STATE_STARTED) {
-            mSensorThread.start();
-            setState(STATE_STARTED);
-        }
-        // wait for one second until gyroscope and magnetometer/accelerometer
-        // data is initialised then scedule the complementary filter task
-        if (mFuseTimer == null) {
-            mFuseTimer = new Timer();
-            mFuseTimer.scheduleAtFixedRate(
-                    new SensorService.calculateFusedOrientationTask(),
-                    1000, mTimerPeriod);
-            mRunTimerTask = true;
-        }
-    }
 
     public void setUpdateUi(boolean flag){
 
     }
 
-
-    private class SensorThread extends HandlerThread
-            implements SensorEventListener
-    {
-        private boolean bNewData = false;
-        private int mSensorType;
-        private SensorEvent mNewEvent;
-        private long mTimestampGyro;
-        private long mTimestampMagnet;
-        private long mTimestampAccel;
-
-
-        public SensorThread(String name) {
-            super(name);
-//        public SensorThread(String name, int priority) {
-            Log.d(TAG, "create SensorThread");
+    public void registerSensors(){
+        if(mState < STATE_REGISTERED) {
+            mSensorManager.registerListener(this, mAccelSensor,
+                    selectedSensorDelay);
+            mSensorManager.registerListener(this, mGyroSensor,
+                    selectedSensorDelay);
+            mSensorManager.registerListener(this, mMagnetSensor,
+                    selectedSensorDelay);
+            setState(STATE_REGISTERED);
         }
-        public SensorThread() {
-            super("SensorThread");
-//        public SensorThread(String name, int priority) {
-            Log.d(TAG, "create SensorThread");
+    }
+
+    public void onSensorChanged(SensorEvent event) {
+        // workout in the run() function of the SensorThread
+        mSensorType = event.sensor.getType();
+        // changed for testing
+        switch (mSensorType) {
+            case Sensor.TYPE_ACCELEROMETER:
+                // copy new accelerometer data into accel array
+                // then calculate new orientation
+                mCounterSensorAcc ++;
+                System.arraycopy(event.values, 0, mAccel, 0, 3);
+                mTimestampAccel = event.timestamp;
+                calculateAccMagOrientation();
+                break;
+
+            case Sensor.TYPE_GYROSCOPE:
+                mCounterSensorGyro++;
+                // process gyro data
+                mTimestampGyro = event.timestamp;
+                System.arraycopy(event.values, 0, mGyro, 0, 3);
+                gyroFunction(event);
+                break;
+
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                mCounterSensorMagnet++;
+                // copy new magnetometer data into magnet array
+                mTimestampMagnet = event.timestamp;
+                System.arraycopy(event.values, 0, mMagnet, 0, 3);
+                break;
         }
+    }
 
-        public void onSensorChanged(SensorEvent event) {
-            // workout in the run() function of the SensorThread
-            mSensorType = event.sensor.getType();
-            bNewData = true;
-            mNewEvent = event;
-        }
-
-
-        @Override
+            @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
             // TODO Auto-generated method stub
 
-        }
-
-        @Override
-        public void onLooperPrepared(){
-            if(mState < STATE_REGISTERED) {
-                mSensorManager.registerListener(this, mAccelSensor,
-                        selectedSensorDelay);
-                mSensorManager.registerListener(this, mGyroSensor,
-                        selectedSensorDelay);
-                mSensorManager.registerListener(this, mMagnetSensor,
-                        selectedSensorDelay);
-                setState(STATE_REGISTERED);
-            }
-        }
-
-        public void run() {
-            if (BuildConfig.DEBUG) Log.d(TAG, "BEGIN mSensorThread");
-            onLooperPrepared();
-            while (mLoopAllowed) {
-//            while (mLoopActive) {
-                if(bNewData && mLoopActive){
-                    bNewData = false;
-                    mCounterSensorGlobal++;
-                    // workout the new data
-                    switch (mSensorType) {
-                        case Sensor.TYPE_ACCELEROMETER:
-                            // copy new accelerometer data into accel array
-                            // then calculate new orientation
-                            mCounterSensorAcc ++;
-                            System.arraycopy(mNewEvent.values, 0, mAccel, 0, 3);
-                            mTimestampAccel = mNewEvent.timestamp;
-                            calculateAccMagOrientation();
-                            break;
-
-                        case Sensor.TYPE_GYROSCOPE:
-                            mCounterSensorGyro++;
-                            // process gyro data
-                            mTimestampGyro = mNewEvent.timestamp;
-                            System.arraycopy(mNewEvent.values, 0, mGyro, 0, 3);
-                            gyroFunction(mNewEvent);
-                            break;
-
-                        case Sensor.TYPE_MAGNETIC_FIELD:
-                            mCounterSensorMagnet++;
-                            // copy new magnetometer data into magnet array
-                            mTimestampMagnet = mNewEvent.timestamp;
-                            System.arraycopy(mNewEvent.values, 0, mMagnet, 0, 3);
-                            break;
-                    }
-                }
-                try {
-                    Thread.sleep(20);
-                } catch(Exception e){
-                    e.getLocalizedMessage();
-                }
-            }
-
-        }
-
-        public void cancel() {
-//            try {
-////                mmSocket.close();
-//            } catch (IOException e) {
-//                Log.e(TAG, "close() of SensorThread failed", e);
-//            }
         }
 
         private void calculateAccMagOrientation() {
@@ -433,7 +352,6 @@ class SensorService
         }
 
 
-    }
 
 //    // This function is borrowed from the Android reference
 //    // at http://developer.android.com/reference/android/hardware/SensorEvent.html#values
