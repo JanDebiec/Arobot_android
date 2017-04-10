@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.Timer;
 
@@ -33,7 +32,7 @@ public class SensorMovementFragment extends Fragment
 
 
     /// Model's members
-    private SensorService mSensorData = null;
+    private SensorService mSensorService = null;
 
     public void setSensorMoveController(SensorMovementController mSensorMoveController) {
      this.mSensorMoveController = mSensorMoveController;
@@ -159,9 +158,9 @@ public class SensorMovementFragment extends Fragment
         super.onStart();
         if (BuildConfig.DEBUG) Log.i(TAG, "onStart");
         mSensorMoveController.init();
-//        if (mSensorData != null) {
-//            mSensorData.setUpdateUi(true);
-//        }
+        if (mSensorService != null) {
+            mSensorService.setUpdateUi(true);
+        }
 
     }
 
@@ -170,16 +169,16 @@ public class SensorMovementFragment extends Fragment
         super.onResume();
         if (BuildConfig.DEBUG) Log.i(TAG, "onResume");
         mSensorMoveController.startSensors();
-//        if (mSensorData != null) {
-//            mSensorData.setUpdateUi(true);
-//        }
+        if (mSensorService != null) {
+            mSensorService.setUpdateUi(true);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mSensorData != null) {
-            mSensorData.setUpdateUi(false);
+        if (mSensorService != null) {
+            mSensorService.setUpdateUi(false);
         }
         mSensorMoveController.cleanSensors();
 //        setMovementEnabled(false);
@@ -189,9 +188,9 @@ public class SensorMovementFragment extends Fragment
     @Override
     public void onStop() {
         super.onStop();
-//        if (mSensorData != null) {
-//            mSensorData.setUpdateUi(false);
-//        }
+        if (mSensorService != null) {
+            mSensorService.setUpdateUi(false);
+        }
         if (BuildConfig.DEBUG) Log.i(TAG, "onStop");
     }
 
@@ -203,7 +202,7 @@ public class SensorMovementFragment extends Fragment
 
 
     public void restartSensors() {
-        mSensorData.initListeners(mSelectedSensorDelay);
+        mSensorService.initListeners(mSelectedSensorDelay);
 
     }
 
@@ -215,8 +214,8 @@ public class SensorMovementFragment extends Fragment
 //        mRollOffsset = mArobotSettings.getPrefsRollOffset();
 //        mPWMMin = mArobotSettings.getPrefsPwmMinimal();
 //        mAmplification = mArobotSettings.getPrefsAmplification();
-//        mSensorData.setFilterCoeff(mFilterFactor);
-//        mSensorData.setTimerPeriod(mTimerPeriod);
+//        mSensorService.setFilterCoeff(mFilterFactor);
+//        mSensorService.setTimerPeriod(mTimerPeriod);
 //        mMovCalculator.setRollOffset(mRollOffsset);
 //        mMovCalculator.setPWMMin(mPWMMin);
 //        mMovCalculator.setScaleCorrection(mAmplification);

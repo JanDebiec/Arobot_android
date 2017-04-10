@@ -165,7 +165,7 @@ class SensorService
 //        d.setMinimumFractionDigits(3);
 
         mOneMinusCoeff = 1.0f - mFilterCoeff;
-        mResult = new float[9];
+//        mResult = new float[9];
         xM = new float[9];
         yM = new float[9];
         zM = new float[9];
@@ -323,7 +323,7 @@ class SensorService
                 initMatrix = mCalculator.getRotationMatrixFromOrientation(mAccMagOrientation);
                 float[] test = new float[3];
                 SensorManager.getOrientation(initMatrix, test);
-                mGyroMatrix = matrixMultiplication(mGyroMatrix, initMatrix);
+                mGyroMatrix = mSensorCalc.matrixMultiplication(mGyroMatrix, initMatrix);
                 mInitState = false;
             }
 
@@ -344,117 +344,13 @@ class SensorService
             SensorManager.getRotationMatrixFromVector(deltaMatrix, deltaVector);
 
             // apply the new rotation interval on the gyroscope based rotation matrix
-            mGyroMatrix = matrixMultiplication(mGyroMatrix, deltaMatrix);
+            mGyroMatrix = mSensorCalc.matrixMultiplication(mGyroMatrix, deltaMatrix);
 
             // get the gyroscope based orientation from the rotation matrix
             SensorManager.getOrientation(mGyroMatrix, mGyroOrientation);
 
         }
 
-
-
-//    // This function is borrowed from the Android reference
-//    // at http://developer.android.com/reference/android/hardware/SensorEvent.html#values
-//    // It calculates a rotation vector from the gyroscope angular speed values.
-//    private void getRotationVectorFromGyro(float[] gyroValues,
-//                                           float[] deltaRotationVector,
-//                                           float timeFactor) {
-//        float[] normValues = new float[3];
-//
-//        // Calculate the angular speed of the sample
-//        float omegaMagnitude =
-//                (float) Math.sqrt(gyroValues[0] * gyroValues[0] +
-//                        gyroValues[1] * gyroValues[1] +
-//                        gyroValues[2] * gyroValues[2]);
-//
-//        // Normalize the rotation vector if it's big enough to get the axis
-//        if (omegaMagnitude > ArobotDefines.EPSILON) {
-//            normValues[0] = gyroValues[0] / omegaMagnitude;
-//            normValues[1] = gyroValues[1] / omegaMagnitude;
-//            normValues[2] = gyroValues[2] / omegaMagnitude;
-//        }
-//
-//        // Integrate around this axis with the angular speed by the timestep
-//        // in order to get a delta rotation from this sample over the timestep
-//        // We will convert this axis-angle representation of the delta rotation
-//        // into a quaternion before turning it into the rotation matrix.
-//        float thetaOverTwo = omegaMagnitude * timeFactor;
-//        float sinThetaOverTwo = (float) Math.sin(thetaOverTwo);
-//        float cosThetaOverTwo = (float) Math.cos(thetaOverTwo);
-//        deltaRotationVector[0] = sinThetaOverTwo * normValues[0];
-//        deltaRotationVector[1] = sinThetaOverTwo * normValues[1];
-//        deltaRotationVector[2] = sinThetaOverTwo * normValues[2];
-//        deltaRotationVector[3] = cosThetaOverTwo;
-//    }
-
-//    private float[] getRotationMatrixFromOrientation(float[] o) {
-////        float[] xM = new float[9];
-////        float[] yM = new float[9];
-////        float[] zM = new float[9];
-//
-//        sinX = (float) Math.sin(o[1]);
-//        cosX = (float) Math.cos(o[1]);
-//        sinY = (float) Math.sin(o[2]);
-//        cosY = (float) Math.cos(o[2]);
-//        sinZ = (float) Math.sin(o[0]);
-//        cosZ = (float) Math.cos(o[0]);
-//
-//        // rotation about x-axis (pitch)
-//        xM[0] = 1.0f;
-//        xM[1] = 0.0f;
-//        xM[2] = 0.0f;
-//        xM[3] = 0.0f;
-//        xM[4] = cosX;
-//        xM[5] = sinX;
-//        xM[6] = 0.0f;
-//        xM[7] = -sinX;
-//        xM[8] = cosX;
-//
-//        // rotation about y-axis (roll)
-//        yM[0] = cosY;
-//        yM[1] = 0.0f;
-//        yM[2] = sinY;
-//        yM[3] = 0.0f;
-//        yM[4] = 1.0f;
-//        yM[5] = 0.0f;
-//        yM[6] = -sinY;
-//        yM[7] = 0.0f;
-//        yM[8] = cosY;
-//
-//        // rotation about z-axis (azimuth)
-//        zM[0] = cosZ;
-//        zM[1] = sinZ;
-//        zM[2] = 0.0f;
-//        zM[3] = -sinZ;
-//        zM[4] = cosZ;
-//        zM[5] = 0.0f;
-//        zM[6] = 0.0f;
-//        zM[7] = 0.0f;
-//        zM[8] = 1.0f;
-//
-//        // rotation order is y, x, z (roll, pitch, azimuth)
-//        float[] resultMatrix = matrixMultiplication(xM, yM);
-//        resultMatrix = matrixMultiplication(zM, resultMatrix);
-//        return resultMatrix;
-//    }
-
-    private float[] matrixMultiplication(float[] A, float[] B) {
-//        float[] mResult = new float[9];
-
-        mResult[0] = A[0] * B[0] + A[1] * B[3] + A[2] * B[6];
-        mResult[1] = A[0] * B[1] + A[1] * B[4] + A[2] * B[7];
-        mResult[2] = A[0] * B[2] + A[1] * B[5] + A[2] * B[8];
-
-        mResult[3] = A[3] * B[0] + A[4] * B[3] + A[5] * B[6];
-        mResult[4] = A[3] * B[1] + A[4] * B[4] + A[5] * B[7];
-        mResult[5] = A[3] * B[2] + A[4] * B[5] + A[5] * B[8];
-
-        mResult[6] = A[6] * B[0] + A[7] * B[3] + A[8] * B[6];
-        mResult[7] = A[6] * B[1] + A[7] * B[4] + A[8] * B[7];
-        mResult[8] = A[6] * B[2] + A[7] * B[5] + A[8] * B[8];
-
-        return mResult;
-    }
 
     class calculateFusedOrientationTask extends TimerTask {
         public void run() {

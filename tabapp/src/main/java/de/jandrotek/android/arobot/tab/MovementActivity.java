@@ -59,7 +59,8 @@ public class MovementActivity extends AppCompatActivity {
     private SensorMovementFragment mSensorMovementFragment;
     private ManualMovementFragment mManualMovementFragment;
     private BluetoothFragment mBluetoothFragment;
-    private SensorMovementController mSensorMovementController;
+//    private SensorMovementController mSensorMovementController;
+    private SensorService mSensorService;
     private SensorCalc mMovCalculator; // for use in RxSensor
 
     private int mFragmentIndexAct = -1;// on start, no fragment selected
@@ -109,9 +110,10 @@ public class MovementActivity extends AppCompatActivity {
             return;
         }
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensorMovementController = new SensorMovementController(mSensorManager);
+        mSensorService = new SensorService(mSensorManager);
+//        mSensorMovementController = new MovementController(mSensorManager);
         mMovCalculator = new SensorCalc();
-        mSensorMovementController.setCalculator(mMovCalculator);
+//        mSensorMovementController.setCalculator(mMovCalculator);
         setContentView(R.layout.activity_movement);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -146,13 +148,15 @@ public class MovementActivity extends AppCompatActivity {
                 //TODO start/stop calculations (threads)
                 if(mAppBarExpanded) { //run
                     if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
-                        mSensorMovementController.activateMovementThread(true);
+//                        mSensorMovementController.activateMovementThread(true);
+                        mSensorService.setLoopActive(true);
                     }
                     mAppBarExpanded = false;
                     mFab.setImageResource(ic_media_pause);
                 } else { // pause
                     if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
-                        mSensorMovementController.activateMovementThread(false);
+//                        mSensorMovementController.activateMovementThread(false);
+                        mSensorService.setLoopActive(false);
                     }
                     mAppBarExpanded = true;
                     mFab.setImageResource(ic_media_play);
@@ -233,8 +237,8 @@ public class MovementActivity extends AppCompatActivity {
                 mFragmentIndexAct = ArobotDefines.POSITION_SENSOR_MOVEMENT;
                 mFragmentIndexNew = ArobotDefines.POSITION_SENSOR_MOVEMENT;
                 mSensorMovementFragment = SensorMovementFragment.newInstance(position, this);
-                mSensorMovementFragment.setSensorMoveController(mSensorMovementController);
-                mSensorMovementController.setSensorMovementFragment(mSensorMovementFragment);
+//                mSensorMovementFragment.setSensorMoveController(mSensorMovementController);
+//                mSensorMovementController.setSensorMovementFragment(mSensorMovementFragment);
                 fragmentManager
                         .beginTransaction()
                         .add(R.id.container,
@@ -261,8 +265,8 @@ public class MovementActivity extends AppCompatActivity {
                 mFragmentIndexAct = ArobotDefines.POSITION_SENSOR_MOVEMENT;
                 mFragmentIndexNew = ArobotDefines.POSITION_SENSOR_MOVEMENT;
                 mSensorMovementFragment = SensorMovementFragment.newInstance(position, this);
-                mSensorMovementFragment.setSensorMoveController(mSensorMovementController);
-                mSensorMovementController.setSensorMovementFragment(mSensorMovementFragment);
+//                mSensorMovementFragment.setSensorMoveController(mSensorMovementController);
+//                mSensorMovementController.setSensorMovementFragment(mSensorMovementFragment);
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.container,
