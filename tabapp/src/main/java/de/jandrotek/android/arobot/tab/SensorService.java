@@ -184,10 +184,14 @@ class SensorService
         initListeners(SensorManager.SENSOR_DELAY_FASTEST);
         registerSensors();
 
+//        startFuseCalc();
+    }
+
+    public void startFuseCalc() {
         if (mFuseTimer == null) {
             mFuseTimer = new Timer();
             mFuseTimer.scheduleAtFixedRate(
-                    new SensorService.calculateFusedOrientationTask(),
+                    new calculateFusedOrientationTask(),
                     2000, mTimerPeriod);
             mRunTimerTask = true;
         }

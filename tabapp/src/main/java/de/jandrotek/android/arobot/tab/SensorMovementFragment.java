@@ -34,11 +34,11 @@ public class SensorMovementFragment extends Fragment
     /// Model's members
     private SensorService mSensorService = null;
 
-    public void setSensorMoveController(SensorMovementController mSensorMoveController) {
-     this.mSensorMoveController = mSensorMoveController;
-    }
-
-    private SensorMovementController mSensorMoveController;
+//    public void setSensorMoveController(SensorMovementController mSensorMoveController) {
+//     this.mSensorMoveController = mSensorMoveController;
+//    }
+//
+//    private SensorMovementController mSensorMoveController;
     private ArobotSettings mArobotSettings; //TODO move to Activity
 
 
@@ -157,7 +157,7 @@ public class SensorMovementFragment extends Fragment
     public void onStart() {
         super.onStart();
         if (BuildConfig.DEBUG) Log.i(TAG, "onStart");
-        mSensorMoveController.init();
+//        mSensorMoveController.init();
         if (mSensorService != null) {
             mSensorService.setUpdateUi(true);
         }
@@ -168,8 +168,9 @@ public class SensorMovementFragment extends Fragment
     public void onResume() {
         super.onResume();
         if (BuildConfig.DEBUG) Log.i(TAG, "onResume");
-        mSensorMoveController.startSensors();
+//        mSensorMoveController.startSensors();
         if (mSensorService != null) {
+            mSensorService.startFuseCalc();
             mSensorService.setUpdateUi(true);
         }
     }
@@ -180,7 +181,7 @@ public class SensorMovementFragment extends Fragment
         if (mSensorService != null) {
             mSensorService.setUpdateUi(false);
         }
-        mSensorMoveController.cleanSensors();
+//        mSensorMoveController.cleanSensors();
 //        setMovementEnabled(false);
         if (BuildConfig.DEBUG) Log.i(TAG, "onPause");
     }
