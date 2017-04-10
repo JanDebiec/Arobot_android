@@ -1,3 +1,4 @@
+// consider to remove the file
 package de.jandrotek.android.arobot.tab;
 
 import android.hardware.SensorManager;
