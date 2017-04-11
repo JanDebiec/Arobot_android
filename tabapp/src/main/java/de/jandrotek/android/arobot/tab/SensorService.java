@@ -5,18 +5,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.SystemClock;
 import android.util.Log;
 
 import java.text.DecimalFormat;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import de.jandrotek.android.arobot.core.MoveCmdCalculator;
 import de.jandrotek.android.arobot.core.SensorCalc;
-
-import static android.os.SystemClock.sleep;
 
 /**
  * Created by PanJan on 30.11.2016.
@@ -32,7 +26,7 @@ class SensorService
 //    private SensorThread mSensorThread = null;
 //    private SensorCalc mSensorCalc = null;
     private SensorManager mSensorManager = null;
-    private boolean mSensorRegistered = false;
+//    private boolean mSensorRegistered = false;
     private boolean mInitState = true;
 
     private int selectedSensorDelay;
@@ -41,7 +35,7 @@ class SensorService
     private Sensor mMagnetSensor;
 
     private int mCounterSensorAcc;
-    private int mCounterSensorAccRaw;
+//    private int mCounterSensorAccRaw;
     private int mCounterSensorGyro;
     private int mCounterSensorMagnet;
     private int mCounterSensorGlobal;
@@ -69,7 +63,7 @@ class SensorService
 
     // accelerometer and magnetometer based rotation matrix
     private float[] mRotationMatrix = new float[9];
-    private float[] mResult;
+//    private float[] mResult;
     private float[] xM;
     private float[] yM;
     private float[] zM;
@@ -90,24 +84,28 @@ class SensorService
     public int mTimerPeriod = ArobotDefines.TIME_CONSTANT;
     private long mTimestamp;
 
-    private Timer mFuseTimer = null;
-    private Timer mTestTimer = null;
-    private boolean mRunTimerTask = false;
+    public void setRunFuseTask(boolean runFuseTask) {
+        this.mRunFuseTask = runFuseTask;
+    }
+
+    //    private Timer mFuseTimer = null;
+//    private Timer mTestTimer = null;
+    private boolean mRunFuseTask = false;
     private long lastUpdate = System.currentTimeMillis();
     private long actualTime = System.currentTimeMillis();
     private static final long eUpdateUITime = 200;
+    private static final long eCalculateFuseTime = 100;
     float[] data2Tx = new float[7];
     private boolean mUpdateUi = true;
 
-    private Handler mTestHandler;
 
-    public void setLoopActive(boolean mLoopActive) {
-        this.mLoopActive = mLoopActive;
-    }
+//    public void setLoopActive(boolean mLoopActive) {
+//        this.mLoopActive = mLoopActive;
+//    }
 
-    private boolean mLoopActive = false;
+//    private boolean mLoopActive = false;
     private boolean mSensorsRegistered = false;
-    private boolean mLoopAllowed = false;
+//    private boolean mLoopAllowed = false;
     // Constants that indicate the current service state
     private int mState;
     private static final int STATE_NONE = 0;       // we're doing nothing
@@ -117,8 +115,9 @@ class SensorService
     private static final int STATE_LOOP_RUNNING = 4;     // now listening for incoming connections
 
     private Handler mHandler;
+    private Handler mFuseHandler;
 
-    private boolean bNewData = false;
+//    private boolean bNewData = false;
     private int mSensorType;
     private long mTimestampGyro;
     private long mTimestampMagnet;
@@ -169,53 +168,41 @@ class SensorService
         zM = new float[9];
 
         mCounterSensorAcc = 0;
-        mCounterSensorAccRaw = 0;
+//        mCounterSensorAccRaw = 0;
         mCounterSensorGyro = 0;
         mCounterSensorMagnet = 0;
         mCounterSensorGlobal = 0;
         mCounterSensorFusion = 0;
         mCounterUiUpdate = 0;
 
-        mTestHandler = new Handler();
-        mTestHandler.post(runnableTestThread);
+        mFuseHandler = new Handler();
 
         initListeners(SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     public void startFuseCalc() {
+        mRunFuseTask = true;
         registerSensors();
-        if (mFuseTimer == null) {
-            mFuseTimer = new Timer();
-            mFuseTimer.scheduleAtFixedRate(
-                    new calculateFusedOrientationTask(),
-                    2000, mTimerPeriod);
-            mRunTimerTask = true;
+        if(mRunFuseTask){
+            mFuseHandler.postDelayed(calculateFusedOrientationTask, eCalculateFuseTime);
         }
     }
 
-    private Runnable runnableTestThread = new Runnable(){
-        @Override
-        public  void run(){
-            if (BuildConfig.DEBUG)Log.d(TAG,
-                    "SAdccRaw " + mCounterSensorAccRaw
-                    + " SAcc " + mCounterSensorAcc
-                    + " SGyro " + mCounterSensorGyro
-                    + " SMagnet " + mCounterSensorMagnet
-                    + " SGlobal " + mCounterSensorGlobal
-                    + " Fusion " + mCounterSensorFusion
-                    + " Ui " + mCounterUiUpdate);
-            mCounterSensorAcc = 0;
-            mCounterSensorAccRaw = 0;
-            mCounterSensorGyro = 0;
-            mCounterSensorMagnet = 0;
-            mCounterSensorGlobal = 0;
-            mCounterSensorFusion = 0;
-            mCounterUiUpdate = 0;
-            if(mState >= STATE_INITIALIZED) {
-                mTestHandler.postDelayed(runnableTestThread, 1000);
-            }
-        }
-    };
+    private  void logCounters(){
+        if (BuildConfig.DEBUG)Log.d(TAG,
+                 " SAcc " + mCounterSensorAcc
+                + " SGyro " + mCounterSensorGyro
+                + " SMagnet " + mCounterSensorMagnet
+                + " SGlobal " + mCounterSensorGlobal
+                + " Fusion " + mCounterSensorFusion
+                + " Ui " + mCounterUiUpdate);
+        mCounterSensorAcc = 0;
+        mCounterSensorGyro = 0;
+        mCounterSensorMagnet = 0;
+        mCounterSensorGlobal = 0;
+        mCounterSensorFusion = 0;
+        mCounterUiUpdate = 0;
+    }
 
     void initListeners(int selectedSensorDelay) {
         if (BuildConfig.DEBUG) Log.d(TAG, "initListeners");
@@ -229,9 +216,8 @@ class SensorService
         }
 
         if(mState < STATE_INITIALIZED) {
-                mLoopAllowed = true;
+//                mLoopAllowed = true;
             setState(STATE_INITIALIZED);
-            mTestHandler.postDelayed(runnableTestThread, 1000);
         }
 
     }
@@ -267,7 +253,9 @@ class SensorService
     }
 
     public void unregisterSensors(){
+        mRunFuseTask = false;
         mSensorManager.unregisterListener(this);
+        setState(STATE_STARTED);
 
     }
 
@@ -355,9 +343,12 @@ class SensorService
         }
 
 
-    class calculateFusedOrientationTask extends TimerTask {
+//    class calculateFusedOrientationTask extends TimerTask {
+    private Runnable calculateFusedOrientationTask = new Runnable() {
+        @Override
         public void run() {
-            if (mRunTimerTask) {
+            logCounters();
+            if (mRunFuseTask) {
                 mCounterSensorFusion++;
 //                float mOneMinusCoeff = 1.0f - mFilterCoeff;
 
@@ -450,11 +441,12 @@ class SensorService
 //                    lastUpdate = actualTime;
                     mHandler.post(updateOreintationDisplayTask);
 //                }
-            } else {
-                cancel();
+            }
+            if(mRunFuseTask){
+                mFuseHandler.postDelayed(calculateFusedOrientationTask, eCalculateFuseTime);
             }
         }
-    }
+    };
 
     private Runnable updateOreintationDisplayTask = new Runnable() {
         public void run() {
@@ -476,5 +468,4 @@ class SensorService
             mFragment.updateOrientationDisplay();
         }
     };
-
 }

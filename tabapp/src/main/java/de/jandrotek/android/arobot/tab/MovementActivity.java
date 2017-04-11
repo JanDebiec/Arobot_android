@@ -151,7 +151,7 @@ public class MovementActivity extends AppCompatActivity {
                         if (mSensorService != null) {
                             mSensorService.setFragment(mSensorMovementFragment);
                             mSensorService.registerSensors();
-                            mSensorService.setLoopActive(true);
+                            mSensorService.setRunFuseTask(true);
                             mSensorService.startFuseCalc();
                             mSensorService.setUpdateUi(true);
                         }
@@ -162,7 +162,7 @@ public class MovementActivity extends AppCompatActivity {
                 } else { // pause
                     if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
 //                        mSensorMovementController.activateMovementThread(false);
-                        mSensorService.setLoopActive(false);
+                        mSensorService.setRunFuseTask(false);
                         mSensorService.unregisterSensors();
                     }
                     mAppBarExpanded = true;

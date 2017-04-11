@@ -45,7 +45,7 @@ class SensorMovementController {
     }
 
     public void stopSensors(){
-        mSensorService.setLoopActive(false);
+        mSensorService.setRunFuseTask(false);
     }
 
     public void cleanSensors(){
@@ -59,9 +59,9 @@ class SensorMovementController {
     public void activateMovementThread(boolean flag){
         if(flag){ //prepare run, start threads
 //            mSensorService.startThread();
-            mSensorService.setLoopActive(true);
+            mSensorService.setRunFuseTask(true);
         } else { // stop threads
-            mSensorService.setLoopActive(false);
+            mSensorService.setRunFuseTask(false);
         }
         mMovementThreadRun = flag;
 
