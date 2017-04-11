@@ -120,7 +120,6 @@ class SensorService
 
     private boolean bNewData = false;
     private int mSensorType;
-//    private SensorEvent mNewEvent;
     private long mTimestampGyro;
     private long mTimestampMagnet;
     private long mTimestampAccel;
@@ -165,7 +164,6 @@ class SensorService
 //        d.setMinimumFractionDigits(3);
 
         mOneMinusCoeff = 1.0f - mFilterCoeff;
-//        mResult = new float[9];
         xM = new float[9];
         yM = new float[9];
         zM = new float[9];
@@ -182,9 +180,6 @@ class SensorService
         mTestHandler.post(runnableTestThread);
 
         initListeners(SensorManager.SENSOR_DELAY_FASTEST);
-//        registerSensors();
-
-//        startFuseCalc();
     }
 
     public void startFuseCalc() {
@@ -277,9 +272,7 @@ class SensorService
     }
 
     public void onSensorChanged(SensorEvent event) {
-        // workout in the run() function of the SensorThread
         mSensorType = event.sensor.getType();
-        // changed for testing
         switch (mSensorType) {
             case Sensor.TYPE_ACCELEROMETER:
                 // copy new accelerometer data into accel array
@@ -483,44 +476,5 @@ class SensorService
             mFragment.updateOrientationDisplay();
         }
     };
-
-//    public float[] calculateMovement(float [] sensorData){
-//        mPitch = (float)(sensorData[1] * 180 / Math.PI);
-//        mRoll = (float)((sensorData[2] * 180 / Math.PI) + 90 - mRollOffset);
-//
-//        // subtract offset
-//
-//        // calculate
-//        raw_left = (mRoll - mPitch );
-//        raw_right = (mRoll + mPitch );
-//
-//        scaled_left = raw_left * mScaleCorrection;
-//        scaled_right = raw_right * mScaleCorrection;
-//
-//        // BT scaling in BTMessage.java
-//        //scaled_left += 128; // zero in the middle (0x80)
-//        //scaled_right += 128;
-//
-//        if(scaled_left > 0){
-//            torsionCorrectedLeft = scaled_left + mPWMMin;
-//        } else {
-//            torsionCorrectedLeft = scaled_left - mPWMMin;
-//        }
-//
-//        if(scaled_right > 0){
-//            torsionCorrectedRight = scaled_right + mPWMMin;
-//        } else {
-//            torsionCorrectedRight = scaled_right - mPWMMin;
-//        }
-//
-//        mMovementCmd[0] = sensorData[0];
-//        mMovementCmd[1] = sensorData[1];
-//        mMovementCmd[2] = sensorData[2];
-//        mMovementCmd[5] = mPitch;
-//        mMovementCmd[6] = mRoll;
-//        mMovementCmd[3] = torsionCorrectedLeft;
-//        mMovementCmd[4] = torsionCorrectedRight;
-//        return mMovementCmd;
-//    }
 
 }

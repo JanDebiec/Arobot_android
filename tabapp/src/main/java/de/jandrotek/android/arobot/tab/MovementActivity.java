@@ -112,9 +112,7 @@ public class MovementActivity extends AppCompatActivity {
         mMovCalculator = new SensorCalc();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorService = new SensorService(mSensorManager);
-//        mSensorMovementController = new MovementController(mSensorManager);
         mSensorService.setCalculator(mMovCalculator);
-//        mSensorMovementController.setCalculator(mMovCalculator);
         setContentView(R.layout.activity_movement);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -162,7 +160,7 @@ public class MovementActivity extends AppCompatActivity {
                     mAppBarExpanded = false;
                     mFab.setImageResource(ic_media_pause);
                 } else { // pause
-                    if(mFragmentIndexAct == ArobotDefines.POSITION_MANUAL_MOVEMENT) {
+                    if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
 //                        mSensorMovementController.activateMovementThread(false);
                         mSensorService.setLoopActive(false);
                         mSensorService.unregisterSensors();
