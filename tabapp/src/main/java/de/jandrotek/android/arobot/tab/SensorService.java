@@ -30,7 +30,7 @@ class SensorService
     public static DecimalFormat d = new DecimalFormat("#0.0");
 //    private final Handler mHandler;
 //    private SensorThread mSensorThread = null;
-    private SensorCalc mSensorCalc = null;
+//    private SensorCalc mSensorCalc = null;
     private SensorManager mSensorManager = null;
     private boolean mSensorRegistered = false;
     private boolean mInitState = true;
@@ -182,12 +182,13 @@ class SensorService
         mTestHandler.post(runnableTestThread);
 
         initListeners(SensorManager.SENSOR_DELAY_FASTEST);
-        registerSensors();
+//        registerSensors();
 
 //        startFuseCalc();
     }
 
     public void startFuseCalc() {
+        registerSensors();
         if (mFuseTimer == null) {
             mFuseTimer = new Timer();
             mFuseTimer.scheduleAtFixedRate(
@@ -270,6 +271,11 @@ class SensorService
         }
     }
 
+    public void unregisterSensors(){
+        mSensorManager.unregisterListener(this);
+
+    }
+
     public void onSensorChanged(SensorEvent event) {
         // workout in the run() function of the SensorThread
         mSensorType = event.sensor.getType();
@@ -327,7 +333,7 @@ class SensorService
                 initMatrix = mCalculator.getRotationMatrixFromOrientation(mAccMagOrientation);
                 float[] test = new float[3];
                 SensorManager.getOrientation(initMatrix, test);
-                mGyroMatrix = mSensorCalc.matrixMultiplication(mGyroMatrix, initMatrix);
+                mGyroMatrix = mCalculator.matrixMultiplication(mGyroMatrix, initMatrix);
                 mInitState = false;
             }
 
@@ -348,7 +354,7 @@ class SensorService
             SensorManager.getRotationMatrixFromVector(deltaMatrix, deltaVector);
 
             // apply the new rotation interval on the gyroscope based rotation matrix
-            mGyroMatrix = mSensorCalc.matrixMultiplication(mGyroMatrix, deltaMatrix);
+            mGyroMatrix = mCalculator.matrixMultiplication(mGyroMatrix, deltaMatrix);
 
             // get the gyroscope based orientation from the rotation matrix
             SensorManager.getOrientation(mGyroMatrix, mGyroOrientation);

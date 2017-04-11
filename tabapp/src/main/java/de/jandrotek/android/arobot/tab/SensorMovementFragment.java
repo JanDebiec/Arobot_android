@@ -180,6 +180,7 @@ public class SensorMovementFragment extends Fragment
         super.onPause();
         if (mSensorService != null) {
             mSensorService.setUpdateUi(false);
+            mSensorService.unregisterSensors();
         }
 //        mSensorMoveController.cleanSensors();
 //        setMovementEnabled(false);

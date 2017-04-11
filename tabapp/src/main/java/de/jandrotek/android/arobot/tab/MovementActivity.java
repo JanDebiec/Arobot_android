@@ -98,7 +98,7 @@ public class MovementActivity extends AppCompatActivity {
     private int mPWMMin;
     private float mAmplification;
     private int mRollOffsset;
-
+    private int mActiveFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,10 +109,11 @@ public class MovementActivity extends AppCompatActivity {
             // show screen portrait
             return;
         }
+        mMovCalculator = new SensorCalc();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorService = new SensorService(mSensorManager);
 //        mSensorMovementController = new MovementController(mSensorManager);
-        mMovCalculator = new SensorCalc();
+        mSensorService.setCalculator(mMovCalculator);
 //        mSensorMovementController.setCalculator(mMovCalculator);
         setContentView(R.layout.activity_movement);
 
@@ -149,12 +150,13 @@ public class MovementActivity extends AppCompatActivity {
                 if(mAppBarExpanded) { //run
                     if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
 //                        mSensorMovementController.activateMovementThread(true);
+                        mSensorService.registerSensors();
                         mSensorService.setLoopActive(true);
                     }
                     mAppBarExpanded = false;
                     mFab.setImageResource(ic_media_pause);
                 } else { // pause
-                    if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
+                    if(mFragmentIndexAct == ArobotDefines.POSITION_MANUAL_MOVEMENT) {
 //                        mSensorMovementController.activateMovementThread(false);
                         mSensorService.setLoopActive(false);
                     }
@@ -231,6 +233,7 @@ public class MovementActivity extends AppCompatActivity {
     }
 
     private void showProperFragment(int position) {
+        mActiveFragment = position;
         FragmentManager fragmentManager = getSupportFragmentManager();
         if ((mSensorMovementFragment == null) && (mManualMovementFragment == null) && (mBluetoothFragment == null)) {
             if (position == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
@@ -354,6 +357,14 @@ public class MovementActivity extends AppCompatActivity {
 //                Uri.parse("android-app://de.jandrotek.android.arobot.tab/http/host/path")
 //        );
 //        AppIndex.AppIndexApi.start(mClient, viewAction);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+//        if(mActiveFragment == ArobotDefines.POSITION_SENSOR_MOVEMENT){
+//            mSensorMovementFragment.onResume();
+//        }
     }
 
     @Override
