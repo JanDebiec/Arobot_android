@@ -88,8 +88,6 @@ class SensorService
         this.mRunFuseTask = runFuseTask;
     }
 
-    //    private Timer mFuseTimer = null;
-//    private Timer mTestTimer = null;
     private boolean mRunFuseTask = false;
     private long lastUpdate = System.currentTimeMillis();
     private long actualTime = System.currentTimeMillis();
@@ -98,14 +96,7 @@ class SensorService
     float[] data2Tx = new float[7];
     private boolean mUpdateUi = true;
 
-
-//    public void setLoopActive(boolean mLoopActive) {
-//        this.mLoopActive = mLoopActive;
-//    }
-
-//    private boolean mLoopActive = false;
     private boolean mSensorsRegistered = false;
-//    private boolean mLoopAllowed = false;
     // Constants that indicate the current service state
     private int mState;
     private static final int STATE_NONE = 0;       // we're doing nothing
@@ -117,12 +108,10 @@ class SensorService
     private Handler mHandler;
     private Handler mFuseHandler;
 
-//    private boolean bNewData = false;
     private int mSensorType;
     private long mTimestampGyro;
     private long mTimestampMagnet;
     private long mTimestampAccel;
-
 
     public void setFragment(SensorMovementFragment mFragment) {
         this.mFragment = mFragment;
@@ -142,7 +131,6 @@ class SensorService
         mLeftRightCmd = new float[2];
 //        mBTMessage = new byte[TxMessage.BTMessageLenght];
 
-//        mHandler = new Handler();
         mGyroOrientation[0] = 0.0f;
         mGyroOrientation[1] = 0.0f;
         mGyroOrientation[2] = 0.0f;
@@ -168,7 +156,6 @@ class SensorService
         zM = new float[9];
 
         mCounterSensorAcc = 0;
-//        mCounterSensorAccRaw = 0;
         mCounterSensorGyro = 0;
         mCounterSensorMagnet = 0;
         mCounterSensorGlobal = 0;
@@ -189,13 +176,15 @@ class SensorService
     }
 
     private  void logCounters(){
-        if (BuildConfig.DEBUG)Log.d(TAG,
-                 " SAcc " + mCounterSensorAcc
-                + " SGyro " + mCounterSensorGyro
-                + " SMagnet " + mCounterSensorMagnet
-                + " SGlobal " + mCounterSensorGlobal
-                + " Fusion " + mCounterSensorFusion
-                + " Ui " + mCounterUiUpdate);
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG,
+                    " SAcc " + mCounterSensorAcc
+                            + " SGyro " + mCounterSensorGyro
+                            + " SMagnet " + mCounterSensorMagnet
+                            + " SGlobal " + mCounterSensorGlobal
+                            + " Fusion " + mCounterSensorFusion
+                            + " Ui " + mCounterUiUpdate);
+        }
         mCounterSensorAcc = 0;
         mCounterSensorGyro = 0;
         mCounterSensorMagnet = 0;
@@ -214,13 +203,11 @@ class SensorService
             mStartTime = SystemClock.uptimeMillis();
             mSensorsRegistered = true;
         }
-
         if(mState < STATE_INITIALIZED) {
-//                mLoopAllowed = true;
             setState(STATE_INITIALIZED);
         }
-
     }
+
     /**
      * Set the current state of the chat connection
      *
@@ -256,7 +243,6 @@ class SensorService
         mRunFuseTask = false;
         mSensorManager.unregisterListener(this);
         setState(STATE_STARTED);
-
     }
 
     public void onSensorChanged(SensorEvent event) {
@@ -288,62 +274,60 @@ class SensorService
         }
     }
 
-            @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            // TODO Auto-generated method stub
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // TODO Auto-generated method stub
 
+    }
+
+    private void calculateAccMagOrientation() {
+        if (SensorManager.getRotationMatrix(mRotationMatrix, null, mAccel, mMagnet)) {
+            SensorManager.getOrientation(mRotationMatrix, mAccMagOrientation);
+            //mAccMagOrientation is in radians
+        }
+    }
+
+    // This function performs the integration of the gyroscope data.
+    // It writes the gyroscope based orientation into gyroOrientation.
+    public void gyroFunction(SensorEvent event) {
+        // don't start until first accelerometer/magnetometer orientation has been acquired
+        if (mAccMagOrientation == null)
+            return;
+
+        // initialisation of the gyroscope based rotation matrix
+        if (mInitState) {
+            float[] initMatrix = new float[9];
+            initMatrix = mCalculator.getRotationMatrixFromOrientation(mAccMagOrientation);
+            float[] test = new float[3];
+            SensorManager.getOrientation(initMatrix, test);
+            mGyroMatrix = mCalculator.matrixMultiplication(mGyroMatrix, initMatrix);
+            mInitState = false;
         }
 
-        private void calculateAccMagOrientation() {
-            if (SensorManager.getRotationMatrix(mRotationMatrix, null, mAccel, mMagnet)) {
-                SensorManager.getOrientation(mRotationMatrix, mAccMagOrientation);
-                //mAccMagOrientation is in radians
-            }
+        // copy the new gyro values into the gyro array
+        // convert the raw gyro data into a rotation vector
+        float[] deltaVector = new float[4];
+        if (mTimestamp != 0) {
+            final float dT = (event.timestamp - mTimestamp) * ArobotDefines.NS2S;
+            System.arraycopy(event.values, 0, mGyro, 0, 3);
+            mCalculator.getRotationVectorFromGyro(mGyro, deltaVector, dT / 2.0f);
         }
 
-        // This function performs the integration of the gyroscope data.
-        // It writes the gyroscope based orientation into gyroOrientation.
-        public void gyroFunction(SensorEvent event) {
-            // don't start until first accelerometer/magnetometer orientation has been acquired
-            if (mAccMagOrientation == null)
-                return;
+        // measurement done, save current time for next interval
+        mTimestamp = event.timestamp;
 
-            // initialisation of the gyroscope based rotation matrix
-            if (mInitState) {
-                float[] initMatrix = new float[9];
-                initMatrix = mCalculator.getRotationMatrixFromOrientation(mAccMagOrientation);
-                float[] test = new float[3];
-                SensorManager.getOrientation(initMatrix, test);
-                mGyroMatrix = mCalculator.matrixMultiplication(mGyroMatrix, initMatrix);
-                mInitState = false;
-            }
+        // convert rotation vector into rotation matrix
+        float[] deltaMatrix = new float[9];
+        SensorManager.getRotationMatrixFromVector(deltaMatrix, deltaVector);
 
-            // copy the new gyro values into the gyro array
-            // convert the raw gyro data into a rotation vector
-            float[] deltaVector = new float[4];
-            if (mTimestamp != 0) {
-                final float dT = (event.timestamp - mTimestamp) * ArobotDefines.NS2S;
-                System.arraycopy(event.values, 0, mGyro, 0, 3);
-                mCalculator.getRotationVectorFromGyro(mGyro, deltaVector, dT / 2.0f);
-            }
+        // apply the new rotation interval on the gyroscope based rotation matrix
+        mGyroMatrix = mCalculator.matrixMultiplication(mGyroMatrix, deltaMatrix);
 
-            // measurement done, save current time for next interval
-            mTimestamp = event.timestamp;
+        // get the gyroscope based orientation from the rotation matrix
+        SensorManager.getOrientation(mGyroMatrix, mGyroOrientation);
 
-            // convert rotation vector into rotation matrix
-            float[] deltaMatrix = new float[9];
-            SensorManager.getRotationMatrixFromVector(deltaMatrix, deltaVector);
+    }
 
-            // apply the new rotation interval on the gyroscope based rotation matrix
-            mGyroMatrix = mCalculator.matrixMultiplication(mGyroMatrix, deltaMatrix);
-
-            // get the gyroscope based orientation from the rotation matrix
-            SensorManager.getOrientation(mGyroMatrix, mGyroOrientation);
-
-        }
-
-
-//    class calculateFusedOrientationTask extends TimerTask {
     private Runnable calculateFusedOrientationTask = new Runnable() {
         @Override
         public void run() {
@@ -437,10 +421,7 @@ class SensorService
                 // update sensor output in GUI
                 // add timing results for UI-task
                 actualTime = System.currentTimeMillis();
-//                if ((actualTime - lastUpdate > eUpdateUITime) && (mUpdateUi)) {
-//                    lastUpdate = actualTime;
-                    mHandler.post(updateOreintationDisplayTask);
-//                }
+                mHandler.post(updateOreintationDisplayTask);
             }
             if(mRunFuseTask){
                 mFuseHandler.postDelayed(calculateFusedOrientationTask, eCalculateFuseTime);
