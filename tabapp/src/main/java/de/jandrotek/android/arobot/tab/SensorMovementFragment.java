@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.rajawali3d.view.ISurface;
+
 import java.text.DecimalFormat;
 import java.util.Timer;
 
@@ -60,6 +62,7 @@ public class SensorMovementFragment extends Fragment
 
 
 
+
     public boolean isMovementEnabled() {
         return mMovementEnabled;
     }
@@ -73,7 +76,10 @@ public class SensorMovementFragment extends Fragment
     private BluetoothService mBTService = null;
 
     /// View's members
-    private TiltView mTilter;
+//    private TiltView mTilter;
+     private TiltRenderer mRenderer;
+     private ISurface mRajawaliSurface;
+
     private OnNavigationListener mOnNavigationListener;
 
     public static SensorMovementFragment newInstance(int sectionNumber, Context context) {
@@ -114,8 +120,15 @@ public class SensorMovementFragment extends Fragment
                              Bundle savedInstanceState) {
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreateView");
         View v = inflater.inflate(R.layout.fragment_sensor_movement, parent, false);
-        mTilter = (TiltView)v.findViewById(R.id.tiltView);
 
+
+        // Find the TextureView
+        mRajawaliSurface = (ISurface) v.findViewById(R.id.rajwali_surface);
+
+
+        //        mTilter = (TiltView)v.findViewById(R.id.tiltView);
+        mRenderer = new TiltRenderer(getActivity());
+        mRajawaliSurface.setSurfaceRenderer(mRenderer);
         return v;
 
     }
@@ -136,13 +149,14 @@ public class SensorMovementFragment extends Fragment
 
 
     public void updateOrientationDisplay() {
-        // moved to activity
-//        mLeftCmdView.setText(d.format(mSensorReceivedData[3]));
-//        mRightCmdView.setText(d.format(mSensorReceivedData[4]));
-        if (mTilter != null) {
-            mTilter.setTilt(mSensorReceivedData[6],
-                    mSensorReceivedData[1]);
-            }
+//        if (mTilter != null) {
+//            mTilter.setTilt(mSensorReceivedData[6],
+//                    mSensorReceivedData[1]);
+//            }
+        if(mRenderer != null){
+            mRenderer.setRotateValues(mSensorReceivedData[6],
+                    mSensorReceivedData[1], 0);
+        }
     }
 
     private Runnable updateOrientationDisplayTask = new Runnable() {
@@ -157,7 +171,6 @@ public class SensorMovementFragment extends Fragment
     public void onStart() {
         super.onStart();
         if (BuildConfig.DEBUG) Log.i(TAG, "onStart");
-//        mSensorMoveController.init();
         if (mSensorService != null) {
             mSensorService.setUpdateUi(true);
         }
@@ -168,7 +181,6 @@ public class SensorMovementFragment extends Fragment
     public void onResume() {
         super.onResume();
         if (BuildConfig.DEBUG) Log.i(TAG, "onResume");
-//        mSensorMoveController.startSensors();
         if (mSensorService != null) {
             mSensorService.startFuseCalc();
             mSensorService.setUpdateUi(true);
@@ -182,8 +194,6 @@ public class SensorMovementFragment extends Fragment
             mSensorService.setUpdateUi(false);
             mSensorService.unregisterSensors();
         }
-//        mSensorMoveController.cleanSensors();
-//        setMovementEnabled(false);
         if (BuildConfig.DEBUG) Log.i(TAG, "onPause");
     }
 
