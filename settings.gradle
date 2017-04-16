@@ -1,1 +1,1 @@
-include ':app', ':core', ':tabapp', ':libbluetooth'
+include ':app', ':core', ':tabapp', ':libbluetooth', ':libwifi', ':wifitest'
