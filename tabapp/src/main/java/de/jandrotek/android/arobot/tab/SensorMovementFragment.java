@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.rajawali3d.view.ISurface;
 
@@ -20,6 +21,8 @@ import java.util.Timer;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothService;
 
+import static de.jandrotek.android.arobot.tab.R.id.tvTiltLeft;
+
 public class SensorMovementFragment extends Fragment
 //        implements SensorRx.Callbacks {
          {
@@ -27,39 +30,28 @@ public class SensorMovementFragment extends Fragment
     private static final String TAG = "SensorMovementFragment";
     private static final String CSV_BASE_HEADER = "sensor, time, X Axis,Y Axis,Z Axis";
     DecimalFormat d = ArobotDefines.d;
-    // selecting child fragments
-    //private static final int SELECTED_LEFTRIGHT_CHILD = 2;
-//    private static final int SELECTED_ASCIIDATA_CHILD = 1;
-//    private static final int SELECTED_TILTVIEW_CHILD = 0;
-
 
     /// Model's members
     private SensorService mSensorService = null;
 
-//    public void setSensorMoveController(SensorMovementController mSensorMoveController) {
-//     this.mSensorMoveController = mSensorMoveController;
-//    }
-//
-//    private SensorMovementController mSensorMoveController;
     private ArobotSettings mArobotSettings; //TODO move to Activity
 
 
     /// Control's members
     private Context mContext;
-//    private boolean mSavingSensorData = false;
     public float[] mSensorReceivedData;
-//    private PrintWriter mPrintWriter;
     public int mSelectedSensorDelay;
     private int mRollOffsset;
 //    private float mFilterFactor;
-//    public int mSelectedSavingContent;
-//    public int mSelectedDisplayContent = 2;
-//    private int mSelectedChildFragmentID;
     public boolean mPrefsCreated = false;
     private int mTimerPeriod;
     private boolean mMovementEnabled = false;
     private Timer mBlinkTimer;
 
+    private TextView mtvTiltLeft;
+    private TextView mtvTiltRight;
+    private float mOutputFilteredL;
+    private float mOutputFilteredR;
 
 
 
@@ -112,6 +104,9 @@ public class SensorMovementFragment extends Fragment
             mSensorReceivedData[2] = (float) 0.95;
             mPrefsCreated = true;
         }
+        mtvTiltLeft = (TextView)getActivity().findViewById(R.id.tvTiltLeft);
+        mtvTiltRight = (TextView)getActivity().findViewById(R.id.tvTiltRight);
+
 
     }
 
@@ -149,14 +144,16 @@ public class SensorMovementFragment extends Fragment
 
 
     public void updateOrientationDisplay() {
-//        if (mTilter != null) {
-//            mTilter.setTilt(mSensorReceivedData[6],
-//                    mSensorReceivedData[1]);
-//            }
         if(mRenderer != null){
-            mRenderer.setRotateValues(mSensorReceivedData[6],
-                    mSensorReceivedData[1], 0);
+            mRenderer.setRotateValues(
+                    mSensorReceivedData[5],//ok
+                    0,
+                    mSensorReceivedData[6] //ok
+                    );
         }
+        mtvTiltLeft.setText(Float.toString(mSensorReceivedData[3]));
+        mtvTiltRight.setText(Float.toString(mSensorReceivedData[4]));
+
     }
 
     private Runnable updateOrientationDisplayTask = new Runnable() {
