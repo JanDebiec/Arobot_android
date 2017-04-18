@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,6 +30,8 @@ private TiltView mManualTilter;
     private static int mFilterSize = 4;
     private float mOutputFilteredL;
     private float mOutputFilteredR;
+    private String mStrLeft;
+    private String mStrRight;
 
     private Timer mDataAcqTimer;
 
@@ -101,9 +104,12 @@ private TiltView mManualTilter;
     }
 
     private void updateUIValues(){
-        mtvTiltLeft.setText(Float.toString(mOutputFilteredL));
-//        mtvTiltLeft.setText(""+ mOutputFilteredL);
-        mtvTiltRight.setText(Float.toString(mOutputFilteredR));
+        mStrLeft = String.format(Locale.US, "% 7.1f", mOutputFilteredL);
+        mStrRight = String.format(Locale.US, "% 7.1f", mOutputFilteredR);
+
+
+        mtvTiltLeft.setText(mStrLeft);
+        mtvTiltRight.setText(mStrRight);
         if (mManualTilter != null) {
             float moveForward = (mOutputFilteredL + mOutputFilteredR) / 2;
             float turnToRight = mOutputFilteredL - mOutputFilteredR;

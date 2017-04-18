@@ -16,6 +16,7 @@ import android.widget.TextView;
 import org.rajawali3d.view.ISurface;
 
 import java.text.DecimalFormat;
+import java.util.Locale;
 import java.util.Timer;
 
 import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
@@ -52,6 +53,8 @@ public class SensorMovementFragment extends Fragment
     private TextView mtvTiltRight;
     private float mOutputFilteredL;
     private float mOutputFilteredR;
+    private String mStrLeft;
+             private String mStrRight;
 
 
 
@@ -151,8 +154,10 @@ public class SensorMovementFragment extends Fragment
                     mSensorReceivedData[6] //ok
                     );
         }
-        mtvTiltLeft.setText(Float.toString(mSensorReceivedData[3]));
-        mtvTiltRight.setText(Float.toString(mSensorReceivedData[4]));
+        mStrLeft = String.format(Locale.US, "% 7.1f", mSensorReceivedData[3]);
+        mStrRight = String.format(Locale.US, "% 7.1f", mSensorReceivedData[4]);
+        mtvTiltLeft.setText(mStrLeft);
+        mtvTiltRight.setText(mStrRight);
 
     }
 
