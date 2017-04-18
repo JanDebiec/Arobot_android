@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -23,11 +24,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -100,7 +103,12 @@ public class MovementActivity extends AppCompatActivity {
 //    private int mActiveFragment;
     private int mFragmentIndexAct = -1;// on start, no fragment selected
 //    private int mFragmentIndexNew = -1;// on start, no fragment selected
-//
+    private PowerManager mPowerManager;
+    private WindowManager mWindowManager;
+    private Display mDisplay;
+    private PowerManager.WakeLock mWakeLock;
+
+    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,6 +239,18 @@ public class MovementActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
 //        mClient = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        // Get an instance of the PowerManager
+        mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
+
+//        // Get an instance of the WindowManager
+//        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+//        mDisplay = mWindowManager.getDefaultDisplay();
+
+        // Create a bright wake lock
+        mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, getClass()
+                .getName());
+
     }
 
     private void showProperFragment(int position) {
@@ -366,11 +386,14 @@ public class MovementActivity extends AppCompatActivity {
 //        if(mActiveFragment == ArobotDefines.POSITION_SENSOR_MOVEMENT){
 //            mSensorMovementFragment.onResume();
 //        }
+        mWakeLock.acquire();
+
     }
 
     @Override
     public void onPause(){
     super.onPause();
+        mWakeLock.release();
     }
 
     @Override
