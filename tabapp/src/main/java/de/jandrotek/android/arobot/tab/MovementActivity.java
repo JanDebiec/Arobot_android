@@ -81,6 +81,7 @@ public class MovementActivity extends AppCompatActivity {
     private TextView mRightCmdView;
     private TextView mFragmentName;
     private boolean mAppBarExpanded = true;
+    private int mVisibility = View.VISIBLE;
     private AppBarLayout mAppBarLayout;
     private FloatingActionButton mFab;
 
@@ -157,6 +158,8 @@ public class MovementActivity extends AppCompatActivity {
 
                     }
                     mAppBarExpanded = false;
+                    mVisibility = View.INVISIBLE;
+//                    mVisibility = View.GONE;
                     mFab.setImageResource(ic_media_pause);
                 } else { // pause
                     if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
@@ -164,9 +167,11 @@ public class MovementActivity extends AppCompatActivity {
                         mSensorService.unregisterSensors();
                     }
                     mAppBarExpanded = true;
+                    mVisibility = View.VISIBLE;
                     mFab.setImageResource(ic_media_play);
                 }
                 mAppBarLayout.setExpanded(mAppBarExpanded);
+                mAppBarLayout.setVisibility(mVisibility);
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
             }

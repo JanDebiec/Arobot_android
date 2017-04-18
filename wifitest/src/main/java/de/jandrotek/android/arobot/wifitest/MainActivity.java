@@ -9,7 +9,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import de.jandrotek.android.arobot.libwifi.WifiService;
+
 public class MainActivity extends AppCompatActivity {
+
+    WifiService mWifiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        mWifiService = new WifiService(this);
+        mWifiService.init();
     }
 
     @Override
