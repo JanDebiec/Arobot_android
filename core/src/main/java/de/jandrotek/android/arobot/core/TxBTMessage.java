@@ -4,7 +4,7 @@ package de.jandrotek.android.arobot.core;
  * Created by jan on 03.07.16.
  */
 
-public class TxMessage {
+public class TxBTMessage {
     public static final int BTMessageLenght = 6;
     private static final int INDEX_MAGIC_WORD = 0;
     private static final int INDEX_CMD_ID = 1;
@@ -29,7 +29,7 @@ public class TxMessage {
 
 
 
-    public TxMessage() {
+    public TxBTMessage() {
         mBTMessage = new byte[6];
         mBTMessage[INDEX_MAGIC_WORD] = MAGIC_WORD;
         mBTMessage[INDEX_CMD_ID] = 0;

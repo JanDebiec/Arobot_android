@@ -46,6 +46,7 @@ import java.util.Locale;
 
 import de.jandrotek.android.arobot.core.SensorCalc;
 //import de.jandrotek.android.arobot.libbluetooth;
+import de.jandrotek.android.arobot.core.TxBTMessage;
 import de.jandrotek.android.arobot.libbluetooth.BTDefs;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothFragment;
@@ -59,7 +60,7 @@ public class MovementActivity extends AppCompatActivity {
     private static final String TAG = "MovementActivity";
 
     private ArobotSettings mArobotSettings;
-    public static DecimalFormat cmdFormat = new DecimalFormat(" ####.0; -####.0");
+//    public static DecimalFormat cmdFormat = new DecimalFormat(" ####.0; -####.0");
 
     //fragment control vars
     private SensorMovementFragment mSensorMovementFragment;
@@ -112,6 +113,12 @@ public class MovementActivity extends AppCompatActivity {
     private TextView mtvTiltRight;
     private String mStrLeft;
     private String mStrRight;
+
+    private int mExternalConn = ArobotDefines.EXT_CONN_UNKNOWN;
+    private TxBTMessage mBTMessCreator;
+    private float[] mLeftRightCmd;
+    private byte[] mBTMessage;
+
 
     //
     @Override
@@ -258,6 +265,9 @@ public class MovementActivity extends AppCompatActivity {
 
         mtvTiltLeft = (TextView)findViewById(R.id.tvTiltLeft);
         mtvTiltRight = (TextView)findViewById(R.id.tvTiltRight);
+        mBTMessCreator = new TxBTMessage();
+        mBTMessage = new byte[TxBTMessage.BTMessageLenght];
+
     }
 
     private void showProperFragment(int position) {
@@ -577,23 +587,6 @@ public class MovementActivity extends AppCompatActivity {
         return mArobotSettings;
     }
 
-    // implemented callback for SensorRx
-    // receive the results from SensorRx
-    // pack data into BT-Frame
-    // write to BT-Service
-    public void onNewBTCommand(byte[] btMessage) {
-        //check if BT connecgted
-        if (mBTService != null) {
-            if (mBTService.getState() == BluetoothService.STATE_CONNECTED) {
-                if (mSensorMovementFragment.isMovementEnabled()) {
-                    // send message
-                    mBTService.write(btMessage);
-                } else {
-                    mBTService.write(BluetoothDefines.BT_STOP_MESSAGE);
-                }
-            }
-        }
-    }
 
     public void showAppVersion() {
         String versionName;
@@ -704,13 +697,46 @@ public class MovementActivity extends AppCompatActivity {
 
     }
 
+    public void handleVelCmd(float cmdLeft, float cmdRight){
+        updateCmdTxt(cmdLeft, cmdRight);
+        txVelCmd(cmdLeft, cmdRight);
+    }
+
     public void updateCmdTxt(float cmdLeft, float cmdRight){
-        mStrLeft =  cmdFormat.format(cmdLeft);
-        mStrRight =  cmdFormat.format(cmdRight);
-//        mStrLeft = String.format(Locale.US, "% 7.1f", cmdLeft);
-//        mStrRight = String.format(Locale.US, "% 7.1f", cmdRight);
+        mStrLeft =  ArobotDefines.cmdFormat.format(cmdLeft);
+        mStrRight =  ArobotDefines.cmdFormat.format(cmdRight);
         mtvTiltLeft.setText(mStrLeft);
         mtvTiltRight.setText(mStrRight);
 
+    }
+
+    public void txVelCmd(float cmdLeft, float cmdRight){
+        if(mExternalConn == ArobotDefines.EXT_CONN_BT){
+            mLeftRightCmd[0] = cmdLeft;
+            mLeftRightCmd[1] = cmdRight;
+            mBTMessage = mBTMessCreator.prepareTxMessage(mLeftRightCmd);
+
+            txNewBTCommand(mBTMessage);
+        } else if (mExternalConn == ArobotDefines.EXT_CONN_WLAN){
+
+        }
+    }
+
+    // implemented callback for SensorRx
+    // receive the results from SensorRx
+    // pack data into BT-Frame
+    // write to BT-Service
+    public void txNewBTCommand(byte[] btMessage) {
+        //check if BT connecgted
+        if (mBTService != null) {
+            if (mBTService.getState() == BluetoothService.STATE_CONNECTED) {
+                if (mSensorMovementFragment.isMovementEnabled()) {
+                    // send message
+                    mBTService.write(btMessage);
+                } else {
+                    mBTService.write(BluetoothDefines.BT_STOP_MESSAGE);
+                }
+            }
+        }
     }
 }

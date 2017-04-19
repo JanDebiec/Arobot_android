@@ -130,7 +130,7 @@ class SensorService
         mHandler = new Handler();
         mSensorManager = sm;
         mLeftRightCmd = new float[2];
-//        mBTMessage = new byte[TxMessage.BTMessageLenght];
+//        mBTMessage = new byte[TxBTMessage.BTMessageLenght];
 
         mGyroOrientation[0] = 0.0f;
         mGyroOrientation[1] = 0.0f;
@@ -448,7 +448,7 @@ class SensorService
             //update UI
             mFragment.mSensorReceivedData = data2Tx;
             mFragment.updateOrientationDisplay();
-            mMotherActivity.updateCmdTxt(mMoveCmd[3], mMoveCmd[4]);
+            mMotherActivity.handleVelCmd(mMoveCmd[3], mMoveCmd[4]);
         }
     };
 }

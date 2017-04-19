@@ -3,7 +3,7 @@ package de.jandrotek.android.arobot.app.arobotbt;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import de.jandrotek.android.arobot.core.TxMessage;
+import de.jandrotek.android.arobot.core.TxBTMessage;
 
 /**
  * This class is responsible for loading the last used settings for
@@ -24,7 +24,7 @@ public class ArobotSettings {
 	private static String mPREFS_KEY_ROLL_OFFSET;
 	private static String mPREFS_KEY_AMPLIFICATION;
 
-	private int mPrefsMotorType = TxMessage.MOTOR_TYPE_SIGN_AND_PWM;
+	private int mPrefsMotorType = TxBTMessage.MOTOR_TYPE_SIGN_AND_PWM;
 	//	private int mPrefsMotorType = MotionTxMessage.MOTOR_TYPE_SIGN_AND_PWM;
 	private int mPrefsSensorDelay;
 	private int mPrefsTimerPeriod;

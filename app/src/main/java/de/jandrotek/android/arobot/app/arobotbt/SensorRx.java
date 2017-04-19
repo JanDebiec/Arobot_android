@@ -17,7 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.jandrotek.android.arobot.core.MoveCmdCalculator;
-import de.jandrotek.android.arobot.core.TxMessage;
+import de.jandrotek.android.arobot.core.TxBTMessage;
 
 //TODO: implement callback for results to send to BT
 public class SensorRx implements SensorEventListener {
@@ -47,7 +47,7 @@ public class SensorRx implements SensorEventListener {
 	private int mRadioSelection = 0;
     private int mSelectedSavingContent;
     private MoveCmdCalculator mController;
-	private TxMessage mBTMessCreator;
+	private TxBTMessage mBTMessCreator;
 	private float[] mLeftRightCmd;
     private byte[] mBTMessage;
 
@@ -97,9 +97,9 @@ public class SensorRx implements SensorEventListener {
 	private SensorRx(Activity activity){
 		mActivity = (MainActivity) activity;
         mCallbacks = (Callbacks)mActivity;
-		mBTMessCreator = new TxMessage();
+		mBTMessCreator = new TxBTMessage();
 		mLeftRightCmd = new float[2];
-		mBTMessage = new byte[TxMessage.BTMessageLenght];
+		mBTMessage = new byte[TxBTMessage.BTMessageLenght];
 		mFuseTimer = new Timer();
 
         mHandler = new Handler();

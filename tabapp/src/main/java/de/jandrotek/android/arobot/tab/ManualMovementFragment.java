@@ -98,7 +98,7 @@ private TiltView mManualTilter;
 
     private void updateUIValues(){
 
-        mActivity.updateCmdTxt(mOutputFilteredL, mOutputFilteredR);
+        mActivity.handleVelCmd(mOutputFilteredL, mOutputFilteredR);
         if (mManualTilter != null) {
             float moveForward = (mOutputFilteredL + mOutputFilteredR) / 2;
             float turnToRight = mOutputFilteredL - mOutputFilteredR;
