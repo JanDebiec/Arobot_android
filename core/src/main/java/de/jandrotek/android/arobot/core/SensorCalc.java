@@ -114,6 +114,7 @@ public class SensorCalc {
 //        float[] xM = new float[9];
 //        float[] yM = new float[9];
 //        float[] zM = new float[9];
+//        mAccMagOrientation = o;
 
         float sinX = (float)Math.sin(o[1]);
         float cosX = (float)Math.cos(o[1]);
@@ -162,74 +163,31 @@ public class SensorCalc {
     }
 
 
-    public void calcAzimuth(){
+    public float calcFusedOrientation(float gyroOrientation, float accMagOrientation){
+        float fusedOrientation = 0;
         // azimuth
-        if (mGyroOrientation[0] < -0.5 * Math.PI
-                && mAccMagOrientation[0] > 0.0) {
-            mFusedOrientation[0] = (float) (mFilterCoeff
-                    * (mGyroOrientation[0] + 2.0 * Math.PI) + oneMinusCoeff
-                    * mAccMagOrientation[0]);
-            mFusedOrientation[0] -= (mFusedOrientation[0] > Math.PI) ? 2.0 * Math.PI
+        if (gyroOrientation < -0.5 * Math.PI
+                && accMagOrientation > 0.0) {
+            fusedOrientation = (float) (mFilterCoeff
+                    * (gyroOrientation + 2.0 * Math.PI) + oneMinusCoeff
+                    * accMagOrientation);
+            fusedOrientation -= (fusedOrientation > Math.PI) ? 2.0 * Math.PI
                     : 0;
-        } else if (mAccMagOrientation[0] < -0.5 * Math.PI
-                && mGyroOrientation[0] > 0.0) {
-            mFusedOrientation[0] = (float) (mFilterCoeff
-                    * mGyroOrientation[0] + oneMinusCoeff
-                    * (mAccMagOrientation[0] + 2.0 * Math.PI));
-            mFusedOrientation[0] -= (mFusedOrientation[0] > Math.PI) ? 2.0 * Math.PI
+        } else if (accMagOrientation < -0.5 * Math.PI
+                && gyroOrientation > 0.0) {
+            fusedOrientation = (float) (mFilterCoeff
+                    * gyroOrientation + oneMinusCoeff
+                    * (accMagOrientation + 2.0 * Math.PI));
+            fusedOrientation -= (fusedOrientation > Math.PI) ? 2.0 * Math.PI
                     : 0;
         } else {
-            mFusedOrientation[0] = mFilterCoeff * mGyroOrientation[0]
-                    + oneMinusCoeff * mAccMagOrientation[0];
+            fusedOrientation = mFilterCoeff * gyroOrientation
+                    + oneMinusCoeff * accMagOrientation;
         }
+        return fusedOrientation;
 
     }
 
-    public void calcPicth(){
-        // pitch
-        if (mGyroOrientation[1] < -0.5 * Math.PI
-                && mAccMagOrientation[1] > 0.0) {
-            mFusedOrientation[1] = (float) (mFilterCoeff
-                    * (mGyroOrientation[1] + 2.0 * Math.PI) + oneMinusCoeff
-                    * mAccMagOrientation[1]);
-            mFusedOrientation[1] -= (mFusedOrientation[1] > Math.PI) ? 2.0 * Math.PI
-                    : 0;
-        } else if (mAccMagOrientation[1] < -0.5 * Math.PI
-                && mGyroOrientation[1] > 0.0) {
-            mFusedOrientation[1] = (float) (mFilterCoeff
-                    * mGyroOrientation[1] + oneMinusCoeff
-                    * (mAccMagOrientation[1] + 2.0 * Math.PI));
-            mFusedOrientation[1] -= (mFusedOrientation[1] > Math.PI) ? 2.0 * Math.PI
-                    : 0;
-        } else {
-            mFusedOrientation[1] = mFilterCoeff * mGyroOrientation[1]
-                    + oneMinusCoeff * mAccMagOrientation[1];
-        }
-
-    }
-
-    public void calcRoll(){
-        // roll
-        if (mGyroOrientation[2] < -0.5 * Math.PI
-                && mAccMagOrientation[2] > 0.0) {
-            mFusedOrientation[2] = (float) (mFilterCoeff
-                    * (mGyroOrientation[2] + 2.0 * Math.PI) + oneMinusCoeff
-                    * mAccMagOrientation[2]);
-            mFusedOrientation[2] -= (mFusedOrientation[2] > Math.PI) ? 2.0 * Math.PI
-                    : 0;
-        } else if (mAccMagOrientation[2] < -0.5 * Math.PI
-                && mGyroOrientation[2] > 0.0) {
-            mFusedOrientation[2] = (float) (mFilterCoeff
-                    * mGyroOrientation[2] + oneMinusCoeff
-                    * (mAccMagOrientation[2] + 2.0 * Math.PI));
-            mFusedOrientation[2] -= (mFusedOrientation[2] > Math.PI) ? 2.0 * Math.PI
-                    : 0;
-        } else {
-            mFusedOrientation[2] = mFilterCoeff * mGyroOrientation[2]
-                    + oneMinusCoeff * mAccMagOrientation[2];
-        }
-
-    }
 
     // This function is borrowed from the Android reference
     // at http://developer.android.com/reference/android/hardware/SensorEvent.html#values

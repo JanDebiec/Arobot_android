@@ -21,12 +21,8 @@ class SensorService
 {
     // Debugging
     private static final String TAG = "SensorService";
-//    private final Handler mHandler;
-//    private SensorThread mSensorThread = null;
-//    private SensorCalc mSensorCalc = null;
     private SensorManager mSensorManager = null;
     private MovementActivity mMotherActivity;
-//    private boolean mSensorRegistered = false;
     private boolean mInitState = true;
 
     private int selectedSensorDelay;
@@ -35,7 +31,6 @@ class SensorService
     private Sensor mMagnetSensor;
 
     private int mCounterSensorAcc;
-//    private int mCounterSensorAccRaw;
     private int mCounterSensorGyro;
     private int mCounterSensorMagnet;
     private int mCounterSensorGlobal;
@@ -347,64 +342,67 @@ class SensorService
 				 */
 
                 // azimuth
-                if (mGyroOrientation[0] < -0.5 * Math.PI
-                        && mAccMagOrientation[0] > 0.0) {
-                    mFusedOrientation[0] = (float) (mFilterCoeff
-                            * (mGyroOrientation[0] + 2.0 * Math.PI) + mOneMinusCoeff
-                            * mAccMagOrientation[0]);
-                    mFusedOrientation[0] -= (mFusedOrientation[0] > Math.PI) ? 2.0 * Math.PI
-                            : 0;
-                } else if (mAccMagOrientation[0] < -0.5 * Math.PI
-                        && mGyroOrientation[0] > 0.0) {
-                    mFusedOrientation[0] = (float) (mFilterCoeff
-                            * mGyroOrientation[0] + mOneMinusCoeff
-                            * (mAccMagOrientation[0] + 2.0 * Math.PI));
-                    mFusedOrientation[0] -= (mFusedOrientation[0] > Math.PI) ? 2.0 * Math.PI
-                            : 0;
-                } else {
-                    mFusedOrientation[0] = mFilterCoeff * mGyroOrientation[0]
-                            + mOneMinusCoeff * mAccMagOrientation[0];
-                }
+                mFusedOrientation[0] = mCalculator.calcFusedOrientation(mGyroOrientation[0], mAccMagOrientation[0]);
+//                if (mGyroOrientation[0] < -0.5 * Math.PI
+//                        && mAccMagOrientation[0] > 0.0) {
+//                    mFusedOrientation[0] = (float) (mFilterCoeff
+//                            * (mGyroOrientation[0] + 2.0 * Math.PI) + mOneMinusCoeff
+//                            * mAccMagOrientation[0]);
+//                    mFusedOrientation[0] -= (mFusedOrientation[0] > Math.PI) ? 2.0 * Math.PI
+//                            : 0;
+//                } else if (mAccMagOrientation[0] < -0.5 * Math.PI
+//                        && mGyroOrientation[0] > 0.0) {
+//                    mFusedOrientation[0] = (float) (mFilterCoeff
+//                            * mGyroOrientation[0] + mOneMinusCoeff
+//                            * (mAccMagOrientation[0] + 2.0 * Math.PI));
+//                    mFusedOrientation[0] -= (mFusedOrientation[0] > Math.PI) ? 2.0 * Math.PI
+//                            : 0;
+//                } else {
+//                    mFusedOrientation[0] = mFilterCoeff * mGyroOrientation[0]
+//                            + mOneMinusCoeff * mAccMagOrientation[0];
+//                }
 
                 // pitch
-                if (mGyroOrientation[1] < -0.5 * Math.PI
-                        && mAccMagOrientation[1] > 0.0) {
-                    mFusedOrientation[1] = (float) (mFilterCoeff
-                            * (mGyroOrientation[1] + 2.0 * Math.PI) + mOneMinusCoeff
-                            * mAccMagOrientation[1]);
-                    mFusedOrientation[1] -= (mFusedOrientation[1] > Math.PI) ? 2.0 * Math.PI
-                            : 0;
-                } else if (mAccMagOrientation[1] < -0.5 * Math.PI
-                        && mGyroOrientation[1] > 0.0) {
-                    mFusedOrientation[1] = (float) (mFilterCoeff
-                            * mGyroOrientation[1] + mOneMinusCoeff
-                            * (mAccMagOrientation[1] + 2.0 * Math.PI));
-                    mFusedOrientation[1] -= (mFusedOrientation[1] > Math.PI) ? 2.0 * Math.PI
-                            : 0;
-                } else {
-                    mFusedOrientation[1] = mFilterCoeff * mGyroOrientation[1]
-                            + mOneMinusCoeff * mAccMagOrientation[1];
-                }
+                mFusedOrientation[1] = mCalculator.calcFusedOrientation(mGyroOrientation[1], mAccMagOrientation[1]);
+//                if (mGyroOrientation[1] < -0.5 * Math.PI
+//                        && mAccMagOrientation[1] > 0.0) {
+//                    mFusedOrientation[1] = (float) (mFilterCoeff
+//                            * (mGyroOrientation[1] + 2.0 * Math.PI) + mOneMinusCoeff
+//                            * mAccMagOrientation[1]);
+//                    mFusedOrientation[1] -= (mFusedOrientation[1] > Math.PI) ? 2.0 * Math.PI
+//                            : 0;
+//                } else if (mAccMagOrientation[1] < -0.5 * Math.PI
+//                        && mGyroOrientation[1] > 0.0) {
+//                    mFusedOrientation[1] = (float) (mFilterCoeff
+//                            * mGyroOrientation[1] + mOneMinusCoeff
+//                            * (mAccMagOrientation[1] + 2.0 * Math.PI));
+//                    mFusedOrientation[1] -= (mFusedOrientation[1] > Math.PI) ? 2.0 * Math.PI
+//                            : 0;
+//                } else {
+//                    mFusedOrientation[1] = mFilterCoeff * mGyroOrientation[1]
+//                            + mOneMinusCoeff * mAccMagOrientation[1];
+//                }
 
                 // roll
-                if (mGyroOrientation[2] < -0.5 * Math.PI
-                        && mAccMagOrientation[2] > 0.0) {
-                    mFusedOrientation[2] = (float) (mFilterCoeff
-                            * (mGyroOrientation[2] + 2.0 * Math.PI) + mOneMinusCoeff
-                            * mAccMagOrientation[2]);
-                    mFusedOrientation[2] -= (mFusedOrientation[2] > Math.PI) ? 2.0 * Math.PI
-                            : 0;
-                } else if (mAccMagOrientation[2] < -0.5 * Math.PI
-                        && mGyroOrientation[2] > 0.0) {
-                    mFusedOrientation[2] = (float) (mFilterCoeff
-                            * mGyroOrientation[2] + mOneMinusCoeff
-                            * (mAccMagOrientation[2] + 2.0 * Math.PI));
-                    mFusedOrientation[2] -= (mFusedOrientation[2] > Math.PI) ? 2.0 * Math.PI
-                            : 0;
-                } else {
-                    mFusedOrientation[2] = mFilterCoeff * mGyroOrientation[2]
-                            + mOneMinusCoeff * mAccMagOrientation[2];
-                }
+                mFusedOrientation[2] = mCalculator.calcFusedOrientation(mGyroOrientation[2], mAccMagOrientation[2]);
+//                if (mGyroOrientation[2] < -0.5 * Math.PI
+//                        && mAccMagOrientation[2] > 0.0) {
+//                    mFusedOrientation[2] = (float) (mFilterCoeff
+//                            * (mGyroOrientation[2] + 2.0 * Math.PI) + mOneMinusCoeff
+//                            * mAccMagOrientation[2]);
+//                    mFusedOrientation[2] -= (mFusedOrientation[2] > Math.PI) ? 2.0 * Math.PI
+//                            : 0;
+//                } else if (mAccMagOrientation[2] < -0.5 * Math.PI
+//                        && mGyroOrientation[2] > 0.0) {
+//                    mFusedOrientation[2] = (float) (mFilterCoeff
+//                            * mGyroOrientation[2] + mOneMinusCoeff
+//                            * (mAccMagOrientation[2] + 2.0 * Math.PI));
+//                    mFusedOrientation[2] -= (mFusedOrientation[2] > Math.PI) ? 2.0 * Math.PI
+//                            : 0;
+//                } else {
+//                    mFusedOrientation[2] = mFilterCoeff * mGyroOrientation[2]
+//                            + mOneMinusCoeff * mAccMagOrientation[2];
+//                }
 
                 // overwrite gyro matrix and orientation with fused orientation
                 // to comensate gyro drift
@@ -445,7 +443,7 @@ class SensorService
 
             //all data is scaled in radians
 
-            //update UI
+            //update UI, tx vel-cmd
             mFragment.mSensorReceivedData = data2Tx;
             mFragment.updateOrientationDisplay();
             mMotherActivity.handleVelCmd(mMoveCmd[3], mMoveCmd[4]);
