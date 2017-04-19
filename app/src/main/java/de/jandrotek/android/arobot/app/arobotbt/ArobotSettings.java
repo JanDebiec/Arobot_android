@@ -3,7 +3,7 @@ package de.jandrotek.android.arobot.app.arobotbt;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import de.jandrotek.android.arobot.core.TxBTMessage;
+import de.jandrotek.android.arobot.libbluetooth.TxBTMessage;
 
 /**
  * This class is responsible for loading the last used settings for

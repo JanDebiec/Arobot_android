@@ -1,4 +1,4 @@
-package de.jandrotek.android.arobot.core;
+package de.jandrotek.android.arobot.libbluetooth;
 
 /**
  * Created by jan on 03.07.16.

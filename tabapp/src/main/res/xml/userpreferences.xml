@@ -95,6 +95,16 @@
             android:key="@string/PREFS_KEY_SAVING_CONTENT"
             android:summary="Kind of data which can be saved in memory"
             android:title="sensors data to save"/>
+
+        <ListPreference
+            android:defaultValue="@string/DEFAULT_EXT_INTERFACE"
+            android:dialogTitle="External interface"
+            android:entries="@array/external_interface_options"
+            android:entryValues="@array/external_interface_values"
+            android:key="@string/PREFS_KEY_EXT_INTERFACE"
+            android:summary="External interface to communicate with robot"
+            android:title="external interface"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

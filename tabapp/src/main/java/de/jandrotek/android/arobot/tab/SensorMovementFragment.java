@@ -40,7 +40,6 @@ public class SensorMovementFragment extends Fragment
     public float[] mSensorReceivedData;
     public int mSelectedSensorDelay;
     private int mRollOffsset;
-//    private float mFilterFactor;
     public boolean mPrefsCreated = false;
     private int mTimerPeriod;
     private boolean mMovementEnabled = false;
@@ -49,21 +48,19 @@ public class SensorMovementFragment extends Fragment
     private float mOutputFilteredL;
     private float mOutputFilteredR;
     private String mStrLeft;
-             private String mStrRight;
-
-
+    private String mStrRight;
 
     public boolean isMovementEnabled() {
         return mMovementEnabled;
     }
 
 
-    public void setBTService(BluetoothService BTService) {
-        mBTService = BTService;
-    }
-
-    // BT control
-    private BluetoothService mBTService = null;
+//    public void setBTService(BluetoothService BTService) {
+//        mBTService = BTService;
+//    }
+//
+//    // BT control
+//    private BluetoothService mBTService = null;
 
     /// View's members
      private TiltRenderer mRenderer;
@@ -218,23 +215,23 @@ public class SensorMovementFragment extends Fragment
 
     }
 
-    // implemented callback for SensorRx
-    // receive the results from SensorRx
-    // pack data into BT-Frame
-    // write to BT-Service
-    public void onNewBTCommand(byte[] btMessage) {
-        //check if BT connected
-        if (mBTService != null) {
-            if (mBTService.getState() == BluetoothService.STATE_CONNECTED) {
-                if (isMovementEnabled()) {
-                    // send message
-                    mBTService.write(btMessage);
-                } else {
-                    mBTService.write(BluetoothDefines.BT_STOP_MESSAGE);
-                }
-            }
-        }
-    }
+//    // implemented callback for SensorRx
+//    // receive the results from SensorRx
+//    // pack data into BT-Frame
+//    // write to BT-Service
+//    public void onNewBTCommand(byte[] btMessage) {
+//        //check if BT connected
+//        if (mBTService != null) {
+//            if (mBTService.getState() == BluetoothService.STATE_CONNECTED) {
+//                if (isMovementEnabled()) {
+//                    // send message
+//                    mBTService.write(btMessage);
+//                } else {
+//                    mBTService.write(BluetoothDefines.BT_STOP_MESSAGE);
+//                }
+//            }
+//        }
+//    }
 
     // handling messages from HandlerThread from SensorService
 //    private final Handler mHandler = new Handler() {

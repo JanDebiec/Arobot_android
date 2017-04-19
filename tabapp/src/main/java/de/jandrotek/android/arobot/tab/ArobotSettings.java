@@ -3,7 +3,7 @@ package de.jandrotek.android.arobot.tab;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import de.jandrotek.android.arobot.core.TxBTMessage;
+import de.jandrotek.android.arobot.libbluetooth.TxBTMessage;
 
 /**
  * This class is responsible for loading the last used settings for
@@ -23,6 +23,7 @@ public class ArobotSettings {
     private static String mPREFS_KEY_PWM_MAXIMAL;
     private static String mPREFS_KEY_ROLL_OFFSET;
     private static String mPREFS_KEY_AMPLIFICATION;
+    private static String mPREFS_KEY_EXT_INTERFACE;
 
     private int mPrefsMotorType = TxBTMessage.MOTOR_TYPE_SIGN_AND_PWM;
     //	private int mPrefsMotorType = MotionTxMessage.MOTOR_TYPE_SIGN_AND_PWM;
@@ -34,6 +35,9 @@ public class ArobotSettings {
     private int mPrefsRollOffset;
     private int mPrefsPwmMinimal;
     private int mPrefsPwmMaximal;
+
+
+    private int mPrefsExtInterface;
     private float mPrefsAmplification;
 
     private String mDefaultFilterCoefficient;
@@ -46,6 +50,9 @@ public class ArobotSettings {
     private String mDefaultFusionContent;
     private String mDefaultRollOffset;
     private String mDefaultAmplification;
+
+
+    private String mDefaultExtInterface;
 
     public ArobotSettings() {
 
@@ -88,13 +95,14 @@ public class ArobotSettings {
         mDefaultRollOffset = context.getResources().getString(R.string.DEFAULT_ROLL_OFFSET);
         mPREFS_KEY_ROLL_OFFSET = context.getResources().getString(R.string.PREFS_KEY_ROLL_OFFSET);
         this.mPrefsRollOffset = Integer.parseInt(prefs.getString(mPREFS_KEY_ROLL_OFFSET, mDefaultRollOffset));
-        ;
 
         mDefaultAmplification = context.getResources().getString(R.string.DEFAULT_AMPLIFICATION);
         mPREFS_KEY_AMPLIFICATION = context.getResources().getString(R.string.PREFS_KEY_AMPLIFICATION);
         this.mPrefsAmplification = Float.parseFloat(prefs.getString(mPREFS_KEY_AMPLIFICATION, mDefaultRollOffset));
-        ;
 
+        mDefaultExtInterface = context.getResources().getString(R.string.DEFAULT_EXT_INTERFACE);
+        mPREFS_KEY_EXT_INTERFACE = context.getResources().getString(R.string.PREFS_KEY_EXT_INTERFACE);
+        this.mPrefsExtInterface = Integer.parseInt(prefs.getString(mPREFS_KEY_EXT_INTERFACE, mDefaultExtInterface));
     }
 
 
@@ -137,4 +145,13 @@ public class ArobotSettings {
     public float getPrefsAmplification() {
         return mPrefsAmplification;
     }
+
+    public String getDefaultExtInterface() {
+        return mDefaultExtInterface;
+    }
+
+    public int getPrefsExtInterface() {
+        return mPrefsExtInterface;
+    }
+
 }

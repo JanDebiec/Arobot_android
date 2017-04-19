@@ -17,7 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.jandrotek.android.arobot.core.MoveCmdCalculator;
-import de.jandrotek.android.arobot.core.TxBTMessage;
+import de.jandrotek.android.arobot.libbluetooth.TxBTMessage;
 
 //TODO: implement callback for results to send to BT
 public class SensorRx implements SensorEventListener {

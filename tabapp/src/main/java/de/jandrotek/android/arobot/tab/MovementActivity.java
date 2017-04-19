@@ -2,7 +2,6 @@ package de.jandrotek.android.arobot.tab;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,8 +11,6 @@ import android.content.res.Resources.Theme;
 import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
@@ -43,11 +40,11 @@ import android.widget.ToggleButton;
 import de.jandrotek.android.arobot.core.ArobotDefines;
 import de.jandrotek.android.arobot.core.SensorCalc;
 //import de.jandrotek.android.arobot.libbluetooth;
-import de.jandrotek.android.arobot.core.TxBTMessage;
 import de.jandrotek.android.arobot.libbluetooth.BTDefs;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothFragment;
-import de.jandrotek.android.arobot.libbluetooth.BluetoothService;
+import de.jandrotek.android.arobot.libbluetooth.BluetoothInterface;
+import de.jandrotek.android.arobot.libbluetooth.TxBTMessage;
 
 import static android.R.drawable.ic_media_pause;
 import static android.R.drawable.ic_media_play;
@@ -65,14 +62,15 @@ public class MovementActivity extends AppCompatActivity {
     private BluetoothFragment mBluetoothFragment;
     private SensorService mSensorService;
     private SensorCalc mMovCalculator; // for use in RxSensor
-
-    // BT control vars
-    private BluetoothAdapter mBluetoothAdapter = null;
-    private boolean mBTConnected = false;
-    // we need service here, some other fragments can write to BT too
-    private BluetoothService mBTService = null;
-    private String mConnectedDeviceName = null;
     private SensorManager mSensorManager = null;
+
+    // BT control vars, all moved to BTInterface
+    private BluetoothInterface mBTInterface = null;
+//    private BluetoothAdapter mBluetoothAdapter = null;
+//    private boolean mBTConnected = false;
+//    // we need service here, some other fragments can write to BT too
+//    private BluetoothService mBTService = null;
+//    private String mConnectedDeviceName = null;
 
     // own widgets
     private ToggleButton mToggleButtonMove;
@@ -99,9 +97,7 @@ public class MovementActivity extends AppCompatActivity {
     private int mPWMMin;
     private float mAmplification;
     private int mRollOffsset;
-//    private int mActiveFragment;
     private int mFragmentIndexAct = -1;// on start, no fragment selected
-//    private int mFragmentIndexNew = -1;// on start, no fragment selected
     private PowerManager mPowerManager;
     private WindowManager mWindowManager;
     private Display mDisplay;
@@ -116,6 +112,8 @@ public class MovementActivity extends AppCompatActivity {
     private float[] mLeftRightCmd;
     private byte[] mBTMessage;
 
+    private int mExtInterfaceOld = ArobotDefines.EXT_CONN_UNKNOWN;
+    private int mExtInterfaceNew = ArobotDefines.EXT_CONN_UNKNOWN;
 
     //
     @Override
@@ -193,31 +191,18 @@ public class MovementActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
             }
         });
-
-        // prepare bluetooth
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        // If the adapter is null, then Bluetooth is not supported
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            // allow to run on emulator
-            //finish();
-            //return;
-        }
+//        prepareBTInterface();
+        mBTInterface = new BluetoothInterface();
 
         // own widgets
         mBTConnectStatus = (TextView) findViewById(R.id.tVConnected);
-        if (getBTConnected()) {
+        if (mBTInterface.getBTConnected()) {
             mBTConnectStatus.setBackgroundColor(ArobotDefines.COLOR_GREEN);
         } else {
             mBTConnectStatus.setBackgroundColor(ArobotDefines.COLOR_GREY);
         }
 
-        //mBTConnectBtn = (Button)v.findViewById(R.id.btnBtConnect);
-        //mBTConnectBtn.setEnabled(false);
-
         mMovingStatus = (TextView) findViewById(R.id.tVMoving);
-//        mLeftCmdView = (TextView) findViewById(R.id.tvTiltLeft);
-//        mRightCmdView = (TextView) findViewById(R.id.tvTiltRight);
         mFragmentName = (TextView) findViewById(R.id.tvFragmentName);
 
         mToggleButtonMove = (ToggleButton) findViewById(R.id.toggleButtonMove);
@@ -252,38 +237,27 @@ public class MovementActivity extends AppCompatActivity {
         // Get an instance of the PowerManager
         mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
 
-//        // Get an instance of the WindowManager
-//        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-//        mDisplay = mWindowManager.getDefaultDisplay();
-
         // Create a bright wake lock
         mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, getClass()
                 .getName());
 
         mtvTiltLeft = (TextView)findViewById(R.id.tvTiltLeft);
         mtvTiltRight = (TextView)findViewById(R.id.tvTiltRight);
-        mBTMessCreator = new TxBTMessage();
-        mBTMessage = new byte[TxBTMessage.BTMessageLenght];
 
     }
 
     private void showProperFragment(int position) {
-//        mActiveFragment = position;
         FragmentManager fragmentManager = getSupportFragmentManager();
         if ((mSensorMovementFragment == null) && (mManualMovementFragment == null) && (mBluetoothFragment == null)) {
             if (position == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
                 mFragmentIndexAct = ArobotDefines.POSITION_SENSOR_MOVEMENT;
-//                mFragmentIndexNew = ArobotDefines.POSITION_SENSOR_MOVEMENT;
                 mSensorMovementFragment = SensorMovementFragment.newInstance(position, this);
-//                mSensorMovementFragment.setSensorMoveController(mSensorMovementController);
-//                mSensorMovementController.setSensorMovementFragment(mSensorMovementFragment);
                 fragmentManager
                         .beginTransaction()
                         .add(R.id.container,
                                 mSensorMovementFragment).commitAllowingStateLoss();
             } else if (position == ArobotDefines.POSITION_MANUAL_MOVEMENT) {
                 mFragmentIndexAct = ArobotDefines.POSITION_MANUAL_MOVEMENT;
-//                mFragmentIndexNew = ArobotDefines.POSITION_MANUAL_MOVEMENT;
                 mManualMovementFragment = ManualMovementFragment.getInstance();
                 fragmentManager
                         .beginTransaction()
@@ -291,7 +265,6 @@ public class MovementActivity extends AppCompatActivity {
                                 mManualMovementFragment).commit();
             } else if (position == ArobotDefines.POSITION_BLUETOOTH_CHAT) {
                 mFragmentIndexAct = ArobotDefines.POSITION_BLUETOOTH_CHAT;
-//                mFragmentIndexNew = ArobotDefines.POSITION_BLUETOOTH_CHAT;
                 mBluetoothFragment = BluetoothFragment.getInstance();
                 fragmentManager
                         .beginTransaction()
@@ -301,17 +274,13 @@ public class MovementActivity extends AppCompatActivity {
         } else {
             if (position == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
                 mFragmentIndexAct = ArobotDefines.POSITION_SENSOR_MOVEMENT;
-//                mFragmentIndexNew = ArobotDefines.POSITION_SENSOR_MOVEMENT;
                 mSensorMovementFragment = SensorMovementFragment.newInstance(position, this);
-//                mSensorMovementFragment.setSensorMoveController(mSensorMovementController);
-//                mSensorMovementController.setSensorMovementFragment(mSensorMovementFragment);
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.container,
                                 mSensorMovementFragment).commit();
             } else if (position == ArobotDefines.POSITION_MANUAL_MOVEMENT) {
                 mFragmentIndexAct = ArobotDefines.POSITION_MANUAL_MOVEMENT;
-//                mFragmentIndexNew = ArobotDefines.POSITION_MANUAL_MOVEMENT;
                 mManualMovementFragment = ManualMovementFragment.getInstance();
                 fragmentManager
                         .beginTransaction()
@@ -319,7 +288,6 @@ public class MovementActivity extends AppCompatActivity {
                                 mManualMovementFragment).commit();
             } else if (position == ArobotDefines.POSITION_BLUETOOTH_CHAT) {
                 mFragmentIndexAct = ArobotDefines.POSITION_BLUETOOTH_CHAT;
-//                mFragmentIndexNew = ArobotDefines.POSITION_BLUETOOTH_CHAT;
                 mBluetoothFragment = BluetoothFragment.getInstance();
                 fragmentManager
                         .beginTransaction()
@@ -346,19 +314,25 @@ public class MovementActivity extends AppCompatActivity {
         Intent serverIntent = null;
         int id = item.getItemId();
         if (id == R.id.connect_device) {
-            if (mBTConnected == true) {
-                mBTConnected = false;
+            //TODO check which interface
+            if(mExtInterfaceNew == ArobotDefines.EXT_CONN_BT) {
+                // mBTInterface
+                if (mBTConnected == true) {
+                    mBTConnected = false;
 //				if(mBTService.getState() == BluetoothService.STATE_CONNECTED){
-                mBTService.stop();
+                    mBTService.stop();
 //                if (mSensorMovementFragment != null)
 //                    mSensorMovementFragment.setMovementEnabled(false);
-                updateUI();
+                    updateUI();
 
-            } else {
-                startBluetooth();
-                // Launch the DeviceListActivity to see devices and do scan
-                serverIntent = new Intent(this, DeviceListActivity.class);
-                startActivityForResult(serverIntent, BluetoothDefines.REQUEST_CONNECT_DEVICE);
+                } else {
+                    mBTInterface.startBluetooth();
+                    // Launch the DeviceListActivity to see devices and do scan
+                    serverIntent = new Intent(this, DeviceListActivity.class);
+                    startActivityForResult(serverIntent, BluetoothDefines.REQUEST_CONNECT_DEVICE);
+                }
+            } else if (mExtInterfaceNew == ArobotDefines.EXT_CONN_WLAN){
+
             }
             return true;
         } else if (id == R.id.action_settings) {
@@ -397,11 +371,7 @@ public class MovementActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-//        if(mActiveFragment == ArobotDefines.POSITION_SENSOR_MOVEMENT){
-//            mSensorMovementFragment.onResume();
-//        }
         mWakeLock.acquire();
-
     }
 
     @Override
@@ -429,7 +399,6 @@ public class MovementActivity extends AppCompatActivity {
 ////        AppIndex.AppIndexApi.end(mClient, viewAction);
 //        mClient.disconnect();
     }
-
 
     private static class MyAdapter extends ArrayAdapter<String> implements ThemedSpinnerAdapter {
         private final Helper mDropDownHelper;
@@ -468,7 +437,6 @@ public class MovementActivity extends AppCompatActivity {
         }
     }
 
-
     private void updateFromPreferences() {
         Context context = getApplicationContext();
         SharedPreferences prefs = PreferenceManager
@@ -487,23 +455,12 @@ public class MovementActivity extends AppCompatActivity {
         mMovCalculator.setRollOffset(mRollOffsset);
         mMovCalculator.setPWMMin(mPWMMin);
         mMovCalculator.setScaleCorrection(mAmplification);
-        //		if(mBluetoothFragment != null){
-//			mBluetoothFragment.updateParams();
-//		}
-    }
 
-    private void startBluetooth() {
-        // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, BluetoothDefines.REQUEST_ENABLE_BT);
-            // Otherwise, setup the chat session
-        } else {
-            if (mBTService == null)
-                mBTService = createBTService(mHandler);
+        //TODO check if ext-interface changed, if yes, then react
+        mExtInterfaceNew = mArobotSettings.getPrefsExtInterface();
+        if(mExtInterfaceNew != mExtInterfaceOld){
+
         }
-
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -518,14 +475,14 @@ public class MovementActivity extends AppCompatActivity {
             case BTDefs.REQUEST_CONNECT_DEVICE:
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
-                    connectDevice(data, false);
+                    mBTInterface.connectBTDevice(data, false);
                 } //TODO: if no paired devices, then show available
                 break;
             case BTDefs.REQUEST_ENABLE_BT:
                 // When the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
                     // Bluetooth is now enabled, so set up a chat session
-                    createBTService(mHandler);//setupChat();
+                    mBTInterface.createBTService(mHandler);//setupChat();
                 } else {
                     // User did not enable Bluetooth or an error occurred
                     Log.d(TAG, "BT not enabled");
@@ -533,57 +490,11 @@ public class MovementActivity extends AppCompatActivity {
                     finish();
                 }
         }
-
-    }
-
-    void resumeBTConnection() {
-        if (mBTService != null) {
-            // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mBTService.getState() == BluetoothService.STATE_NONE) {
-                // Start the Bluetooth chat services
-                mBTService.start();
-            }
-        }
-
-    }
-
-    private void connectDevice(Intent data, boolean secure) {
-        // Get the device MAC address
-        String address = data.getExtras()
-                .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-        // Get the BluetoothDevice object
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        // Attempt to connect to the device
-        mBTService.connect(device);
-    }
-
-    public boolean getBTConnected() {
-        return mBTConnected;
-    }
-
-    public void setBTConnected(boolean bTConnected) {
-        mBTConnected = bTConnected;
-    }
-
-    public BluetoothService createBTService(Handler handler) {
-        mBTService = new BluetoothService(this, handler);
-
-        return mBTService;
-    }
-
-    public BluetoothService getChatService() {
-
-        return mBTService;
-    }
-
-    public BluetoothAdapter getBluetoothAdapter() {
-        return mBluetoothAdapter;
     }
 
     public ArobotSettings getArobotSettings() {
         return mArobotSettings;
     }
-
 
     public void showAppVersion() {
         String versionName;
@@ -606,53 +517,53 @@ public class MovementActivity extends AppCompatActivity {
                         + versionName, Toast.LENGTH_SHORT).show();
     }
 
-    // The Handler that gets information back from the BluetoothChatService
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case BluetoothDefines.MESSAGE_STATE_CHANGE:
-                    if (BuildConfig.DEBUG) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    switch (msg.arg1) {
-                        case BluetoothService.STATE_CONNECTED:
-                            setStatus(R.string.title_connected_to);// + mConnectedDeviceName);
-                            mBTConnected = true;
-                            updateUI();
-                            if (mBluetoothFragment != null)
-                                mBluetoothFragment.clearChatAdapter();
-                            break;
-                        case BluetoothService.STATE_CONNECTING:
-                            setStatus(R.string.title_connecting);
-                            break;
-                        case BluetoothService.STATE_LISTEN:
-                        case BluetoothService.STATE_NONE:
-                            setStatus(R.string.title_not_connected);
-                            break;
-                    }
-                    break;
-                case BluetoothDefines.MESSAGE_WRITE:
-                    if (mBluetoothFragment != null)
-                        mBluetoothFragment.writeMsgFromHandler(msg);
-                    break;
-                case BluetoothDefines.MESSAGE_READ:
-                    if (mBluetoothFragment != null)
-                        mBluetoothFragment.readMsgFromHandler(msg);
-                    break;
-                case BluetoothDefines.MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    mConnectedDeviceName = msg.getData().getString(BluetoothDefines.DEVICE_NAME);
-                    setBTConnected(true);
-
-                    Toast.makeText(getApplicationContext(), "Connected to "
-                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    break;
-                case BluetoothDefines.MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString(BluetoothDefines.TOAST),
-                            Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
+//    // The Handler that gets information back from the BluetoothChatService
+//    private final Handler mHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case BluetoothDefines.MESSAGE_STATE_CHANGE:
+//                    if (BuildConfig.DEBUG) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+//                    switch (msg.arg1) {
+//                        case BluetoothService.STATE_CONNECTED:
+//                            setStatus(R.string.title_connected_to);// + mConnectedDeviceName);
+//                            mBTConnected = true;
+//                            updateUI();
+//                            if (mBluetoothFragment != null)
+//                                mBluetoothFragment.clearChatAdapter();
+//                            break;
+//                        case BluetoothService.STATE_CONNECTING:
+//                            setStatus(R.string.title_connecting);
+//                            break;
+//                        case BluetoothService.STATE_LISTEN:
+//                        case BluetoothService.STATE_NONE:
+//                            setStatus(R.string.title_not_connected);
+//                            break;
+//                    }
+//                    break;
+//                case BluetoothDefines.MESSAGE_WRITE:
+//                    if (mBluetoothFragment != null)
+//                        mBluetoothFragment.writeMsgFromHandler(msg);
+//                    break;
+//                case BluetoothDefines.MESSAGE_READ:
+//                    if (mBluetoothFragment != null)
+//                        mBluetoothFragment.readMsgFromHandler(msg);
+//                    break;
+//                case BluetoothDefines.MESSAGE_DEVICE_NAME:
+//                    // save the connected device's name
+//                    mConnectedDeviceName = msg.getData().getString(BluetoothDefines.DEVICE_NAME);
+//                    setBTConnected(true);
+//
+//                    Toast.makeText(getApplicationContext(), "Connected to "
+//                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+//                    break;
+//                case BluetoothDefines.MESSAGE_TOAST:
+//                    Toast.makeText(getApplicationContext(), msg.getData().getString(BluetoothDefines.TOAST),
+//                            Toast.LENGTH_SHORT).show();
+//                    break;
+//            }
+//        }
+//    };
 
     private final void setStatus(int resId) {
         //final ActionBar actionBar = getActionBar();
@@ -691,7 +602,6 @@ public class MovementActivity extends AppCompatActivity {
             mToggleButtonMove.setText(R.string.move_button_on);
             mToggleButtonMove.setBackgroundColor(Color.RED);
         }
-
     }
 
     public void handleVelCmd(float cmdLeft, float cmdRight){
@@ -704,7 +614,6 @@ public class MovementActivity extends AppCompatActivity {
         mStrRight =  ArobotDefines.cmdFormat.format(cmdRight);
         mtvTiltLeft.setText(mStrLeft);
         mtvTiltRight.setText(mStrRight);
-
     }
 
     public void txVelCmd(float cmdLeft, float cmdRight){
@@ -713,27 +622,9 @@ public class MovementActivity extends AppCompatActivity {
             mLeftRightCmd[1] = cmdRight;
             mBTMessage = mBTMessCreator.prepareTxMessage(mLeftRightCmd);
 
-            txNewBTCommand(mBTMessage);
+            mBTInterface.txNewBTCommand(mBTMessage);
         } else if (mExternalConn == ArobotDefines.EXT_CONN_WLAN){
 
-        }
-    }
-
-    // implemented callback for SensorRx
-    // receive the results from SensorRx
-    // pack data into BT-Frame
-    // write to BT-Service
-    public void txNewBTCommand(byte[] btMessage) {
-        //check if BT connecgted
-        if (mBTService != null) {
-            if (mBTService.getState() == BluetoothService.STATE_CONNECTED) {
-                if (mSensorMovementFragment.isMovementEnabled()) {
-                    // send message
-                    mBTService.write(btMessage);
-                } else {
-                    mBTService.write(BluetoothDefines.BT_STOP_MESSAGE);
-                }
-            }
         }
     }
 }
