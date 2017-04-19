@@ -1,5 +1,6 @@
 package de.jandrotek.android.arobot.libbluetooth;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,13 @@ import android.widget.ArrayAdapter;
  */
 public class BluetoothFragment extends Fragment {
     private static BluetoothFragment mInstance = null;
+
+    public void setActivity(Activity activity) {
+        mActivity = activity;
+        mConversationArrayAdapter = new ArrayAdapter<String>(mActivity, R.layout.message);
+    }
+
+    private Activity mActivity = null;
 
     // Name of the connected device
     private String mConnectedDeviceName = null;
@@ -29,11 +37,15 @@ public class BluetoothFragment extends Fragment {
         return mInstance;
     }
 
+
+
     private BluetoothFragment() {
     }
 
     public void clearChatAdapter() {
-        mConversationArrayAdapter.clear();
+        if(mConversationArrayAdapter != null) {
+            mConversationArrayAdapter.clear();
+        }
 
     }
 

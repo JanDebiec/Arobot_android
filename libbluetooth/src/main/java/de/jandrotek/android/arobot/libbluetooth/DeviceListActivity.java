@@ -159,6 +159,8 @@ public class DeviceListActivity extends Activity {
             mBtAdapter.cancelDiscovery();
 
             // Get the device MAC address, which is the last 17 chars in the View
+            // true only for valid items,
+            //TODO catch another use case
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
 

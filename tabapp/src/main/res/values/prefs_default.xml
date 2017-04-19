@@ -30,7 +30,7 @@
     <string name="DEFAULT_AMPLIFICATION">"1.0"</string>
     <string name="PREFS_KEY_AMPLIFICATION">"PREFS_KEY_AMPLIFICATION"</string>
 
-    <string name="DEFAULT_EXT_INTERFACE">"-1"</string>
+    <string name="DEFAULT_EXT_INTERFACE">"0"</string>
     <string name="PREFS_KEY_EXT_INTERFACE">"PREFS_KEY_EXT_INTERFACE"</string>
 
 </resources>

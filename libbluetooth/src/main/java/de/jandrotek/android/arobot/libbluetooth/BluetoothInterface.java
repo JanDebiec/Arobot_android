@@ -49,7 +49,7 @@ public class BluetoothInterface {
     public BluetoothInterface (Activity activity){
         mActivity  = activity;
         mBluetoothFragment = BluetoothFragment.getInstance();
-
+        mBluetoothFragment.setActivity(mActivity);
     }
 
     private static final void setStatus(int resId) {
@@ -138,7 +138,7 @@ public class BluetoothInterface {
                         case BluetoothService.STATE_CONNECTED:
                             setStatus(R.string.title_connected_to);// + mConnectedDeviceName);
                             mBTConnected = true;
-//                            updateUI();
+//TODO                            updateUI();
                             if (mBluetoothFragment != null)
                                 mBluetoothFragment.clearChatAdapter();
                             break;
@@ -198,6 +198,10 @@ public class BluetoothInterface {
     public void startBluetooth() {
         // If BT is not on, request that it be enabled.
         // setupChat() will then be called during onActivityResult
+        if(mBluetoothAdapter == null){
+            boolean success = prepareBTInterface();
+        }
+
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             mActivity.startActivityForResult(enableIntent, BluetoothDefines.REQUEST_ENABLE_BT);
