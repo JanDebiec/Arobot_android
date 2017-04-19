@@ -1,7 +1,6 @@
 package de.jandrotek.android.arobot.tab;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,6 +43,7 @@ import de.jandrotek.android.arobot.libbluetooth.BTDefs;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothFragment;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothInterface;
+import de.jandrotek.android.arobot.libbluetooth.DeviceListActivity;
 import de.jandrotek.android.arobot.libbluetooth.TxBTMessage;
 
 import static android.R.drawable.ic_media_pause;
@@ -316,15 +316,9 @@ public class MovementActivity extends AppCompatActivity {
         if (id == R.id.connect_device) {
             //TODO check which interface
             if(mExtInterfaceNew == ArobotDefines.EXT_CONN_BT) {
-                // mBTInterface
-                if (mBTConnected == true) {
-                    mBTConnected = false;
-//				if(mBTService.getState() == BluetoothService.STATE_CONNECTED){
-                    mBTService.stop();
-//                if (mSensorMovementFragment != null)
-//                    mSensorMovementFragment.setMovementEnabled(false);
+                if (mBTInterface.isBTConnected() == true) {
+                    mBTInterface.stopBtService();
                     updateUI();
-
                 } else {
                     mBTInterface.startBluetooth();
                     // Launch the DeviceListActivity to see devices and do scan
@@ -482,7 +476,8 @@ public class MovementActivity extends AppCompatActivity {
                 // When the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
                     // Bluetooth is now enabled, so set up a chat session
-                    mBTInterface.createBTService(mHandler);//setupChat();
+                    mBTInterface.createBTService();//setupChat();
+//                    mBTInterface.createBTService(mHandler);//setupChat();
                 } else {
                     // User did not enable Bluetooth or an error occurred
                     Log.d(TAG, "BT not enabled");
@@ -570,18 +565,18 @@ public class MovementActivity extends AppCompatActivity {
         //mActionBar.setSubtitle(resId);
     }
 
-    private void ensureDiscoverable() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "ensure discoverable");
-        if (mBluetoothAdapter.getScanMode() !=
-                BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-            startActivity(discoverableIntent);
-        }
-    }
+//    private void ensureDiscoverable() {
+//        if (BuildConfig.DEBUG) Log.d(TAG, "ensure discoverable");
+//        if (mBluetoothAdapter.getScanMode() !=
+//                BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+//            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+//            startActivity(discoverableIntent);
+//        }
+//    }
 
     public void updateUI() {
-        if (getBTConnected()) {
+        if (mBTInterface.isBTConnected()) {
             mBTConnectStatus.setBackgroundColor(Color.GREEN);
             mBTConnectStatus.setText(R.string.connected_status_on);
             mToggleButtonMove.setEnabled(true);
@@ -624,7 +619,7 @@ public class MovementActivity extends AppCompatActivity {
 
             mBTInterface.txNewBTCommand(mBTMessage);
         } else if (mExternalConn == ArobotDefines.EXT_CONN_WLAN){
-
+            //TODO implement Wlan Interface
         }
     }
 }

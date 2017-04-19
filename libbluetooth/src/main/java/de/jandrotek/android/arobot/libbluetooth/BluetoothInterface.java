@@ -1,5 +1,6 @@
 package de.jandrotek.android.arobot.libbluetooth;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -15,8 +16,14 @@ import android.widget.Toast;
 
 public class BluetoothInterface {
 
+    private Activity mActivity;
     // BT control vars
     private BluetoothAdapter mBluetoothAdapter = null;
+
+    public boolean isBTConnected() {
+        return mBTConnected;
+    }
+
     private boolean mBTConnected = false;
     // we need service here, some other fragments can write to BT too
     private BluetoothService mBTService = null;
@@ -25,8 +32,14 @@ public class BluetoothInterface {
     private float[] mLeftRightCmd;
     private byte[] mBTMessage;
 
+    public BluetoothInterface (Activity activity){
+        mActivity  = activity;
+    }
 
-
+    public void stopBtService(){
+        mBTService.stop();
+        mBTConnected = false;
+    }
 
     void resumeBTConnection() {
         if (mBTService != null) {
@@ -36,10 +49,9 @@ public class BluetoothInterface {
                 mBTService.start();
             }
         }
-
     }
 
-    private void connectBTDevice(Intent data, boolean secure) {
+    public void connectBTDevice(Intent data, boolean secure) {
         // Get the device MAC address
         String address = data.getExtras()
                 .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
@@ -58,7 +70,7 @@ public class BluetoothInterface {
     }
 
     public BluetoothService createBTService(Handler handler) {
-        mBTService = new BluetoothService(this, handler);
+        mBTService = new BluetoothService(mHandler);
         prepareBTInterface();
         return mBTService;
     }
@@ -69,7 +81,7 @@ public class BluetoothInterface {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            Toast.makeText(mActivity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             // allow to run on emulator
             //finish();
             return false;
@@ -95,7 +107,7 @@ public class BluetoothInterface {
     }
 
     // The Handler that gets information back from the BluetoothChatService
-    private final Handler mHandler = new Handler() {
+    private static final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -165,7 +177,7 @@ public class BluetoothInterface {
         // setupChat() will then be called during onActivityResult
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, BluetoothDefines.REQUEST_ENABLE_BT);
+            mActivity.startActivityForResult(enableIntent, BluetoothDefines.REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
         } else {
             if (mBTService == null)
