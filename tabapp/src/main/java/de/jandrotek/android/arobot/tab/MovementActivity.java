@@ -41,6 +41,7 @@ import android.widget.ToggleButton;
 
 //import com.google.android.gms.appindexing.Action;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import de.jandrotek.android.arobot.core.SensorCalc;
@@ -58,6 +59,7 @@ public class MovementActivity extends AppCompatActivity {
     private static final String TAG = "MovementActivity";
 
     private ArobotSettings mArobotSettings;
+    public static DecimalFormat cmdFormat = new DecimalFormat(" ####.0; -####.0");
 
     //fragment control vars
     private SensorMovementFragment mSensorMovementFragment;
@@ -703,8 +705,10 @@ public class MovementActivity extends AppCompatActivity {
     }
 
     public void updateCmdTxt(float cmdLeft, float cmdRight){
-        mStrLeft = String.format(Locale.US, "% 7.1f", cmdLeft);
-        mStrRight = String.format(Locale.US, "% 7.1f", cmdRight);
+        mStrLeft =  cmdFormat.format(cmdLeft);
+        mStrRight =  cmdFormat.format(cmdRight);
+//        mStrLeft = String.format(Locale.US, "% 7.1f", cmdLeft);
+//        mStrRight = String.format(Locale.US, "% 7.1f", cmdRight);
         mtvTiltLeft.setText(mStrLeft);
         mtvTiltRight.setText(mStrRight);
 

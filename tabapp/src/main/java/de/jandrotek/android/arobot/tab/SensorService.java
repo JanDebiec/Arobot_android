@@ -21,7 +21,6 @@ class SensorService
 {
     // Debugging
     private static final String TAG = "SensorService";
-    public static DecimalFormat d = new DecimalFormat("#0.0");
 //    private final Handler mHandler;
 //    private SensorThread mSensorThread = null;
 //    private SensorCalc mSensorCalc = null;
