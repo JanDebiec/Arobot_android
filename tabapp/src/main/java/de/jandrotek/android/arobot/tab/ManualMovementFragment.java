@@ -20,8 +20,6 @@ import static de.jandrotek.android.arobot.tab.R.id.tvTiltLeft;
 public class ManualMovementFragment extends Fragment {
     private static final String TAG = "ManualMovementFragment";
     MovementActivity mActivity;
-private TextView mtvTiltLeft;
-private TextView mtvTiltRight;
 private VerticalSeekBar mVerticalSeekbarL;
 private VerticalSeekBar mVerticalSeekbarR;
 private TiltView mManualTilter;
@@ -30,8 +28,6 @@ private TiltView mManualTilter;
     private static int mFilterSize = 4;
     private float mOutputFilteredL;
     private float mOutputFilteredR;
-    private String mStrLeft;
-    private String mStrRight;
 
     private Timer mDataAcqTimer;
 
@@ -62,9 +58,6 @@ private TiltView mManualTilter;
             if (BuildConfig.DEBUG) Log.i(TAG, "onCreate");
             setRetainInstance(true);// onDestroy will not be called
         }
-
-        mtvTiltLeft = (TextView)getActivity().findViewById(tvTiltLeft);
-        mtvTiltRight = (TextView)getActivity().findViewById(R.id.tvTiltRight);
         mFilterL = new SliderDatafilterOpt(mFilterSize);
         mFilterR = new SliderDatafilterOpt(mFilterSize);
 
@@ -104,12 +97,8 @@ private TiltView mManualTilter;
     }
 
     private void updateUIValues(){
-        mStrLeft = String.format(Locale.US, "% 7.1f", mOutputFilteredL);
-        mStrRight = String.format(Locale.US, "% 7.1f", mOutputFilteredR);
 
-
-        mtvTiltLeft.setText(mStrLeft);
-        mtvTiltRight.setText(mStrRight);
+        mActivity.updateCmdTxt(mOutputFilteredL, mOutputFilteredR);
         if (mManualTilter != null) {
             float moveForward = (mOutputFilteredL + mOutputFilteredR) / 2;
             float turnToRight = mOutputFilteredL - mOutputFilteredR;
@@ -119,7 +108,6 @@ private TiltView mManualTilter;
             mManualTilter.setTilt(moveForward,
                     turnToRight);
         }
-
     }
 
     /**
@@ -147,9 +135,6 @@ private TiltView mManualTilter;
                     updateUIValues();
                 }
             });
-
 		}
     }
-
-
 }

@@ -26,6 +26,7 @@ class SensorService
 //    private SensorThread mSensorThread = null;
 //    private SensorCalc mSensorCalc = null;
     private SensorManager mSensorManager = null;
+    private MovementActivity mMotherActivity;
 //    private boolean mSensorRegistered = false;
     private boolean mInitState = true;
 
@@ -125,7 +126,8 @@ class SensorService
 
     private SensorCalc mCalculator;
 
-    SensorService(SensorManager sm) {
+    SensorService(MovementActivity activity, SensorManager sm) {
+        mMotherActivity = activity;
         mHandler = new Handler();
         mSensorManager = sm;
         mLeftRightCmd = new float[2];
@@ -447,6 +449,7 @@ class SensorService
             //update UI
             mFragment.mSensorReceivedData = data2Tx;
             mFragment.updateOrientationDisplay();
+            mMotherActivity.updateCmdTxt(mMoveCmd[3], mMoveCmd[4]);
         }
     };
 }

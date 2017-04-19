@@ -41,6 +41,8 @@ import android.widget.ToggleButton;
 
 //import com.google.android.gms.appindexing.Action;
 
+import java.util.Locale;
+
 import de.jandrotek.android.arobot.core.SensorCalc;
 //import de.jandrotek.android.arobot.libbluetooth;
 import de.jandrotek.android.arobot.libbluetooth.BTDefs;
@@ -52,7 +54,6 @@ import static android.R.drawable.ic_media_pause;
 import static android.R.drawable.ic_media_play;
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
-// moving RxSensor to service with own thread
 public class MovementActivity extends AppCompatActivity {
     private static final String TAG = "MovementActivity";
 
@@ -62,10 +63,8 @@ public class MovementActivity extends AppCompatActivity {
     private SensorMovementFragment mSensorMovementFragment;
     private ManualMovementFragment mManualMovementFragment;
     private BluetoothFragment mBluetoothFragment;
-//    private SensorMovementController mSensorMovementController;
     private SensorService mSensorService;
     private SensorCalc mMovCalculator; // for use in RxSensor
-
 
     // BT control vars
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -107,6 +106,10 @@ public class MovementActivity extends AppCompatActivity {
     private WindowManager mWindowManager;
     private Display mDisplay;
     private PowerManager.WakeLock mWakeLock;
+    private TextView mtvTiltLeft;
+    private TextView mtvTiltRight;
+    private String mStrLeft;
+    private String mStrRight;
 
     //
     @Override
@@ -120,7 +123,7 @@ public class MovementActivity extends AppCompatActivity {
         }
         mMovCalculator = new SensorCalc();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensorService = new SensorService(mSensorManager);
+        mSensorService = new SensorService(this, mSensorManager);
         mSensorService.setCalculator(mMovCalculator);
         setContentView(R.layout.activity_movement);
 
@@ -251,6 +254,8 @@ public class MovementActivity extends AppCompatActivity {
         mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, getClass()
                 .getName());
 
+        mtvTiltLeft = (TextView)findViewById(R.id.tvTiltLeft);
+        mtvTiltRight = (TextView)findViewById(R.id.tvTiltRight);
     }
 
     private void showProperFragment(int position) {
@@ -694,6 +699,14 @@ public class MovementActivity extends AppCompatActivity {
             mToggleButtonMove.setText(R.string.move_button_on);
             mToggleButtonMove.setBackgroundColor(Color.RED);
         }
+
+    }
+
+    public void updateCmdTxt(float cmdLeft, float cmdRight){
+        mStrLeft = String.format(Locale.US, "% 7.1f", cmdLeft);
+        mStrRight = String.format(Locale.US, "% 7.1f", cmdRight);
+        mtvTiltLeft.setText(mStrLeft);
+        mtvTiltRight.setText(mStrRight);
 
     }
 }

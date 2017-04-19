@@ -49,8 +49,6 @@ public class SensorMovementFragment extends Fragment
     private boolean mMovementEnabled = false;
     private Timer mBlinkTimer;
 
-    private TextView mtvTiltLeft;
-    private TextView mtvTiltRight;
     private float mOutputFilteredL;
     private float mOutputFilteredR;
     private String mStrLeft;
@@ -71,7 +69,6 @@ public class SensorMovementFragment extends Fragment
     private BluetoothService mBTService = null;
 
     /// View's members
-//    private TiltView mTilter;
      private TiltRenderer mRenderer;
      private ISurface mRajawaliSurface;
 
@@ -107,10 +104,6 @@ public class SensorMovementFragment extends Fragment
             mSensorReceivedData[2] = (float) 0.95;
             mPrefsCreated = true;
         }
-        mtvTiltLeft = (TextView)getActivity().findViewById(R.id.tvTiltLeft);
-        mtvTiltRight = (TextView)getActivity().findViewById(R.id.tvTiltRight);
-
-
     }
 
     @Override
@@ -122,9 +115,6 @@ public class SensorMovementFragment extends Fragment
 
         // Find the TextureView
         mRajawaliSurface = (ISurface) v.findViewById(R.id.rajwali_surface);
-
-
-        //        mTilter = (TiltView)v.findViewById(R.id.tiltView);
         mRenderer = new TiltRenderer(getActivity());
         mRajawaliSurface.setSurfaceRenderer(mRenderer);
         return v;
@@ -154,11 +144,6 @@ public class SensorMovementFragment extends Fragment
                     mSensorReceivedData[6] //ok
                     );
         }
-        mStrLeft = String.format(Locale.US, "% 7.1f", mSensorReceivedData[3]);
-        mStrRight = String.format(Locale.US, "% 7.1f", mSensorReceivedData[4]);
-        mtvTiltLeft.setText(mStrLeft);
-        mtvTiltRight.setText(mStrRight);
-
     }
 
     private Runnable updateOrientationDisplayTask = new Runnable() {
