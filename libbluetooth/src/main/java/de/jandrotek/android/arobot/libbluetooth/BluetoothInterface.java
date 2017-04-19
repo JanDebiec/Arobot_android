@@ -23,15 +23,25 @@ public class BluetoothInterface {
     private BluetoothAdapter mBluetoothAdapter = null;
 
     private static BluetoothFragment mBluetoothFragment;
+    private static boolean mBTConnected = false;
+    private static String mConnectedDeviceName = null;
+
+    public boolean isMovementAllowed() {
+        return mMovementAllowed;
+    }
+
+    public void setMovementAllowed(boolean movementAllowed) {
+        mMovementAllowed = movementAllowed;
+    }
+
+    private boolean mMovementAllowed = false;
 
     public boolean isBTConnected() {
         return mBTConnected;
     }
 
-    private boolean mBTConnected = false;
     // we need service here, some other fragments can write to BT too
     private BluetoothService mBTService = null;
-    private String mConnectedDeviceName = null;
     private TxBTMessage mBTMessCreator;
     private float[] mLeftRightCmd;
     private byte[] mBTMessage;
@@ -40,6 +50,11 @@ public class BluetoothInterface {
         mActivity  = activity;
         mBluetoothFragment = BluetoothFragment.getInstance();
 
+    }
+
+    private static final void setStatus(int resId) {
+        //final ActionBar actionBar = getActionBar();
+        //mActionBar.setSubtitle(resId);
     }
 
     public void stopBtService(){
@@ -75,7 +90,7 @@ public class BluetoothInterface {
         mBTConnected = bTConnected;
     }
 
-    public BluetoothService createBTService(Handler handler) {
+    public BluetoothService createBTService() {
         mBTService = new BluetoothService(mHandler);
         prepareBTInterface();
         return mBTService;
@@ -113,7 +128,7 @@ public class BluetoothInterface {
     }
 
     // The Handler that gets information back from the BluetoothChatService
-    private static final Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -123,7 +138,7 @@ public class BluetoothInterface {
                         case BluetoothService.STATE_CONNECTED:
                             setStatus(R.string.title_connected_to);// + mConnectedDeviceName);
                             mBTConnected = true;
-                            updateUI();
+//                            updateUI();
                             if (mBluetoothFragment != null)
                                 mBluetoothFragment.clearChatAdapter();
                             break;
@@ -149,11 +164,13 @@ public class BluetoothInterface {
                     mConnectedDeviceName = msg.getData().getString(BluetoothDefines.DEVICE_NAME);
                     setBTConnected(true);
 
-                    Toast.makeText(getApplicationContext(), "Connected to "
+                    Toast.makeText(mActivity, "Connected to "
+//                    Toast.makeText(getApplicationContext(), "Connected to "
                             + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                     break;
                 case BluetoothDefines.MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString(BluetoothDefines.TOAST),
+                    Toast.makeText(mActivity, msg.getData().getString(BluetoothDefines.TOAST),
+//                    Toast.makeText(getApplicationContext(), msg.getData().getString(BluetoothDefines.TOAST),
                             Toast.LENGTH_SHORT).show();
                     break;
             }
@@ -168,7 +185,7 @@ public class BluetoothInterface {
         //check if BT connecgted
         if (mBTService != null) {
             if (mBTService.getState() == BluetoothService.STATE_CONNECTED) {
-                if (mSensorMovementFragment.isMovementEnabled()) {
+                if (mMovementAllowed) {
                     // send message
                     mBTService.write(btMessage);
                 } else {
@@ -187,7 +204,7 @@ public class BluetoothInterface {
             // Otherwise, setup the chat session
         } else {
             if (mBTService == null)
-                mBTService = createBTService(mHandler);
+                mBTService = createBTService();
         }
 
     }

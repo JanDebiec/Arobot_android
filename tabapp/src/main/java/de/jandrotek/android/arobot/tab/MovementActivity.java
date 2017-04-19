@@ -192,7 +192,7 @@ public class MovementActivity extends AppCompatActivity {
             }
         });
 //        prepareBTInterface();
-        mBTInterface = new BluetoothInterface();
+        mBTInterface = new BluetoothInterface(this);
 //        mBluetoothFragment = BluetoothFragment.getInstance();
 
         // own widgets
