@@ -6,13 +6,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static de.jandrotek.android.arobot.tab.R.id.tvTiltLeft;
+import de.jandrotek.android.arobot.core.ArobotDefines;
 
 /**
  * Created by jan on 08.07.16.

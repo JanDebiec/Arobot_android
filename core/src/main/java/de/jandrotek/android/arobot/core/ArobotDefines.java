@@ -1,4 +1,4 @@
-package de.jandrotek.android.arobot.tab;
+package de.jandrotek.android.arobot.core;
 
 import java.text.DecimalFormat;
 
@@ -7,6 +7,8 @@ import java.text.DecimalFormat;
  */
 
 public class ArobotDefines {
+    public static final float FILTER_COEFFICIENT = 0.98f;
+    public static final float EPSILON = 0.000000001f;
     public static final int COLOR_GREEN = 0x008000;
     public static final int COLOR_GREY = 0x0f0f0f;
 
@@ -23,12 +25,10 @@ public class ArobotDefines {
     public static final int SLIDER_OFFSET = 50;
 
     public static final float NS2S = 1.0f / 1000000000.0f;
-    public static final float EPSILON = 0.000000001f;
-    public static final float FILTER_COEFFICIENT = 0.98f;
     public static final int TIME_CONSTANT = 100;//30;
     public static DecimalFormat cmdFormat = new DecimalFormat(" ####.0; -####.0");
 
-    public static DecimalFormat d = new DecimalFormat("#0.0");
+//    public static DecimalFormat d = new DecimalFormat("#0.0");
 
     public static final int EXT_CONN_UNKNOWN = -1;
     public static final int EXT_CONN_BT = 0;

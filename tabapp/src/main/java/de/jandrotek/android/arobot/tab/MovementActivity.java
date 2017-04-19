@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources.Theme;
 import android.graphics.Color;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,9 +40,7 @@ import android.widget.ToggleButton;
 
 //import com.google.android.gms.appindexing.Action;
 
-import java.text.DecimalFormat;
-import java.util.Locale;
-
+import de.jandrotek.android.arobot.core.ArobotDefines;
 import de.jandrotek.android.arobot.core.SensorCalc;
 //import de.jandrotek.android.arobot.libbluetooth;
 import de.jandrotek.android.arobot.core.TxBTMessage;

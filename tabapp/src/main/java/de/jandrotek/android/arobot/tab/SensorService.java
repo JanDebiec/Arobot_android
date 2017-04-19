@@ -8,8 +8,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 
-import java.text.DecimalFormat;
-
+import de.jandrotek.android.arobot.core.ArobotDefines;
 import de.jandrotek.android.arobot.core.SensorCalc;
 
 /**

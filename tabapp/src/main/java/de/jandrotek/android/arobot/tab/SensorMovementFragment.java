@@ -11,18 +11,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import org.rajawali3d.view.ISurface;
 
 import java.text.DecimalFormat;
-import java.util.Locale;
 import java.util.Timer;
 
+import de.jandrotek.android.arobot.core.ArobotDefines;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothService;
-
-import static de.jandrotek.android.arobot.tab.R.id.tvTiltLeft;
 
 public class SensorMovementFragment extends Fragment
 //        implements SensorRx.Callbacks {
@@ -30,7 +27,7 @@ public class SensorMovementFragment extends Fragment
 
     private static final String TAG = "SensorMovementFragment";
     private static final String CSV_BASE_HEADER = "sensor, time, X Axis,Y Axis,Z Axis";
-    DecimalFormat d = ArobotDefines.d;
+//    DecimalFormat d = ArobotDefines.d;
 
     /// Model's members
     private SensorService mSensorService = null;

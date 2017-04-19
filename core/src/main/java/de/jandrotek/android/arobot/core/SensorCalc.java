@@ -7,8 +7,7 @@ package de.jandrotek.android.arobot.core;
  */
 public class SensorCalc {
 
-    public static final float EPSILON = 0.000000001f;
-    private float mFilterCoeff;
+    private float mFilterCoeff = ArobotDefines.FILTER_COEFFICIENT;
     private float oneMinusCoeff = 1.0f - mFilterCoeff;
     // orientation angles from gyro matrix
     private float[] mGyroOrientation = new float[3];
@@ -205,7 +204,7 @@ public class SensorCalc {
                         gyroValues[2] * gyroValues[2]);
 
         // Normalize the rotation vector if it's big enough to get the axis
-        if(omegaMagnitude > EPSILON) {
+        if(omegaMagnitude > ArobotDefines.EPSILON) {
             normValues[0] = gyroValues[0] / omegaMagnitude;
             normValues[1] = gyroValues[1] / omegaMagnitude;
             normValues[2] = gyroValues[2] / omegaMagnitude;
