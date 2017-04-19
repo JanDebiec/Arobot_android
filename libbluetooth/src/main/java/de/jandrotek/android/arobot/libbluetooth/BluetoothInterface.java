@@ -16,9 +16,13 @@ import android.widget.Toast;
 
 public class BluetoothInterface {
 
+    private static final String TAG = "BluetoothInterface";
+
     private Activity mActivity;
     // BT control vars
     private BluetoothAdapter mBluetoothAdapter = null;
+
+    private static BluetoothFragment mBluetoothFragment;
 
     public boolean isBTConnected() {
         return mBTConnected;
@@ -34,6 +38,8 @@ public class BluetoothInterface {
 
     public BluetoothInterface (Activity activity){
         mActivity  = activity;
+        mBluetoothFragment = BluetoothFragment.getInstance();
+
     }
 
     public void stopBtService(){

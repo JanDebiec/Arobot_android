@@ -193,6 +193,7 @@ public class MovementActivity extends AppCompatActivity {
         });
 //        prepareBTInterface();
         mBTInterface = new BluetoothInterface();
+//        mBluetoothFragment = BluetoothFragment.getInstance();
 
         // own widgets
         mBTConnectStatus = (TextView) findViewById(R.id.tVConnected);
