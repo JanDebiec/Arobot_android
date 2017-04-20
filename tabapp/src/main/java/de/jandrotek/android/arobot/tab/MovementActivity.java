@@ -48,6 +48,7 @@ import de.jandrotek.android.arobot.libbluetooth.BluetoothInterface;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothService;
 import de.jandrotek.android.arobot.libbluetooth.DeviceListActivity;
 import de.jandrotek.android.arobot.libbluetooth.TxBTMessage;
+import de.jandrotek.android.arobot.libwifi.WlanDefines;
 
 import static android.R.drawable.ic_media_pause;
 import static android.R.drawable.ic_media_play;
@@ -520,6 +521,7 @@ public class MovementActivity extends AppCompatActivity {
     }
 
     // The Handler that gets information back from the BluetoothChatService
+    // TODO handler should han;de the messages from wlan preparing too
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -562,6 +564,17 @@ public class MovementActivity extends AppCompatActivity {
                 case BluetoothDefines.MESSAGE_TOAST:
                     Toast.makeText(getApplicationContext(), msg.getData().getString(BluetoothDefines.TOAST),
                             Toast.LENGTH_SHORT).show();
+                    break;
+//WLAN handling
+                case WlanDefines.MESSAGE_STATE_CHANGE:
+                    break;
+                case WlanDefines.MESSAGE_READ:
+                    break;
+                case WlanDefines.MESSAGE_WRITE:
+                    break;
+                case WlanDefines.MESSAGE_DEVICE_NAME:
+                    break;
+                case WlanDefines.MESSAGE_TOAST:
                     break;
             }
         }
