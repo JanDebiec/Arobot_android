@@ -19,6 +19,7 @@ public class BluetoothInterface {
     private static final String TAG = "BluetoothInterface";
 
     private Activity mActivity;
+    private Handler mHandler;
     // BT control vars
     private BluetoothAdapter mBluetoothAdapter = null;
 
@@ -46,8 +47,9 @@ public class BluetoothInterface {
     private float[] mLeftRightCmd;
     private byte[] mBTMessage;
 
-    public BluetoothInterface (Activity activity){
+    public BluetoothInterface (Activity activity, Handler handler){
         mActivity  = activity;
+        mHandler = handler;
         mBluetoothFragment = BluetoothFragment.getInstance();
         mBluetoothFragment.setActivity(mActivity);
     }
@@ -127,66 +129,61 @@ public class BluetoothInterface {
         return mBluetoothAdapter;
     }
 
-    // The Handler that gets information back from the BluetoothChatService
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case BluetoothDefines.MESSAGE_STATE_CHANGE:
-                    if (BuildConfig.DEBUG) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    switch (msg.arg1) {
-                        case BluetoothService.STATE_CONNECTED:
-                            setStatus(R.string.title_connected_to);// + mConnectedDeviceName);
-                            mBTConnected = true;
-//TODO                            updateUI();
-                            if (mBluetoothFragment != null)
-                                mBluetoothFragment.clearChatAdapter();
-                            break;
-                        case BluetoothService.STATE_CONNECTING:
-                            setStatus(R.string.title_connecting);
-                            break;
-                        case BluetoothService.STATE_LISTEN:
-                        case BluetoothService.STATE_NONE:
-                            setStatus(R.string.title_not_connected);
-                            break;
-                    }
-                    break;
-                case BluetoothDefines.MESSAGE_WRITE:
-                    if (mBluetoothFragment != null)
-                        mBluetoothFragment.writeMsgFromHandler(msg);
-                    break;
-                case BluetoothDefines.MESSAGE_READ:
-                    if (mBluetoothFragment != null)
-                        mBluetoothFragment.readMsgFromHandler(msg);
-                    break;
-                case BluetoothDefines.MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    mConnectedDeviceName = msg.getData().getString(BluetoothDefines.DEVICE_NAME);
-                    setBTConnected(true);
+//    // The Handler that gets information back from the BluetoothChatService
+//    private final Handler mHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case BluetoothDefines.MESSAGE_STATE_CHANGE:
+//                    if (BuildConfig.DEBUG) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+//                    switch (msg.arg1) {
+//                        case BluetoothService.STATE_CONNECTED:
+//                            setStatus(R.string.title_connected_to);// + mConnectedDeviceName);
+//                            mBTConnected = true;
+//                            mActivity.updateUI();
+//                            if (mBluetoothFragment != null)
+//                                mBluetoothFragment.clearChatAdapter();
+//                            break;
+//                        case BluetoothService.STATE_CONNECTING:
+//                            setStatus(R.string.title_connecting);
+//                            break;
+//                        case BluetoothService.STATE_LISTEN:
+//                        case BluetoothService.STATE_NONE:
+//                            setStatus(R.string.title_not_connected);
+//                            break;
+//                    }
+//                    break;
+//                case BluetoothDefines.MESSAGE_WRITE:
+//                    if (mBluetoothFragment != null)
+//                        mBluetoothFragment.writeMsgFromHandler(msg);
+//                    break;
+//                case BluetoothDefines.MESSAGE_READ:
+//                    if (mBluetoothFragment != null)
+//                        mBluetoothFragment.readMsgFromHandler(msg);
+//                    break;
+//                case BluetoothDefines.MESSAGE_DEVICE_NAME:
+//                    // save the connected device's name
+//                    mConnectedDeviceName = msg.getData().getString(BluetoothDefines.DEVICE_NAME);
+//                    setBTConnected(true);
+//
+//                    Toast.makeText(mActivity, "Connected to "
+////                    Toast.makeText(getApplicationContext(), "Connected to "
+//                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+//                    break;
+//                case BluetoothDefines.MESSAGE_TOAST:
+//                    Toast.makeText(mActivity, msg.getData().getString(BluetoothDefines.TOAST),
+////                    Toast.makeText(getApplicationContext(), msg.getData().getString(BluetoothDefines.TOAST),
+//                            Toast.LENGTH_SHORT).show();
+//                    break;
+//            }
+//        }
+//    };
 
-                    Toast.makeText(mActivity, "Connected to "
-//                    Toast.makeText(getApplicationContext(), "Connected to "
-                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    break;
-                case BluetoothDefines.MESSAGE_TOAST:
-                    Toast.makeText(mActivity, msg.getData().getString(BluetoothDefines.TOAST),
-//                    Toast.makeText(getApplicationContext(), msg.getData().getString(BluetoothDefines.TOAST),
-                            Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
-
-    // implemented callback for SensorRx
-    // receive the results from SensorRx
-    // pack data into BT-Frame
-    // write to BT-Service
     public void txNewBTCommand(byte[] btMessage) {
         //check if BT connecgted
         if (mBTService != null) {
             if (mBTService.getState() == BluetoothService.STATE_CONNECTED) {
                 if (mMovementAllowed) {
-                    // send message
                     mBTService.write(btMessage);
                 } else {
                     mBTService.write(BluetoothDefines.BT_STOP_MESSAGE);
@@ -210,8 +207,5 @@ public class BluetoothInterface {
             if (mBTService == null)
                 mBTService = createBTService();
         }
-
     }
-
-
 }

@@ -29,8 +29,8 @@
     <string name="savingSensorDataAction">Save</string>
     <string name="set_roll_offset">set Roll Offset</string>
     <string name="SavingStatus">saving...</string>
-    
-    
+
+
     <string-array name="display_list">
         <item>graphic_view</item>
         <item>pure_data</item>
