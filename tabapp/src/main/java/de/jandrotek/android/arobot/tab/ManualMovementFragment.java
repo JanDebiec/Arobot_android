@@ -51,7 +51,6 @@ private TiltView mManualTilter;
     private ManualMovementFragment() {
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +61,6 @@ private TiltView mManualTilter;
         }
         mFilterL = new SliderDatafilterOpt(mFilterSize);
         mFilterR = new SliderDatafilterOpt(mFilterSize);
-
-
     }
 
     @Override
@@ -71,7 +68,6 @@ private TiltView mManualTilter;
                              Bundle savedInstanceState) {
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreateView");
         View v = inflater.inflate(R.layout.fragment_manual_movement, parent, false);
-//        mManualTilter = (TiltView)v.findViewById(R.id.manualTiltView);
         mVerticalSeekbarL = (VerticalSeekBar)v.findViewById(R.id.vertikalSeekBarLeft);
         mVerticalSeekbarR = (VerticalSeekBar)v.findViewById(R.id.vertikalSeekBarRight);
         // Find the TextureView
@@ -79,7 +75,6 @@ private TiltView mManualTilter;
         mRenderer = new TiltRenderer(getActivity());
         mRajawaliSurface.setSurfaceRenderer(mRenderer);
         return v;
-
     }
 
     @Override
@@ -90,8 +85,8 @@ private TiltView mManualTilter;
         }
         mDataAcqTimer.scheduleAtFixedRate(new DataAcqTask(),
                 1000, mDataAcqTimerPeriod);
-
     }
+
     @Override
     public void onPause(){
         super.onPause();
@@ -119,15 +114,6 @@ private TiltView mManualTilter;
                     moveForwardRnd//
             );
         }
-//        if (mManualTilter != null) {
-//            float moveForward = (mOutputFilteredL + mOutputFilteredR) / 2;
-//            float turnToRight = mOutputFilteredL - mOutputFilteredR;
-//            // TODO scale to proper value ( radians ???)
-//            moveForward = moveForward * 1.0f / 25;
-//            turnToRight = turnToRight * 1.0f / 2500;
-//            mManualTilter.setTilt(moveForward,
-//                    turnToRight);
-//        }
     }
 
     /**
