@@ -6,6 +6,7 @@ package de.jandrotek.android.arobot.core;
  * can be tested with JUnit
  */
 public class SensorCalc {
+    //TODO use builder to construct the class and the parameters
 
     private float mFilterCoeff = ArobotDefines.FILTER_COEFFICIENT;
     private float oneMinusCoeff = 1.0f - mFilterCoeff;

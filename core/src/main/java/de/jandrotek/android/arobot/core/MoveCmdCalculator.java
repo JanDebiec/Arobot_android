@@ -1,5 +1,6 @@
 package de.jandrotek.android.arobot.core;
 
+// class not used in tabapp
 public class MoveCmdCalculator {
 //	private float[] mMovementDisplayValues = new float[8];
 	private float[] mMovementCmd = new float[8];// we need 7, but in PC 7???

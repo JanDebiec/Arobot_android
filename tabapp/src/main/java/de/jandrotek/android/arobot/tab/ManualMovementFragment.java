@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.rajawali3d.view.ISurface;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,6 +30,8 @@ private TiltView mManualTilter;
     private float mOutputFilteredR;
 
     private Timer mDataAcqTimer;
+    private TiltRenderer mRenderer;
+    private ISurface mRajawaliSurface;
 
     public void setDataAcqTimerPeriod(int dataAcqTimerPeriod) {
         mDataAcqTimerPeriod = dataAcqTimerPeriod;
@@ -67,9 +71,13 @@ private TiltView mManualTilter;
                              Bundle savedInstanceState) {
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreateView");
         View v = inflater.inflate(R.layout.fragment_manual_movement, parent, false);
-        mManualTilter = (TiltView)v.findViewById(R.id.manualTiltView);
+//        mManualTilter = (TiltView)v.findViewById(R.id.manualTiltView);
         mVerticalSeekbarL = (VerticalSeekBar)v.findViewById(R.id.vertikalSeekBarLeft);
         mVerticalSeekbarR = (VerticalSeekBar)v.findViewById(R.id.vertikalSeekBarRight);
+        // Find the TextureView
+        mRajawaliSurface = (ISurface) v.findViewById(R.id.rajwali_surface);
+        mRenderer = new TiltRenderer(getActivity());
+        mRajawaliSurface.setSurfaceRenderer(mRenderer);
         return v;
 
     }
@@ -96,16 +104,30 @@ private TiltView mManualTilter;
 
     private void updateUIValues(){
 
+        //tx data to Activity, to transfer to interface
         mActivity.handleVelCmd(mOutputFilteredL, mOutputFilteredR);
-        if (mManualTilter != null) {
-            float moveForward = (mOutputFilteredL + mOutputFilteredR) / 2;
-            float turnToRight = mOutputFilteredL - mOutputFilteredR;
-            // TODO scale to proper value ( radians ???)
-            moveForward = moveForward * 1.0f / 25;
-            turnToRight = turnToRight * 1.0f / 2500;
-            mManualTilter.setTilt(moveForward,
-                    turnToRight);
+
+        // show on openGL
+        float moveForwardCmd = (mOutputFilteredL + mOutputFilteredR) / 2;
+        float turnToRightCmd = mOutputFilteredL - mOutputFilteredR;
+        float moveForwardRnd = moveForwardCmd * 1.0f / 25;
+        float turnToRightRnd = turnToRightCmd * 1.0f / 25;
+        if(mRenderer != null){
+            mRenderer.setRotateValues(
+                    moveForwardRnd,//ok
+                    0,
+                    turnToRightRnd //ok
+            );
         }
+//        if (mManualTilter != null) {
+//            float moveForward = (mOutputFilteredL + mOutputFilteredR) / 2;
+//            float turnToRight = mOutputFilteredL - mOutputFilteredR;
+//            // TODO scale to proper value ( radians ???)
+//            moveForward = moveForward * 1.0f / 25;
+//            turnToRight = turnToRight * 1.0f / 2500;
+//            mManualTilter.setTilt(moveForward,
+//                    turnToRight);
+//        }
     }
 
     /**

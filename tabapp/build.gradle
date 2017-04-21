@@ -26,7 +26,6 @@ dependencies {
     compile project(':core')
     compile project(':libbluetooth')
     compile project(':libwifi')
-//    compile 'com.android.support:appcompat-v7:24.0.0'
     compile supportDependencies.appCompat
     compile supportDependencies.design
     compile 'org.rajawali3d:rajawali:1.1.346-SNAPSHOT@aar'

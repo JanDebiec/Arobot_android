@@ -62,6 +62,10 @@ class SensorService
     private float[] yM;
     private float[] zM;
 
+    public float[] getRotationMatrix() {
+        return mRotationMatrix;
+    }
+
     private float sinX;
     private float cosX ;
     private float sinY;

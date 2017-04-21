@@ -3,6 +3,7 @@ package de.jandrotek.android.arobot.libwifi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class WifiService{
 //public class WifiService(Activity activity){
+private static final String TAG = "WifiService";
 
     private Activity mActivity;
 
@@ -80,7 +82,7 @@ public class WifiService{
                         results.size(),
                         bestSignal.SSID);
 
-                Toast.makeText(mActivity.this,
+                Toast.makeText(mActivity,
                         connSummary, Toast.LENGTH_LONG).show();
             }
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
