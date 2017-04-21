@@ -114,9 +114,9 @@ private TiltView mManualTilter;
         float turnToRightRnd = turnToRightCmd * 1.0f / 25;
         if(mRenderer != null){
             mRenderer.setRotateValues(
-                    moveForwardRnd,//ok
+                    turnToRightRnd,//ok
                     0,
-                    turnToRightRnd //ok
+                    moveForwardRnd//
             );
         }
 //        if (mManualTilter != null) {
