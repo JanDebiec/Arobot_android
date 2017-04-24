@@ -8,42 +8,98 @@ package de.jandrotek.android.arobot.core;
 public class SensorCalc {
     //TODO use builder to construct the class and the parameters
 
+    // parameters
     private float mFilterCoeff = ArobotDefines.FILTER_COEFFICIENT;
     private float oneMinusCoeff = 1.0f - mFilterCoeff;
-    // orientation angles from gyro matrix
-    private float[] mGyroOrientation = new float[3];
-    // orientation angles from accel and magnet
-    private float[] mAccMagOrientation = new float[3];
-    // final orientation angles from sensor fusion
-    private float[] mFusedOrientation = new float[3];
-
-    private float[] mMovementCmd = new float[8];// we need 7, but in PC 7???
-    private float mPitch;
-    private float mRoll;
     private float mRollOffset = 30;
     public void setRollOffset(float rollOffset) {
         mRollOffset = rollOffset;
     }
-
     private float mScaleCorrection = 1;
     public void setScaleCorrection(float scaleCorrection) {
         mScaleCorrection = scaleCorrection;
     }
-
-    private float raw_left;
-    private float raw_right;
-    private float scaled_left;
-    private float scaled_right;
+    private float mPWMMin;
+    private float mPWMMax;
     public void setPWMMin(float pWMMin) {
         mPWMMin = pWMMin;
     }
-
     public void setPWMMax(float pWMMax) {
         mPWMMax = pWMMax;
     }
 
-    private float mPWMMin;
-    private float mPWMMax;
+    public static class Builder {
+        private float mFilterCoeff = ArobotDefines.FILTER_COEFFICIENT;
+//        private float oneMinusCoeff = 1.0f - mFilterCoeff;
+        private float mRollOffset = 30;
+        private float mScaleCorrection = 1;
+        private float mPWMMin;
+        private float mPWMMax;
+
+        public Builder (){
+
+        }
+
+        public Builder filterCoeff(float val){
+            mFilterCoeff = val;
+            return this;
+        }
+
+        public Builder rollOffset(float val){
+            mRollOffset = val;
+            return this;
+        }
+
+        public Builder scaleCorr(float val){
+            mScaleCorrection = val;
+            return this;
+        }
+
+        public Builder pwmMin(float val){
+            mPWMMin = val;
+            return this;
+        }
+
+        public Builder pwmMax(float val){
+            mPWMMax = val;
+            return this;
+        }
+
+        public SensorCalc build(){
+            return new SensorCalc(this);
+        }
+    }
+
+    private SensorCalc(Builder builder) {
+        xM = new float[9];
+        yM = new float[9];
+        zM = new float[9];
+        normValues = new float[3];
+        mResult = new float[9];
+
+        mFilterCoeff = builder.mFilterCoeff;
+        oneMinusCoeff = 1.0f - mFilterCoeff;
+        mRollOffset = builder.mRollOffset;
+        mScaleCorrection = builder.mScaleCorrection;
+        mPWMMin = builder.mPWMMin;
+        mPWMMax = builder.mPWMMax;
+
+    }
+
+    // working values, only once allocated, to save time for GarbageCollection
+    // orientation angles from gyro matrix
+//    private float[] mGyroOrientation = new float[3];
+    // orientation angles from accel and magnet
+//    private float[] mAccMagOrientation = new float[3];
+    // final orientation angles from sensor fusion
+//    private float[] mFusedOrientation = new float[3];
+    private float[] mMovementCmd = new float[8];// we need 7, but in PC 7???
+    private float mPitch;
+    private float mRoll;
+    private float raw_left;
+    private float raw_right;
+    private float scaled_left;
+    private float scaled_right;
     private float torsionCorrectedLeft;
     private float torsionCorrectedRight;
     private float[] mResult;
@@ -51,7 +107,7 @@ public class SensorCalc {
     private float[] xM ;
     private float[] yM ;
     private float[] zM ;
-    private float[] normValues = new float[3];
+    private float[] normValues;
     private float sinX;
     private float cosX;
     private float sinY;
@@ -59,15 +115,6 @@ public class SensorCalc {
     private float sinZ;
     private float cosZ;
 
-
-    public SensorCalc() {
-        xM = new float[9];
-        yM = new float[9];
-        zM = new float[9];
-        normValues = new float[3];
-        mResult = new float[9];
-
-    }
 
     /**
      * left = pitch - roll

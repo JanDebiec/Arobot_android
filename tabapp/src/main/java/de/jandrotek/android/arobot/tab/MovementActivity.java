@@ -134,7 +134,7 @@ public class MovementActivity extends AppCompatActivity {
         }
         mLeftRightCmd = new float[2];
         mBTMessCreator = new TxBTMessage();
-        mMovCalculator = new SensorCalc();
+        mMovCalculator = new SensorCalc.Builder().build();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorService = new SensorService(this, mSensorManager);
         mSensorService.setCalculator(mMovCalculator);
