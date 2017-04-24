@@ -28,4 +28,5 @@ dependencies {
     compile supportDependencies.appCompat
 //    compile 'com.android.support:support-v4:22.0.0'
     compile project(':core')
+    compile project(':libbluetooth')
 }

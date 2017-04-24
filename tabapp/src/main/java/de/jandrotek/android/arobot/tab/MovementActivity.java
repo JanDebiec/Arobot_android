@@ -114,7 +114,7 @@ public class MovementActivity extends AppCompatActivity {
     private String mStrLeft;
     private String mStrRight;
 
-    private int mExternalConn = ArobotDefines.EXT_CONN_UNKNOWN;
+    private int mExternalConn = ArobotDefines.EXT_CONN_BT;
     private TxBTMessage mBTMessCreator;
     private float[] mLeftRightCmd;
     private byte[] mBTMessage;
@@ -132,6 +132,8 @@ public class MovementActivity extends AppCompatActivity {
             // show screen portrait
             return;
         }
+        mLeftRightCmd = new float[2];
+        mBTMessCreator = new TxBTMessage();
         mMovCalculator = new SensorCalc();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorService = new SensorService(this, mSensorManager);
@@ -167,33 +169,7 @@ public class MovementActivity extends AppCompatActivity {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO start/stop calculations (threads)
-                if(mAppBarExpanded) { //run
-                    if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
-                        if (mSensorService != null) {
-                            mSensorService.setFragment(mSensorMovementFragment);
-                            mSensorService.registerSensors();
-                            mSensorService.setRunFuseTask(true);
-                            mSensorService.startFuseCalc();
-                            mSensorService.setUpdateUi(true);
-                        }
-
-                    }
-                    mAppBarExpanded = false;
-                    mVisibility = View.INVISIBLE;
-//                    mVisibility = View.GONE;
-                    mFab.setImageResource(ic_media_pause);
-                } else { // pause
-                    if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
-                        mSensorService.setRunFuseTask(false);
-                        mSensorService.unregisterSensors();
-                    }
-                    mAppBarExpanded = true;
-                    mVisibility = View.VISIBLE;
-                    mFab.setImageResource(ic_media_play);
-                }
-                mAppBarLayout.setExpanded(mAppBarExpanded);
-                mAppBarLayout.setVisibility(mVisibility);
+                handleFABPress();
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
             }
@@ -219,19 +195,7 @@ public class MovementActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                if (mMovementEnabled == false) {
-                    mMovementEnabled = true;
-                    mMovingStatus.setBackgroundColor(Color.GREEN);
-                    mMovingStatus.setText(R.string.moving_status_move);
-                    mToggleButtonMove.setText(R.string.move_button_on);
-                    mToggleButtonMove.setBackgroundColor(Color.RED);
-                } else {
-                    mMovementEnabled = false;
-                    mMovingStatus.setBackgroundColor(Color.LTGRAY);
-                    mMovingStatus.setText(R.string.moving_status_stop);
-                    mToggleButtonMove.setText(R.string.move_button_off);
-                    mToggleButtonMove.setBackgroundColor(Color.LTGRAY);
-                }
+                handleBtMoveToggle(!mMovementEnabled);// should be toggled, that's why parameter = negation of old value
 
             }
         });
@@ -252,6 +216,60 @@ public class MovementActivity extends AppCompatActivity {
         mtvTiltLeft = (TextView)findViewById(R.id.tvTiltLeft);
         mtvTiltRight = (TextView)findViewById(R.id.tvTiltRight);
 
+    }
+
+    private void handleBtMoveToggle(boolean movementAllowed) {
+        if (movementAllowed == true) {
+            mMovementEnabled = true;
+            mMovingStatus.setBackgroundColor(Color.GREEN);
+            mMovingStatus.setText(R.string.moving_status_move);
+            mToggleButtonMove.setText(R.string.move_button_on);
+            mToggleButtonMove.setBackgroundColor(Color.RED);
+        } else {
+            mMovementEnabled = false;
+            mMovingStatus.setBackgroundColor(Color.LTGRAY);
+            mMovingStatus.setText(R.string.moving_status_stop);
+            mToggleButtonMove.setText(R.string.move_button_off);
+            mToggleButtonMove.setBackgroundColor(Color.LTGRAY);
+        }
+        allowMovement(mMovementEnabled);
+    }
+
+    private void handleFABPress() {
+        if(mAppBarExpanded) { //not running, should run
+            if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
+                if (mSensorService != null) {
+                    mSensorService.setFragment(mSensorMovementFragment);
+                    mSensorService.registerSensors();
+                    mSensorService.setRunFuseTask(true);
+                    mSensorService.startFuseCalc();
+                    mSensorService.setUpdateUi(true);
+                }
+            }
+            mAppBarExpanded = false;
+            mVisibility = View.INVISIBLE;
+//                    mVisibility = View.GONE;
+            mFab.setImageResource(ic_media_pause);
+        } else { // pause
+            if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
+                mSensorService.setRunFuseTask(false);
+                mSensorService.unregisterSensors();
+            }
+            mAppBarExpanded = true;
+            mVisibility = View.VISIBLE;
+            mFab.setImageResource(ic_media_play);
+            handleBtMoveToggle(false);
+        }
+        mAppBarLayout.setExpanded(mAppBarExpanded);
+        mAppBarLayout.setVisibility(mVisibility);
+    }
+
+    private void allowMovement(boolean flag) {
+        if(mExternalConn == ArobotDefines.EXT_CONN_BT) {
+            mBTInterface.setMovementAllowed(flag);
+        } else if(mExternalConn == ArobotDefines.EXT_CONN_WLAN){
+
+        }
     }
 
     private void showProperFragment(int position) {

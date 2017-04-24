@@ -52,6 +52,13 @@ public class SensorCalc {
     private float[] yM ;
     private float[] zM ;
     private float[] normValues = new float[3];
+    private float sinX;
+    private float cosX;
+    private float sinY;
+    private float cosY;
+    private float sinZ;
+    private float cosZ;
+
 
     public SensorCalc() {
         xM = new float[9];
@@ -109,19 +116,47 @@ public class SensorCalc {
         return mMovementCmd;
     }
 
-
+    /**
+     * function based on P.Lawitzki article, based on
+     * SensorManager function getRotationMatrixFromVector:
+     *
+     * Helper function to convert a rotation vector to a rotation matrix.
+     *  Given a rotation vector (presumably from a ROTATION_VECTOR sensor), returns a
+     *  9  or 16 element rotation matrix in the array R.  R must have length 9 or 16.
+     *  If R.length == 9, the following matrix is returned:
+     * <pre>
+     *   /  R[ 0]   R[ 1]   R[ 2]   \
+     *   |  R[ 3]   R[ 4]   R[ 5]   |
+     *   \  R[ 6]   R[ 7]   R[ 8]   /
+     *</pre>
+     * If R.length == 16, the following matrix is returned:
+     * <pre>
+     *   /  R[ 0]   R[ 1]   R[ 2]   0  \
+     *   |  R[ 4]   R[ 5]   R[ 6]   0  |
+     *   |  R[ 8]   R[ 9]   R[10]   0  |
+     *   \  0       0       0       1  /
+     *</pre>
+     *  @param rotationVector the rotation vector to convert
+     *  @param R an array of floats in which to store the rotation matrix
+     *
+     * @param o
+     * @return
+     */
     public float[] getRotationMatrixFromOrientation(float[] o) {
+        // no use of local vars,
+        // to save the creation and delete of vars in garbage collection
+        // only resyultMatrix will be generated
 //        float[] xM = new float[9];
 //        float[] yM = new float[9];
 //        float[] zM = new float[9];
 //        mAccMagOrientation = o;
 
-        float sinX = (float)Math.sin(o[1]);
-        float cosX = (float)Math.cos(o[1]);
-        float sinY = (float)Math.sin(o[2]);
-        float cosY = (float)Math.cos(o[2]);
-        float sinZ = (float)Math.sin(o[0]);
-        float cosZ = (float)Math.cos(o[0]);
+        sinX = (float)Math.sin(o[1]);
+        cosX = (float)Math.cos(o[1]);
+        sinY = (float)Math.sin(o[2]);
+        cosY = (float)Math.cos(o[2]);
+        sinZ = (float)Math.sin(o[0]);
+        cosZ = (float)Math.cos(o[0]);
 
         // rotation about x-axis (pitch)
         xM[0] = 1.0f; xM[1] = 0.0f; xM[2] = 0.0f;

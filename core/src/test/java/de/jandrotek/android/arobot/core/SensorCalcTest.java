@@ -1,5 +1,6 @@
 package de.jandrotek.android.arobot.core;
 
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -9,31 +10,34 @@ import static org.junit.Assert.*;
 
 public class SensorCalcTest {
 
+    private SensorCalc mObject;
+    private float[] mAccMagOrientation;
+
+    @Before
+    public void create(){
+        mAccMagOrientation = new float[3];
+        mObject = new SensorCalc();
+    }
+
     @Test
     public void constructor_isCorrect() throws Exception {
-        SensorCalc mObject = new SensorCalc();
         assertNotEquals(null, mObject);
     }
 
     @Test
     public void calcRotMx_noExecpt() throws Exception {
-        float[] mAccMagOrientation = new float[3];
         float[] result = null;
-        SensorCalc mObject = new SensorCalc();
         result = mObject.getRotationMatrixFromOrientation(mAccMagOrientation);
         assertNotEquals(null, result);
-
     }
 
     @Test
     public void calcFused_noExcept() throws Exception {
         float gyroOrient = 0;
         float accOrient = 0;
-        SensorCalc mObject = new SensorCalc();
         float result = -1;
         result = mObject.calcFusedOrientation(gyroOrient, accOrient);
         assertNotEquals(result, -1, 0.01);
-
     }
 
     @Test
@@ -41,20 +45,17 @@ public class SensorCalcTest {
         float[] gyroValues = {0, 0, 0};
         float[] deltaRot = {0, 0, 0, 0};
         float factor = 0;
-        SensorCalc mObject = new SensorCalc();
         float result[];
         mObject.getRotationVectorFromGyro(gyroValues, deltaRot, factor);
         assertNotEquals(null, deltaRot);
-
     }
 
     @Test
-    public void getRotFromOrient_noExcept() throws Exception {
-        float[] orient = {0, 0, 0};
-        SensorCalc mObject = new SensorCalc();
+    public void getRotFromOrient_getSize() throws Exception {
+        float[] orient = {1, 1, 1};
         float result[];
         result = mObject.getRotationMatrixFromOrientation(orient);
-        assertNotEquals(null, result);
-
+        int size = result.length;
+        assertEquals(9, size);
     }
 }
