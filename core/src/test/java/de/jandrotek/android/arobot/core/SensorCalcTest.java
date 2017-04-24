@@ -16,7 +16,7 @@ public class SensorCalcTest {
     @Before
     public void create(){
         mAccMagOrientation = new float[3];
-        mObject = new SensorCalc();
+        mObject = new SensorCalc.Builder().build();
     }
 
     @Test
