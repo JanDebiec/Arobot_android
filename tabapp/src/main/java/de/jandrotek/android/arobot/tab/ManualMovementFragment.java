@@ -30,7 +30,8 @@ private TiltView mManualTilter;
     private float mOutputFilteredR;
 
     private Timer mDataAcqTimer;
-    private TiltRenderer mRenderer;
+//    private TiltRenderer mRenderer;
+    private RajawaliLoadModelRenderer mRenderer;
     private ISurface mRajawaliSurface;
 
     public void setDataAcqTimerPeriod(int dataAcqTimerPeriod) {
@@ -72,7 +73,8 @@ private TiltView mManualTilter;
         mVerticalSeekbarR = (VerticalSeekBar)v.findViewById(R.id.vertikalSeekBarRight);
         // Find the TextureView
         mRajawaliSurface = (ISurface) v.findViewById(R.id.rajwali_surface);
-        mRenderer = new TiltRenderer(getActivity());
+        mRenderer = new RajawaliLoadModelRenderer(getActivity());
+//        mRenderer = new TiltRenderer(getActivity());
         mRajawaliSurface.setSurfaceRenderer(mRenderer);
         return v;
     }

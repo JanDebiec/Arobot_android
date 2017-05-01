@@ -63,7 +63,8 @@ public class SensorMovementFragment extends Fragment
 //    private BluetoothService mBTService = null;
 
     /// View's members
-     private TiltRenderer mRenderer;
+     private RajawaliLoadModelRenderer mRenderer;
+//     private TiltRenderer mRenderer;
      private ISurface mRajawaliSurface;
 
     private OnNavigationListener mOnNavigationListener;
@@ -109,7 +110,8 @@ public class SensorMovementFragment extends Fragment
 
         // Find the TextureView
         mRajawaliSurface = (ISurface) v.findViewById(R.id.rajwali_surface);
-        mRenderer = new TiltRenderer(getActivity());
+        mRenderer = new RajawaliLoadModelRenderer(getActivity());
+//        mRenderer = new TiltRenderer(getActivity());
         mRajawaliSurface.setSurfaceRenderer(mRenderer);
         return v;
 
