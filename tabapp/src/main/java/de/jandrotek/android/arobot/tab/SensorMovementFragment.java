@@ -135,7 +135,7 @@ public class SensorMovementFragment extends Fragment
     public void updateOrientationDisplay() {
         if(mRenderer != null){
             mRenderer.setRotateValues(
-                    mSensorReceivedData[5],//ok
+                    -mSensorReceivedData[5],//ok
                     0,
                     mSensorReceivedData[6] //ok
                     );
@@ -216,33 +216,5 @@ public class SensorMovementFragment extends Fragment
 //        mMovCalculator.setScaleCorrection(mAmplification);
 
     }
-
-//    // implemented callback for SensorRx
-//    // receive the results from SensorRx
-//    // pack data into BT-Frame
-//    // write to BT-Service
-//    public void onNewBTCommand(byte[] btMessage) {
-//        //check if BT connected
-//        if (mBTService != null) {
-//            if (mBTService.getState() == BluetoothService.STATE_CONNECTED) {
-//                if (isMovementEnabled()) {
-//                    // send message
-//                    mBTService.write(btMessage);
-//                } else {
-//                    mBTService.write(BluetoothDefines.BT_STOP_MESSAGE);
-//                }
-//            }
-//        }
-//    }
-
-    // handling messages from HandlerThread from SensorService
-//    private final Handler mHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            switch (msg.what) {
-//            }
-//        }
-//    }
-
 
 }

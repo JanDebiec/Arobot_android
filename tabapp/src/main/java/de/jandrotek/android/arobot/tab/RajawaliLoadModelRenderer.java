@@ -95,43 +95,8 @@ public class RajawaliLoadModelRenderer extends Renderer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        mLight = new PointLight();
-//        mLight.setPosition(0, 0, 4);
-//        mLight.setPower(3);
-//        mCamera.setZ(12);
-//
-//        try {
-//            ObjParser objParser = new ObjParser(mContext.getResources(), mTextureManager, R.raw.multiobjects_obj);
-//            objParser.parse();
-//            mObjectGroup = objParser.getParsedObject();
-//            mObjectGroup.addLight(mLight);
-//            addChild(mObjectGroup);
-//
-//            mCameraAnim = new RotateAnimation3D(Vector3.Axis.Y, 360);
-//            mCameraAnim.setDuration(8000);
-//            mCameraAnim.setRepeatCount(Animation3D.INFINITE);
-//            mCameraAnim.setTransformable3D(mObjectGroup);
-//        } catch(ParsingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        mLightAnim = new RotateAroundAnimation3D(new Number3D(), Axis.Z, 10);
-//        mLightAnim.setDuration(3000);
-//        mLightAnim.setRepeatCount(Animation3D.INFINITE);
-//        mLightAnim.setTransformable3D(mLight);
     }
 
-//    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-//        ((RajawaliExampleActivity) mContext).showLoader();
-//        super.onSurfaceCreated(gl, config);
-//        ((RajawaliExampleActivity) mContext).hideLoader();
-//        mCameraAnim.start();
-//        mLightAnim.start();
-//    }
-//
-//    public void onDrawFrame(GL10 glUnused) {
-//        super.onDrawFrame(glUnused);
-//    }
 
     @Override
     public void onOffsetsChanged(float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset, int yPixelOffset) {
