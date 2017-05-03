@@ -53,6 +53,7 @@ import de.jandrotek.android.arobot.libwifi.WlanDefines;
 import static android.R.drawable.ic_media_pause;
 import static android.R.drawable.ic_media_play;
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+import static de.jandrotek.android.arobot.core.ArobotDefines.eBtVelCmdScaleFactor;
 
 public class MovementActivity extends AppCompatActivity {
     private static final String TAG = "MovementActivity";
@@ -651,8 +652,8 @@ public class MovementActivity extends AppCompatActivity {
 
     public void txVelCmd(float cmdLeft, float cmdRight){
         if(mExternalConn == ArobotDefines.EXT_CONN_BT){
-            mLeftRightCmd[0] = cmdLeft;
-            mLeftRightCmd[1] = cmdRight;
+            mLeftRightCmd[0] = cmdLeft * eBtVelCmdScaleFactor;
+            mLeftRightCmd[1] = cmdRight * eBtVelCmdScaleFactor;
             mBTMessage = mBTMessCreator.prepareTxMessage(mLeftRightCmd);
 
             mBTInterface.txNewBTCommand(mBTMessage);
