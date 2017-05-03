@@ -25,8 +25,8 @@ public class ArobotSettings {
     private static String mPREFS_KEY_AMPLIFICATION;
     private static String mPREFS_KEY_EXT_INTERFACE;
 
-    private int mPrefsMotorType = TxBTMessage.MOTOR_TYPE_SIGN_AND_PWM;
-    //	private int mPrefsMotorType = MotionTxMessage.MOTOR_TYPE_SIGN_AND_PWM;
+    private int mPrefsMotorType = TxBTMessage.MOTOR_TYPE_SIGN_AND_ABS_PWM;
+    //	private int mPrefsMotorType = MotionTxMessage.MOTOR_TYPE_SIGN_AND_ABS_PWM;
     private int mPrefsSensorDelay;
     private int mPrefsTimerPeriod;
     private int mPrefsSavingContent;
