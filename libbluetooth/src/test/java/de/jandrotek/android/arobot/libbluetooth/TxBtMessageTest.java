@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import static de.jandrotek.android.arobot.libbluetooth.TxBTMessage.BT_CMD_VELOCITY;
 import static de.jandrotek.android.arobot.libbluetooth.TxBTMessage.BT_MAGIC_WORD;
+import static de.jandrotek.android.arobot.libbluetooth.TxBTMessage.CMD_MAX_POSITIVE;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -15,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 public class TxBtMessageTest {
     private TxBTMessage mMessage;
     private float[] mLeftRightCmd;
-    private byte[] mTxMessage;
+    private char[] mTxMessage;
 
     @Before
     public void crete(){
@@ -78,6 +79,28 @@ public class TxBtMessageTest {
         mLeftRightCmd[1] = 10000;
         short cmdLeft = 0;
         short cmdRight = 10000;
+        mTxMessage = mMessage.prepareTxMessage(mLeftRightCmd);
+        boolean checkOk = checkBtVelocityMessage(cmdLeft, cmdRight);
+        assertTrue(checkOk == true);
+    }
+
+    @Test
+    public void velocity_isLeftLimited30000()throws Exception {
+        mLeftRightCmd[0] = 30000;
+        mLeftRightCmd[1] = 0;
+        short cmdLeft = CMD_MAX_POSITIVE;
+        short cmdRight = 0;
+        mTxMessage = mMessage.prepareTxMessage(mLeftRightCmd);
+        boolean checkOk = checkBtVelocityMessage(cmdLeft, cmdRight);
+        assertTrue(checkOk == true);
+    }
+
+    @Test
+    public void velocity_isRightLimited30000()throws Exception {
+        mLeftRightCmd[0] = 0;
+        mLeftRightCmd[1] = 30000;
+        short cmdLeft = 0;
+        short cmdRight = CMD_MAX_POSITIVE;
         mTxMessage = mMessage.prepareTxMessage(mLeftRightCmd);
         boolean checkOk = checkBtVelocityMessage(cmdLeft, cmdRight);
         assertTrue(checkOk == true);
