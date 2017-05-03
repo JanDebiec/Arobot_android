@@ -110,12 +110,20 @@ public class TxBtMessageTest {
          short txCmdLeft;
          short txCmdRight;
 
+         char lowChar;
+         char highChar;
+
         if(mTxMessage[0] != BT_MAGIC_WORD)
             return false;
         if(mTxMessage[1] != BT_CMD_VELOCITY)
             return false;
-        txCmdLeft = (short) ((char)mTxMessage[3] + (char)mTxMessage[2] * 256);
-        txCmdRight = (short) ((char)mTxMessage[5] + (char)mTxMessage[4] * 256);
+        lowChar = (char) (((char)mTxMessage[3]) & 0xFF);
+        highChar = (char) (((char)mTxMessage[2]) & 0xFF);
+
+        txCmdLeft = (short) (lowChar + highChar * 256);
+        lowChar = (char) (((char)mTxMessage[5]) & 0xFF);
+        highChar = (char) (((char)mTxMessage[4]) & 0xFF);
+        txCmdRight = (short) (lowChar + highChar * 256);
         if (txCmdLeft != cmdLeft)
             return false;
         if (txCmdRight != cmdRight)
