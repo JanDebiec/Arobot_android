@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 public class TxBtMessageTest {
     private TxBTMessage mMessage;
     private float[] mLeftRightCmd;
-    private char[] mTxMessage;
+    private byte[] mTxMessage;
 
     @Before
     public void crete(){
@@ -114,8 +114,8 @@ public class TxBtMessageTest {
             return false;
         if(mTxMessage[1] != BT_CMD_VELOCITY)
             return false;
-        txCmdLeft = (short) (mTxMessage[3] + mTxMessage[2] * 256);
-        txCmdRight = (short) (mTxMessage[5] + mTxMessage[4] * 256);
+        txCmdLeft = (short) ((char)mTxMessage[3] + (char)mTxMessage[2] * 256);
+        txCmdRight = (short) ((char)mTxMessage[5] + (char)mTxMessage[4] * 256);
         if (txCmdLeft != cmdLeft)
             return false;
         if (txCmdRight != cmdRight)

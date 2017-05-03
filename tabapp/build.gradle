@@ -19,6 +19,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            java {
+                exclude '**/TiltRenderer.java'
+            }
+        }
+//        androidTest {
+//            java {
+//                exclude '**/TestSomeExcludedClass.java'
+//            }
+//        }
+    }
 }
 
 dependencies {

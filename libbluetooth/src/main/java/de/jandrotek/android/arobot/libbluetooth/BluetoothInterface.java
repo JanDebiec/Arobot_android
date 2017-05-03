@@ -45,7 +45,7 @@ public class BluetoothInterface {
     private BluetoothService mBTService = null;
     private TxBTMessage mBTMessCreator;
     private float[] mLeftRightCmd;
-    private byte[] mBTMessage;
+    private char[] mBTMessage;
 
     public BluetoothInterface (Activity activity, Handler handler){
         mActivity  = activity;
@@ -115,7 +115,7 @@ public class BluetoothInterface {
 
     private void initBtMessages() {
         mBTMessCreator = new TxBTMessage();
-        mBTMessage = new byte[TxBTMessage.BTMessageLenght];
+        mBTMessage = new char[TxBTMessage.BTMessageLenght];
     }
 
 

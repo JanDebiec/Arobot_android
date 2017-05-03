@@ -245,7 +245,7 @@ public class BluetoothService {
      * Write to the ConnectedThread in an unsynchronized manner
      *
      * @param out The bytes to write
-     * @see ConnectedThread#write(byte[])
+     * @see ConnectedThread#write(char[])
      */
     public void write(byte[] out) {
         // Create temporary object

@@ -16,11 +16,11 @@ public class TxBTMessage {
     public static final int CMD_MAX_POSITIVE = 25000;
     public static final int CMD_MAX_NEGATIVE = -25000;
 
-    public static final char BT_MAGIC_WORD = (char) 0xA5;
-    public static  final char BT_CMD_VELOCITY = (char)0;
+    public static final byte BT_MAGIC_WORD = (byte) 0xA5;
+    public static  final byte BT_CMD_VELOCITY = (byte)0;
 
-    private char[] mBTMessage;
-    private char mToggle = 0;
+    private byte[] mBTMessage;
+    private byte mToggle = 0;
 
     public int mMotorType;
 
@@ -33,29 +33,29 @@ public class TxBTMessage {
 
     private short shortLeft;
     private short shortRight;
-    private char lowchar;
-    private char highchar;
+    private byte lowbyte;
+    private byte highbyte;
 
 
     public TxBTMessage() {
         mMotorType = MOTOR_TYPE_SIGNED_PWM;
-        mBTMessage = new char[6];
+        mBTMessage = new byte[6];
         mBTMessage[INDEX_MAGIC_WORD] = BT_MAGIC_WORD;
         mBTMessage[INDEX_CMD_ID] = BT_CMD_VELOCITY;
     }
 
-//    private void changeTogglechar() {
+//    private void changeTogglebyte() {
 //
 //        if (mToggle == 0) {
-//            mToggle = (char) 0xFF;
+//            mToggle = (byte) 0xFF;
 //        } else {
-//            mToggle = (char) 0;
+//            mToggle = (byte) 0;
 //        }
 //        mBTMessage[INDEX_CMD_ID] = mToggle;
 //    }
 
-    public char[] prepareTxMessage(float[] LRCmd) {
-//        changeTogglechar();
+    public byte[] prepareTxMessage(float[] LRCmd) {
+//        changeTogglebyte();
         float cmdLeft = LRCmd[0];
         float cmdRight = LRCmd[1];
         if(LRCmd[0] > CMD_MAX_POSITIVE)
@@ -70,14 +70,14 @@ public class TxBTMessage {
         if (mMotorType == MOTOR_TYPE_SIGNED_PWM) {
             shortLeft = (short) cmdLeft;
             shortRight = (short) cmdRight;
-            lowchar = (char)(shortLeft & 0xFF);
-            highchar = (char)((shortLeft & 0xFF00) >> 8);
-            mBTMessage[INDEX_BYTE0] = highchar;
-            mBTMessage[INDEX_BYTE1] = lowchar;
-            lowchar = (char)(shortRight & 0xFF);
-            highchar = (char)((shortRight & 0xFF00) >> 8);
-            mBTMessage[INDEX_BYTE2] = highchar;
-            mBTMessage[INDEX_BYTE3] = lowchar;
+            lowbyte = (byte)(shortLeft & 0xFF);
+            highbyte = (byte)((shortLeft & 0xFF00) >> 8);
+            mBTMessage[INDEX_BYTE0] = highbyte;
+            mBTMessage[INDEX_BYTE1] = lowbyte;
+            lowbyte = (byte)(shortRight & 0xFF);
+            highbyte = (byte)((shortRight & 0xFF00) >> 8);
+            mBTMessage[INDEX_BYTE2] = highbyte;
+            mBTMessage[INDEX_BYTE3] = lowbyte;
 
         } else { // motor sign + PWM
 //            leftP = LRCmd[0];
