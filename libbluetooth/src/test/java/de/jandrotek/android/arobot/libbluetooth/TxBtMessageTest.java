@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import static de.jandrotek.android.arobot.libbluetooth.TxBTMessage.BT_CMD_VELOCITY;
 import static de.jandrotek.android.arobot.libbluetooth.TxBTMessage.BT_MAGIC_WORD;
+import static de.jandrotek.android.arobot.libbluetooth.TxBTMessage.CMD_MAX_NEGATIVE;
 import static de.jandrotek.android.arobot.libbluetooth.TxBTMessage.CMD_MAX_POSITIVE;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -63,6 +64,50 @@ public class TxBtMessageTest {
     }
 
     @Test
+    public void velocity_isLeftMinus100()throws Exception {
+        mLeftRightCmd[0] = -100;
+        mLeftRightCmd[1] = 0;
+        short cmdLeft = -100;
+        short cmdRight = 0;
+        mTxMessage = mMessage.prepareTxMessage(mLeftRightCmd);
+        boolean checkOk = checkBtVelocityMessage(cmdLeft, cmdRight);
+        assertTrue(checkOk == true);
+    }
+
+    @Test
+    public void velocity_isRightMinus100()throws Exception {
+        mLeftRightCmd[0] = 0;
+        mLeftRightCmd[1] = -100;
+        short cmdLeft = 0;
+        short cmdRight = -100;
+        mTxMessage = mMessage.prepareTxMessage(mLeftRightCmd);
+        boolean checkOk = checkBtVelocityMessage(cmdLeft, cmdRight);
+        assertTrue(checkOk == true);
+    }
+
+    @Test
+    public void velocity_isLeftMinus10000()throws Exception {
+        mLeftRightCmd[0] = -10000;
+        mLeftRightCmd[1] = 0;
+        short cmdLeft = -10000;
+        short cmdRight = 0;
+        mTxMessage = mMessage.prepareTxMessage(mLeftRightCmd);
+        boolean checkOk = checkBtVelocityMessage(cmdLeft, cmdRight);
+        assertTrue(checkOk == true);
+    }
+
+    @Test
+    public void velocity_isRightMinus10000()throws Exception {
+        mLeftRightCmd[0] = 0;
+        mLeftRightCmd[1] = -10000;
+        short cmdLeft = 0;
+        short cmdRight = -10000;
+        mTxMessage = mMessage.prepareTxMessage(mLeftRightCmd);
+        boolean checkOk = checkBtVelocityMessage(cmdLeft, cmdRight);
+        assertTrue(checkOk == true);
+    }
+
+    @Test
     public void velocity_isLeft10000()throws Exception {
         mLeftRightCmd[0] = 10000;
         mLeftRightCmd[1] = 0;
@@ -101,6 +146,28 @@ public class TxBtMessageTest {
         mLeftRightCmd[1] = 30000;
         short cmdLeft = 0;
         short cmdRight = CMD_MAX_POSITIVE;
+        mTxMessage = mMessage.prepareTxMessage(mLeftRightCmd);
+        boolean checkOk = checkBtVelocityMessage(cmdLeft, cmdRight);
+        assertTrue(checkOk == true);
+    }
+
+    @Test
+    public void velocity_isLeftLimitedMinus30000()throws Exception {
+        mLeftRightCmd[0] = -30000;
+        mLeftRightCmd[1] = 0;
+        short cmdLeft = CMD_MAX_NEGATIVE;
+        short cmdRight = 0;
+        mTxMessage = mMessage.prepareTxMessage(mLeftRightCmd);
+        boolean checkOk = checkBtVelocityMessage(cmdLeft, cmdRight);
+        assertTrue(checkOk == true);
+    }
+
+    @Test
+    public void velocity_isRightLimitedMinus30000()throws Exception {
+        mLeftRightCmd[0] = 0;
+        mLeftRightCmd[1] = -30000;
+        short cmdLeft = 0;
+        short cmdRight = CMD_MAX_NEGATIVE;
         mTxMessage = mMessage.prepareTxMessage(mLeftRightCmd);
         boolean checkOk = checkBtVelocityMessage(cmdLeft, cmdRight);
         assertTrue(checkOk == true);

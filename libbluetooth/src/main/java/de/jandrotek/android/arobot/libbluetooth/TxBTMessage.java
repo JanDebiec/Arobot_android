@@ -44,18 +44,7 @@ public class TxBTMessage {
         mBTMessage[INDEX_CMD_ID] = BT_CMD_VELOCITY;
     }
 
-//    private void changeTogglebyte() {
-//
-//        if (mToggle == 0) {
-//            mToggle = (byte) 0xFF;
-//        } else {
-//            mToggle = (byte) 0;
-//        }
-//        mBTMessage[INDEX_CMD_ID] = mToggle;
-//    }
-
     public byte[] prepareTxMessage(float[] LRCmd) {
-//        changeTogglebyte();
         float cmdLeft = LRCmd[0];
         float cmdRight = LRCmd[1];
         if(LRCmd[0] > CMD_MAX_POSITIVE)
