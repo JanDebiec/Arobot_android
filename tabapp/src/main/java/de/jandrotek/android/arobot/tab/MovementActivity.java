@@ -68,6 +68,8 @@ public class MovementActivity extends AppCompatActivity {
     private SensorService mSensorService;
     private SensorCalc mMovCalculator; // for use in RxSensor
     private SensorManager mSensorManager = null;
+    private RajawaliLoadModelRenderer mRenderer = null;
+
 
     // BT control vars, all moved to BTInterface
     private BluetoothInterface mBTInterface = null;
@@ -139,6 +141,10 @@ public class MovementActivity extends AppCompatActivity {
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorService = new SensorService(this, mSensorManager);
         mSensorService.setCalculator(mMovCalculator);
+
+        mRenderer = new RajawaliLoadModelRenderer(this);
+
+
         setContentView(R.layout.activity_movement);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -278,14 +284,14 @@ public class MovementActivity extends AppCompatActivity {
         if ((mSensorMovementFragment == null) && (mManualMovementFragment == null) && (mBluetoothFragment == null)) {
             if (position == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
                 mFragmentIndexAct = ArobotDefines.POSITION_SENSOR_MOVEMENT;
-                mSensorMovementFragment = SensorMovementFragment.newInstance(position, this);
+                mSensorMovementFragment = SensorMovementFragment.newInstance(position, this, mRenderer);
                 fragmentManager
                         .beginTransaction()
                         .add(R.id.container,
                                 mSensorMovementFragment).commitAllowingStateLoss();
             } else if (position == ArobotDefines.POSITION_MANUAL_MOVEMENT) {
                 mFragmentIndexAct = ArobotDefines.POSITION_MANUAL_MOVEMENT;
-                mManualMovementFragment = ManualMovementFragment.getInstance();
+                mManualMovementFragment = ManualMovementFragment.getInstance(mRenderer);
                 fragmentManager
                         .beginTransaction()
                         .add(R.id.container,
@@ -301,14 +307,14 @@ public class MovementActivity extends AppCompatActivity {
         } else {
             if (position == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
                 mFragmentIndexAct = ArobotDefines.POSITION_SENSOR_MOVEMENT;
-                mSensorMovementFragment = SensorMovementFragment.newInstance(position, this);
+                mSensorMovementFragment = SensorMovementFragment.newInstance(position, this, mRenderer);
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.container,
                                 mSensorMovementFragment).commit();
             } else if (position == ArobotDefines.POSITION_MANUAL_MOVEMENT) {
                 mFragmentIndexAct = ArobotDefines.POSITION_MANUAL_MOVEMENT;
-                mManualMovementFragment = ManualMovementFragment.getInstance();
+                mManualMovementFragment = ManualMovementFragment.getInstance(mRenderer);
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.container,

@@ -175,15 +175,15 @@ class SensorService
     }
 
     private  void logCounters(){
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG,
-                    " SAcc " + mCounterSensorAcc
-                            + " SGyro " + mCounterSensorGyro
-                            + " SMagnet " + mCounterSensorMagnet
-                            + " SGlobal " + mCounterSensorGlobal
-                            + " Fusion " + mCounterSensorFusion
-                            + " Ui " + mCounterUiUpdate);
-        }
+//        if (BuildConfig.DEBUG) {
+//            Log.d(TAG,
+//                    " SAcc " + mCounterSensorAcc
+//                            + " SGyro " + mCounterSensorGyro
+//                            + " SMagnet " + mCounterSensorMagnet
+//                            + " SGlobal " + mCounterSensorGlobal
+//                            + " Fusion " + mCounterSensorFusion
+//                            + " Ui " + mCounterUiUpdate);
+//        }
         mCounterSensorAcc = 0;
         mCounterSensorGyro = 0;
         mCounterSensorMagnet = 0;
