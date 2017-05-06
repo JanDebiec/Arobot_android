@@ -98,6 +98,7 @@ private TiltView mManualTilter;
             mDataAcqTimer.purge();
             mDataAcqTimer = null;
         }
+        mRenderer.setSceneInitialized(false);
     }
 
     private void updateUIValues(){

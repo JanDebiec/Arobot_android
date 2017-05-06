@@ -50,6 +50,7 @@ public class RajawaliLoadModelRenderer extends Renderer {
 //    private Object3D mMonkey;
     private Vector3 mAccValues;
     private Vector3 mRotateValues;
+    private boolean mSceneOnceCreated = false;
 
 
     public RajawaliLoadModelRenderer(Context context) {
@@ -60,38 +61,36 @@ public class RajawaliLoadModelRenderer extends Renderer {
 
     protected void initScene() {
         try {
-            mLight = new DirectionalLight(1f, 0.2f, -1.0f);
-            mLight.setColor(1.0f, 1.0f, 1.0f);
-            mLight.setPower(5);
+            if(!mSceneOnceCreated) {
+                mLight = new DirectionalLight(1f, 0.2f, -1.0f);
+                mLight.setColor(1.0f, 1.0f, 1.0f);
+                mLight.setPower(5);
+                mSceneOnceCreated = true;
+            }
             getCurrentScene().addLight(mLight);
 
-            final LoaderOBJ objParser = new LoaderOBJ(mContext.getResources( ),mTextureManager, R.raw.wh3 );
-//            final LoaderOBJ objParser = new LoaderOBJ(mContext.getResources( ),mTextureManager, R.raw.st_wh_52_scaled_2tri );
-
+                final LoaderOBJ objParser = new LoaderOBJ(mContext.getResources( ),mTextureManager, R.raw.wh3 );
 //            final LoaderAWD objParser = new LoaderAWD(mContext.getResources(), mTextureManager, R.raw.awd_suzanne);
-            objParser.parse();
-
-            mSteeringWheel = objParser.getParsedObject();
-//            mMonkey = parser.getParsedObject();
-
+                objParser.parse();
+                mSteeringWheel = objParser.getParsedObject();
             getCurrentScene().addChild(mSteeringWheel);
 
             getCurrentCamera().setZ(7);
 
-            int[] resourceIds = new int[]{R.drawable.posx, R.drawable.negx,
-                    R.drawable.posy, R.drawable.negy, R.drawable.posz,
-                    R.drawable.negz};
+                int[] resourceIds = new int[]{R.drawable.posx, R.drawable.negx,
+                        R.drawable.posy, R.drawable.negy, R.drawable.posz,
+                        R.drawable.negz};
 
-            Material material = new Material();
-            material.enableLighting(true);
-            material.setDiffuseMethod(new DiffuseMethod.Lambert());
+                Material material = new Material();
+                material.enableLighting(true);
+                material.setDiffuseMethod(new DiffuseMethod.Lambert());
 
-            CubeMapTexture envMap = new CubeMapTexture("environmentMap",
-                    resourceIds);
-            envMap.isEnvironmentTexture(true);
-            material.addTexture(envMap);
-            material.setColorInfluence(0);
-            mSteeringWheel.setMaterial(material);
+                CubeMapTexture envMap = new CubeMapTexture("environmentMap",
+                        resourceIds);
+                envMap.isEnvironmentTexture(true);
+                material.addTexture(envMap);
+                material.setColorInfluence(0);
+                mSteeringWheel.setMaterial(material);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,4 +118,7 @@ public class RajawaliLoadModelRenderer extends Renderer {
         mRotateValues.setAll(x, y, z);
     }
 
+    public void setSceneInitialized(boolean flag){
+        mSceneInitialized = flag;
+    }
 }

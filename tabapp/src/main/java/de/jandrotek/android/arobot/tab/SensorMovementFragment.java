@@ -182,6 +182,7 @@ public class SensorMovementFragment extends Fragment
             mSensorService.unregisterSensors();
         }
         if (BuildConfig.DEBUG) Log.i(TAG, "onPause");
+        mRenderer.setSceneInitialized(false);
     }
 
     @Override
