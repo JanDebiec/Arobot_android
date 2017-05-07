@@ -14,7 +14,26 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
     }
+    project.ext {
+        jdBuildToolsVersion="25.0.0" //String
+        jdMinSdkVersion=18 //Integer
+        jdTargetSdkVersion=25
+        jdCompileSdkVersion=25
+
+        jdSupportLibrary = '25.3.0'
+
+    }
+
+    ext.supportDependencies = [
+            design           :    "com.android.support:design:${jdSupportLibrary}",
+            recyclerView     :    "com.android.support:recyclerview-v7:${jdSupportLibrary}",
+            cardView         :    "com.android.support:cardview-v7:${jdSupportLibrary}",
+            appCompat        :    "com.android.support:appcompat-v7:${jdSupportLibrary}",
+            supportAnnotation:    "com.android.support:support-annotations:${jdSupportLibrary}",
+
+    ]
+
 }
 
 // Load dependencies
-apply from: 'gradleScript/dependencies.gradle'
+//apply from: 'gradleScript/dependencies.gradle'

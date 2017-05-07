@@ -1,9 +1,11 @@
 ext {
     //Version
-    supportLibrary = '25.3.0'
+//    supportLibrary = '25.3.0'
 //    buildToolsVersion = '26.0.2'
-    buildToolsVersion = '25.0.0'
-    compileSdkVersion = "android-25"
+
+    // moved to root build gradle
+//    buildToolsVersion = '25.0.0'
+//    compileSdkVersion = "android-25"
 
     tools = [
             bTV: "${buildToolsVersion}",

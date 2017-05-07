@@ -1,14 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion tools.cSV
-    buildToolsVersion tools.bTV
+    compileSdkVersion project.ext.jdCompileSdkVersion
+    buildToolsVersion project.ext.jdBuildToolsVersion
 
     defaultConfig {
         applicationId "de.jandrotek.android.arobot.app.arobotbt"
-        minSdkVersion 18
-//        minSdkVersion 15
-        targetSdkVersion 25
+        minSdkVersion project.ext.jdMinSdkVersion
 
         testApplicationId "de.jandrotek.android.arobot.app.arobotbt.test"
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
@@ -20,12 +18,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-//    buildToolsVersion '25.0.0'
-//    buildToolsVersion '25.0.0'
 }
 
 dependencies {
-    compile supportDependencies.appCompat
+    compile project.ext.supportDependencies.appCompat
 //    compile 'com.android.support:support-v4:22.0.0'
     compile project(':core')
     compile project(':libbluetooth')

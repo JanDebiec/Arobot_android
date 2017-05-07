@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion tools.cSV
-    buildToolsVersion tools.bTV
+    compileSdkVersion project.ext.jdCompileSdkVersion
+    buildToolsVersion project.ext.jdBuildToolsVersion
 
     defaultConfig {
-        minSdkVersion 18
-        targetSdkVersion 25
+        minSdkVersion project.ext.jdMinSdkVersion
+        minSdkVersion project.ext.jdMinSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -23,7 +23,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile supportDependencies.appCompat
+    compile project.ext.supportDependencies.appCompat
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
