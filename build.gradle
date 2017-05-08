@@ -30,7 +30,10 @@ allprojects {
             cardView         :    "com.android.support:cardview-v7:${jdSupportLibrary}",
             appCompat        :    "com.android.support:appcompat-v7:${jdSupportLibrary}",
             supportAnnotation:    "com.android.support:support-annotations:${jdSupportLibrary}",
+    ]
 
+    ext.testDeps = [
+            junit : "junit:junit:4.12"
     ]
 
 }
