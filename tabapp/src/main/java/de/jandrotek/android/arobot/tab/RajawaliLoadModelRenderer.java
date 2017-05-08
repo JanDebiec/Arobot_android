@@ -31,6 +31,7 @@ package de.jandrotek.android.arobot.tab;
         import org.rajawali3d.loader.ParsingException;
         import org.rajawali3d.materials.Material;
         import org.rajawali3d.materials.methods.DiffuseMethod;
+        import org.rajawali3d.materials.methods.SpecularMethod;
         import org.rajawali3d.materials.textures.CubeMapTexture;
         import org.rajawali3d.math.vector.Vector3;
         import org.rajawali3d.renderer.Renderer;
@@ -69,7 +70,7 @@ public class RajawaliLoadModelRenderer extends Renderer {
             }
             getCurrentScene().addLight(mLight);
 
-                final LoaderOBJ objParser = new LoaderOBJ(mContext.getResources( ),mTextureManager, R.raw.wh3 );
+                final LoaderOBJ objParser = new LoaderOBJ(mContext.getResources( ),mTextureManager, R.raw.wh3_obj );
 //            final LoaderAWD objParser = new LoaderAWD(mContext.getResources(), mTextureManager, R.raw.awd_suzanne);
                 objParser.parse();
                 mSteeringWheel = objParser.getParsedObject();
@@ -77,19 +78,26 @@ public class RajawaliLoadModelRenderer extends Renderer {
 
             getCurrentCamera().setZ(7);
 
-                int[] resourceIds = new int[]{R.drawable.posx, R.drawable.negx,
-                        R.drawable.posy, R.drawable.negy, R.drawable.posz,
-                        R.drawable.negz};
+//                int[] resourceIds = new int[]{R.drawable.posx, R.drawable.negx,
+//                        R.drawable.posy, R.drawable.negy, R.drawable.posz,
+//                        R.drawable.negz};
+//
+//                Material material = new Material();
+//                material.enableLighting(true);
+//                material.setDiffuseMethod(new DiffuseMethod.Lambert());
+//
+//                CubeMapTexture envMap = new CubeMapTexture("environmentMap",
+//                        resourceIds);
+//                envMap.isEnvironmentTexture(true);
+//                material.addTexture(envMap);
+//                material.setColorInfluence(0);
 
-                Material material = new Material();
-                material.enableLighting(true);
-                material.setDiffuseMethod(new DiffuseMethod.Lambert());
+            Material material = new Material();
+            material.setColor(0xff009900);
+            material.enableLighting(true);
+            material.setDiffuseMethod(new DiffuseMethod.Lambert());
+            material.setSpecularMethod(new SpecularMethod.Phong());
 
-                CubeMapTexture envMap = new CubeMapTexture("environmentMap",
-                        resourceIds);
-                envMap.isEnvironmentTexture(true);
-                material.addTexture(envMap);
-                material.setColorInfluence(0);
                 mSteeringWheel.setMaterial(material);
         } catch (Exception e) {
             e.printStackTrace();
