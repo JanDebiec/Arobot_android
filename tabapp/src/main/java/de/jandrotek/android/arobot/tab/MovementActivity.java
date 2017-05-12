@@ -282,29 +282,6 @@ public class MovementActivity extends AppCompatActivity {
 
         }
 
-
-
-//        if(mAppBarExpanded) { //not running, should run
-//            if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
-//                if (mSensorService != null) {
-//                    startMoveInSensFrag();
-//                }
-//            }
-//            mAppBarExpanded = false;
-//            mVisibility = View.INVISIBLE;
-////                    mVisibility = View.GONE;
-//            mFab.setImageResource(ic_media_pause);
-//        } else { // pause
-//            if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
-//                stopMoveInSensFrag();
-//            }
-//            mAppBarExpanded = true;
-//            mVisibility = View.VISIBLE;
-//            mFab.setImageResource(ic_media_play);
-//            handleBtMoveToggle(false);
-//        }
-
-
 //        mAppBarLayout.setExpanded(mAppBarExpanded);
 //        mAppBarLayout.setVisibility(mVisibility);
     }
