@@ -112,54 +112,54 @@
             <!--</View>-->
         </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/layoutAction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/layoutAction"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentStart="true"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentEnd="true">-->
 
-            <TextView
-                android:id="@+id/tVConnected"
-                style="@style/aRobotMargins"
-                android:text="@string/connected_status_off"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-
-
-            <TextView
-                android:id="@+id/tVMoving"
-                style="@style/aRobotMargins"
-                android:text="@string/moving_status_stop"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <ToggleButton
-                android:id="@+id/toggleButtonMove"
-                style="@style/aRobotMargins"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textOff="@string/move_button_off"
-                android:textOn="@string/move_button_on"/>
-
-            <TextView
-                android:id="@+id/tVSavingStatus"
-                style="@style/aRobotMargins"
-                android:text="@string/SavingStatus"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <!--<TextView-->
+                <!--android:id="@+id/tVConnected"-->
+                <!--style="@style/aRobotMargins"-->
+                <!--android:text="@string/connected_status_off"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--/>-->
 
 
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/tVMoving"-->
+                <!--style="@style/aRobotMargins"-->
+                <!--android:text="@string/moving_status_stop"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"/>-->
+
+            <!--<ToggleButton-->
+                <!--android:id="@+id/toggleButtonMove"-->
+                <!--style="@style/aRobotMargins"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textOff="@string/move_button_off"-->
+                <!--android:textOn="@string/move_button_on"/>-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tVSavingStatus"-->
+                <!--style="@style/aRobotMargins"-->
+                <!--android:text="@string/SavingStatus"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"/>-->
+
+
+        <!--</LinearLayout>-->
 
     </RelativeLayout>
 

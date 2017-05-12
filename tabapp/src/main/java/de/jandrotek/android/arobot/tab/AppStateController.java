@@ -21,10 +21,10 @@ public class AppStateController {
 
 
 
-    public final static int eInterfaceNotDefined =  0;
-    public final static int eInterfaceBlueTooth = eInterfaceNotDefined + 1;
-    public final static int eInterfaceWlan = eInterfaceBlueTooth + 1;
-    public final static int eInterfaceWlanROS = eInterfaceWlan + 1;
+//    public final static int eInterfaceNotDefined =  0;
+//    public final static int eInterfaceBlueTooth = eInterfaceNotDefined + 1;
+//    public final static int eInterfaceWlan = eInterfaceBlueTooth + 1;
+//    public final static int eInterfaceWlanROS = eInterfaceWlan + 1;
 
     public int getInterface() {
         return mInterface;
@@ -42,9 +42,10 @@ public class AppStateController {
     }
 
     public boolean isInterfaceInPrefsDefined(){
+        boolean flag = false;
         //check in prefs
         // set member
-        // return flag
+         return flag;
     }
 
     public void setInterfaceInPrefs(int anInterface){
@@ -52,6 +53,7 @@ public class AppStateController {
     }
 
     public boolean connect(int timeout){
-
+        boolean flag = false;
+return flag;
     }
 }
