@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             mStateController.setAppState(AppStateController.eReadyToMove);
             mTextOnScreen.setText("eReadyToMove");
         } else if (state == AppStateController.eReadyToMove){
-//            if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
+//            if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
 //                if (mSensorService != null) {
 //                    startMoveInSensFrag();
 //                }
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             mTextOnScreen.setText("eMoving");
 
         } else if (state == AppStateController.eMoving){
-//            if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
+//            if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
 //                stopMoveInSensFrag();
 //            }
 //            mAppBarExpanded = true;

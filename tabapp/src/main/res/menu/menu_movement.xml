@@ -7,13 +7,32 @@
         android:id="@+id/connect_device"
         android:icon="@drawable/ic_action_bluetooth"
         android:title="@string/insecure_connect"
-        app:showAsAction="ifRoom|withText"/>
+        app:showAsAction="never"/>
+        <!--app:showAsAction="ifRoom|withText"/>-->
+    <!--sensor movement fragment-->
+    <item
+        android:id="@+id/action_sensor_fragment"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/action_sensor_fragment"/>
+    <!--manual movement fragment-->
+    <item
+        android:id="@+id/action_manual_fragment"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/action_manual_fragment"/>
+    <!--bluetooth chat fragment-->
+    <item
+        android:id="@+id/action_bluetooth_fragment"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/action_bluetooth_fragment"/>
+    <!--setttings-->
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never"
         android:title="@string/action_settings"/>
-
     <item
         android:id="@+id/action_about"
         android:orderInCategory="100"

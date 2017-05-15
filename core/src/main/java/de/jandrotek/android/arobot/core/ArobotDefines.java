@@ -12,9 +12,9 @@ public class ArobotDefines {
     public static final int COLOR_GREEN = 0x008000;
     public static final int COLOR_GREY = 0x0f0f0f;
 
-    public static final int POSITION_SENSOR_MOVEMENT = 0;
-    public static final int POSITION_MANUAL_MOVEMENT = 1;
-    public static final int POSITION_BLUETOOTH_CHAT = 2;
+    public static final int FRAGMENT_SENSOR_MOVEMENT = 0;
+    public static final int FRAGMENT_MANUAL_MOVEMENT = 1;
+    public static final int FRAGMENT_BLUETOOTH_CHAT = 2;
 
     public static final String[] fragmentNames = {
             "Sensor movement",

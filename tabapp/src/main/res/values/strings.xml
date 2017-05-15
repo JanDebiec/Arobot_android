@@ -70,6 +70,9 @@
     <string name="update_freq_prompt">Update Frequency</string>
     <string name="min_quake_mag_prompt">Minimum Quake Magnitude</string>
     <string name="menu_preferences">Preferences</string>
+    <string name="action_sensor_fragment">sensor_fragment</string>
+    <string name="action_manual_fragment">manual_fragment</string>
+    <string name="action_bluetooth_fragment">bluetooth_fragment</string>
 
 
 </resources>
