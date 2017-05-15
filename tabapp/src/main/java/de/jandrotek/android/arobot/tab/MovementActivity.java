@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Resources.Theme;
 import android.graphics.Color;
 import android.hardware.SensorManager;
@@ -34,7 +35,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 //import com.google.android.gms.appindexing.Action;
 
@@ -52,8 +52,12 @@ import de.jandrotek.android.arobot.libwifi.WlanDefines;
 
 import static android.R.drawable.ic_media_pause;
 import static android.R.drawable.ic_media_play;
+import static android.R.drawable.ic_menu_help;
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 import static de.jandrotek.android.arobot.core.ArobotDefines.eBtVelCmdScaleFactor;
+import static de.jandrotek.android.arobot.tab.AppStateController.eColorIdle;
+import static de.jandrotek.android.arobot.tab.AppStateController.eColorMoving;
+import static de.jandrotek.android.arobot.tab.AppStateController.eColorReadyToMove;
 
 public class MovementActivity extends AppCompatActivity {
     private static final String TAG = "MovementActivity";
@@ -183,35 +187,17 @@ public class MovementActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 handleFABPress();
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
             }
         });
-//        prepareBTInterface();
+        mFab.setImageResource(ic_menu_help);
+        mFab.setBackgroundTintList(ColorStateList.valueOf(eColorIdle));
+
+        //        prepareBTInterface();
         mBTInterface = new BluetoothInterface(this, mHandler);
 //        mBluetoothFragment = BluetoothFragment.getInstance();
 
-        // own widgets
-//        mBTConnectStatus = (TextView) findViewById(R.id.tVConnected);
-//        if (mBTInterface.getBTConnected()) {
-//            mBTConnectStatus.setBackgroundColor(ArobotDefines.COLOR_GREEN);
-//        } else {
-//            mBTConnectStatus.setBackgroundColor(ArobotDefines.COLOR_GREY);
-//        }
-
-//        mMovingStatus = (TextView) findViewById(R.id.tVMoving);
         mFragmentName = (TextView) findViewById(R.id.tvFragmentName);
 
-//        mToggleButtonMove = (ToggleButton) findViewById(R.id.toggleButtonMove);
-//        mToggleButtonMove.setEnabled(false);
-//        mToggleButtonMove.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                handleBtMoveToggle(!mMovementEnabled);// should be toggled, that's why parameter = negation of old value
-
-//            }
-//        });
         mArobotSettings = new ArobotSettings();
         updateFromPreferences();
 
@@ -231,23 +217,6 @@ public class MovementActivity extends AppCompatActivity {
 
     }
 
-//    private void handleBtMoveToggle(boolean movementAllowed) {
-//        if (movementAllowed == true) {
-//            mMovementEnabled = true;
-////            mMovingStatus.setBackgroundColor(Color.GREEN);
-////            mMovingStatus.setText(R.string.moving_status_move);
-////            mToggleButtonMove.setText(R.string.move_button_on);
-////            mToggleButtonMove.setBackgroundColor(Color.RED);
-//        } else {
-//            mMovementEnabled = false;
-////            mMovingStatus.setBackgroundColor(Color.LTGRAY);
-////            mMovingStatus.setText(R.string.moving_status_stop);
-////            mToggleButtonMove.setText(R.string.move_button_off);
-////            mToggleButtonMove.setBackgroundColor(Color.LTGRAY);
-//        }
-//        allowMovement(mMovementEnabled);
-//    }
-
     private void handleFABPress() {
         // get state form StateCOntroller
         int state = mStateController.getAppState();
@@ -262,28 +231,21 @@ public class MovementActivity extends AppCompatActivity {
                     startMoveInSensFrag();
                 }
             }
-//            mAppBarExpanded = false;
-//            mVisibility = View.INVISIBLE;
-//                    mVisibility = View.GONE;
             mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorMoving));
             mStateController.setAppState(AppStateController.eMoving);
 
         } else if (state == AppStateController.eMoving){
             if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
                 stopMoveInSensFrag();
             }
-//            mAppBarExpanded = true;
-//            mVisibility = View.VISIBLE;
             mFab.setImageResource(ic_media_play);
-//            handleBtMoveToggle(false);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
             mStateController.setAppState(AppStateController.eReadyToMove);
 
         } else { // unknown
 
         }
-
-//        mAppBarLayout.setExpanded(mAppBarExpanded);
-//        mAppBarLayout.setVisibility(mVisibility);
     }
 
     private void stopMoveInSensFrag() {
@@ -428,7 +390,8 @@ public class MovementActivity extends AppCompatActivity {
         super.onResume();
         mWakeLock.acquire();
         // query state
-        // set the buttons, depending the state
+        // set the FAB button, only the color and shape,
+        // without calling internal functions, depending the state
     }
 
     @Override

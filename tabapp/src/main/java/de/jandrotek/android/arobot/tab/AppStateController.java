@@ -1,15 +1,24 @@
 package de.jandrotek.android.arobot.tab;
 
+import android.graphics.Color;
+
 /**
  * Created by jan on 10.05.17.
  */
 
 public class AppStateController {
     public final static int eIdle = 0;
+    public final static int eColorIdle = Color.DKGRAY;
+
     public final static int eNotConnected = eIdle + 1;
+    public final static int eColorNotConnected = Color.GRAY;
     public final static int eConnected = eNotConnected + 1;
+    public final static int eColorConnected = Color.BLUE;
     public final static int eReadyToMove = eConnected + 1;
+    public final static int eColorReadyToMove = Color.GREEN;
     public final static int eMoving = eReadyToMove + 1;
+    public final static int eColorMoving = Color.RED;
+
     private int mAppState;
     public int getAppState() {
         return mAppState;
@@ -54,6 +63,6 @@ public class AppStateController {
 
     public boolean connect(int timeout){
         boolean flag = false;
-return flag;
+        return flag;
     }
 }
