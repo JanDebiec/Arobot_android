@@ -239,6 +239,30 @@ public class MovementActivity extends AppCompatActivity {
         }
     }
 
+    private void showProperFABState() {
+        // get state form StateCOntroller
+        int state = mStateController.getAppState();
+        // depending on state, call the proper commands
+        if(state == AppStateController.eIdle){
+            mFab.setImageResource(ic_menu_help);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorIdle));
+        } else if (state == AppStateController.eNotConnected){
+            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorNotConnected));
+        } else if (state == AppStateController.eConnected){
+            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorConnected));
+        } else if (state == AppStateController.eReadyToMove){
+            mFab.setImageResource(ic_media_play);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
+        } else if (state == AppStateController.eMoving){
+            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorMoving));
+        } else { // unknown
+
+        }
+    }
+
     private void stopMoveInSensFrag() {
         mSensorService.setRunFuseTask(false);
         mSensorService.unregisterSensors();
@@ -293,6 +317,9 @@ public class MovementActivity extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.container,
                                 mSensorMovementFragment).commit();
+                if(mFragmentIndexOld != ArobotDefines.FRAGMENT_SENSOR_MOVEMENT){
+                    // reset the position of wheel
+                }
             } else if (position == ArobotDefines.FRAGMENT_MANUAL_MOVEMENT) {
                 mFragmentIndexAct = ArobotDefines.FRAGMENT_MANUAL_MOVEMENT;
                 mManualMovementFragment = ManualMovementFragment.getInstance(mRenderer);
@@ -330,23 +357,25 @@ public class MovementActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         Intent serverIntent = null;
         int id = item.getItemId();
-        if (id == R.id.connect_device) {
-            //TODO check which interface
-            if(mExtInterfaceNew == ArobotDefines.EXT_CONN_BT) {
-                if (mBTInterface.isBTConnected() == true) {
-                    mBTInterface.stopBtService();
-                    updateUI();
-                } else {
-                    mBTInterface.startBluetooth();
-                    // Launch the DeviceListActivity to see devices and do scan
-                    serverIntent = new Intent(this, DeviceListActivity.class);
-                    startActivityForResult(serverIntent, BluetoothDefines.REQUEST_CONNECT_DEVICE);
-                }
-            } else if (mExtInterfaceNew == ArobotDefines.EXT_CONN_WLAN){
-
-            }
-            return true;
-        } else if (id == R.id.action_sensor_fragment) {
+        // connect will be initialzed in FAB handling
+//        if (id == R.id.connect_device) {
+//            //TODO check which interface
+//            if(mExtInterfaceNew == ArobotDefines.EXT_CONN_BT) {
+//                if (mBTInterface.isBTConnected() == true) {
+//                    mBTInterface.stopBtService();
+//                    updateUI();
+//                } else {
+//                    mBTInterface.startBluetooth();
+//                    // Launch the DeviceListActivity to see devices and do scan
+//                    serverIntent = new Intent(this, DeviceListActivity.class);
+//                    startActivityForResult(serverIntent, BluetoothDefines.REQUEST_CONNECT_DEVICE);
+//                }
+//            } else if (mExtInterfaceNew == ArobotDefines.EXT_CONN_WLAN){
+//
+//            }
+//            return true;
+//        } else if (id == R.id.action_sensor_fragment) {
+        if (id == R.id.action_sensor_fragment) {
             showProperFragment(ArobotDefines.FRAGMENT_SENSOR_MOVEMENT);
             return true;
         } else if (id == R.id.action_manual_fragment) {
@@ -392,9 +421,7 @@ public class MovementActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         mWakeLock.acquire();
-        // query state
-        // set the FAB button, only the color and shape,
-        // without calling internal functions, depending the state
+        showProperFABState();
     }
 
     @Override
@@ -424,42 +451,42 @@ public class MovementActivity extends AppCompatActivity {
 //        mClient.disconnect();
     }
 
-    private static class MyAdapter extends ArrayAdapter<String> implements ThemedSpinnerAdapter {
-        private final Helper mDropDownHelper;
-
-        public MyAdapter(Context context, String[] objects) {
-            super(context, android.R.layout.simple_list_item_1, objects);
-            mDropDownHelper = new Helper(context);
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            View view;
-
-            if (convertView == null) {
-                // Inflate the drop down using the helper's LayoutInflater
-                LayoutInflater inflater = mDropDownHelper.getDropDownViewInflater();
-                view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-            } else {
-                view = convertView;
-            }
-
-            TextView textView = (TextView) view.findViewById(android.R.id.text1);
-            textView.setText(getItem(position));
-
-            return view;
-        }
-
-        @Override
-        public Theme getDropDownViewTheme() {
-            return mDropDownHelper.getDropDownViewTheme();
-        }
-
-        @Override
-        public void setDropDownViewTheme(Theme theme) {
-            mDropDownHelper.setDropDownViewTheme(theme);
-        }
-    }
+//    private static class MyAdapter extends ArrayAdapter<String> implements ThemedSpinnerAdapter {
+//        private final Helper mDropDownHelper;
+//
+//        public MyAdapter(Context context, String[] objects) {
+//            super(context, android.R.layout.simple_list_item_1, objects);
+//            mDropDownHelper = new Helper(context);
+//        }
+//
+//        @Override
+//        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+//            View view;
+//
+//            if (convertView == null) {
+//                // Inflate the drop down using the helper's LayoutInflater
+//                LayoutInflater inflater = mDropDownHelper.getDropDownViewInflater();
+//                view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+//            } else {
+//                view = convertView;
+//            }
+//
+//            TextView textView = (TextView) view.findViewById(android.R.id.text1);
+//            textView.setText(getItem(position));
+//
+//            return view;
+//        }
+//
+//        @Override
+//        public Theme getDropDownViewTheme() {
+//            return mDropDownHelper.getDropDownViewTheme();
+//        }
+//
+//        @Override
+//        public void setDropDownViewTheme(Theme theme) {
+//            mDropDownHelper.setDropDownViewTheme(theme);
+//        }
+//    }
 
     private void updateFromPreferences() {
         Context context = getApplicationContext();
