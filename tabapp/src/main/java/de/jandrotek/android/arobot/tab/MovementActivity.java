@@ -54,8 +54,10 @@ import static android.R.drawable.ic_media_play;
 import static android.R.drawable.ic_menu_help;
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 import static de.jandrotek.android.arobot.core.ArobotDefines.eBtVelCmdScaleFactor;
+import static de.jandrotek.android.arobot.tab.AppStateController.eColorConnected;
 import static de.jandrotek.android.arobot.tab.AppStateController.eColorIdle;
 import static de.jandrotek.android.arobot.tab.AppStateController.eColorMoving;
+import static de.jandrotek.android.arobot.tab.AppStateController.eColorNotConnected;
 import static de.jandrotek.android.arobot.tab.AppStateController.eColorReadyToMove;
 
 public class MovementActivity extends AppCompatActivity {
@@ -148,6 +150,7 @@ public class MovementActivity extends AppCompatActivity {
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorService = new SensorService(this, mSensorManager);
         mSensorService.setCalculator(mMovCalculator);
+        mStateController = new AppStateController();
 
         mRenderer = new RajawaliLoadModelRenderer(this);
 
@@ -159,6 +162,7 @@ public class MovementActivity extends AppCompatActivity {
         mAppBarLayout = (AppBarLayout)findViewById((R.id.appbar));
 
 //            begin with sensor fragment
+        mFragmentName = (TextView) findViewById(R.id.tvFragmentName);
         mFragmentIndexAct = ArobotDefines.FRAGMENT_SENSOR_MOVEMENT;
         showProperFragment(mFragmentIndexAct);
 
@@ -175,7 +179,6 @@ public class MovementActivity extends AppCompatActivity {
         //        prepareBTInterface();
         mBTInterface = new BluetoothInterface(this, mHandler);
 
-        mFragmentName = (TextView) findViewById(R.id.tvFragmentName);
 
         mArobotSettings = new ArobotSettings();
         updateFromPreferences();
@@ -200,9 +203,18 @@ public class MovementActivity extends AppCompatActivity {
         // get state form StateCOntroller
         int state = mStateController.getAppState();
         // depending on state, call the proper commands
-        if(state == AppStateController.eNotConnected){
-            // try to connect
+        if(state == AppStateController.eIdle){
+//            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorNotConnected));
+            mStateController.setAppState(AppStateController.eNotConnected);
+        } else if (state == AppStateController.eNotConnected){
+            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorConnected));
+            mStateController.setAppState(AppStateController.eConnected);
         } else if (state == AppStateController.eConnected){
+            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
+            mStateController.setAppState(AppStateController.eReadyToMove);
 
         } else if (state == AppStateController.eReadyToMove){
             if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
@@ -336,10 +348,13 @@ public class MovementActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_sensor_fragment) {
             showProperFragment(ArobotDefines.FRAGMENT_SENSOR_MOVEMENT);
+            return true;
         } else if (id == R.id.action_manual_fragment) {
             showProperFragment(ArobotDefines.FRAGMENT_MANUAL_MOVEMENT);
+            return true;
         } else if (id == R.id.action_bluetooth_fragment) {
             showProperFragment(ArobotDefines.FRAGMENT_BLUETOOTH_CHAT);
+            return true;
         } else if (id == R.id.action_settings) {
             Intent i = new Intent(this, PreferencesActivity.class);
 
