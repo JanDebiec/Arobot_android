@@ -18,20 +18,20 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ThemedSpinnerAdapter;
+//import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
-import android.view.LayoutInflater;
+//import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+//import android.widget.AdapterView;
+//import android.widget.AdapterView.OnItemSelectedListener;
+//import android.widget.ArrayAdapter;
+//import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -423,14 +423,14 @@ public class MovementActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-//        mWakeLock.acquire();
+        mWakeLock.acquire();
         showProperFABState();
     }
 
     @Override
     public void onPause(){
     super.onPause();
-//        mWakeLock.release();
+        mWakeLock.release();
     }
 
     @Override

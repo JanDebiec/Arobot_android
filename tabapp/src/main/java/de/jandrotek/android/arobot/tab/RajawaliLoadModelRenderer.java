@@ -66,7 +66,7 @@ public class RajawaliLoadModelRenderer extends Renderer {
             if(!mSceneOnceCreated) {
                 mLight = new DirectionalLight(1f, 0.2f, -1.0f);
                 mLight.setColor(1.0f, 1.0f, 1.0f);
-                mLight.setPower(5);
+                mLight.setPower(2);
                 mSceneOnceCreated = true;
             }
             getCurrentScene().addLight(mLight);
@@ -98,7 +98,7 @@ public class RajawaliLoadModelRenderer extends Renderer {
 //                material.setColorInfluence(0);
             if(material == null ) {
                 Material material = new Material();
-                material.setColor(0xff706060);
+                material.setColor(0xffDAA520);
                 material.enableLighting(true);
                 material.setDiffuseMethod(new DiffuseMethod.Lambert());
                 material.setSpecularMethod(new SpecularMethod.Phong());
