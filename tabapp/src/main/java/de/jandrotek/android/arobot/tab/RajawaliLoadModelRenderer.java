@@ -98,7 +98,7 @@ public class RajawaliLoadModelRenderer extends Renderer {
 //                material.setColorInfluence(0);
             if(material == null ) {
                 Material material = new Material();
-                material.setColor(0xffDAA520);
+                material.setColor(0xffD4AF37);
                 material.enableLighting(true);
                 material.setDiffuseMethod(new DiffuseMethod.Lambert());
                 material.setSpecularMethod(new SpecularMethod.Phong());
