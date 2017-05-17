@@ -327,6 +327,9 @@ public class MovementActivity extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.container,
                                 mManualMovementFragment).commit();
+                if(mFragmentIndexOld == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
+                    stopMoveInSensFrag();
+                }
             } else if (position == ArobotDefines.FRAGMENT_BLUETOOTH_CHAT) {
                 mFragmentIndexAct = ArobotDefines.FRAGMENT_BLUETOOTH_CHAT;
                 mBluetoothFragment = BluetoothFragment.getInstance();

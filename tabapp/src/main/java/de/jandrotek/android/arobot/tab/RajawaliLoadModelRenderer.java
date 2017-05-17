@@ -52,7 +52,8 @@ public class RajawaliLoadModelRenderer extends Renderer {
     private Vector3 mAccValues;
     private Vector3 mRotateValues;
     private boolean mSceneOnceCreated = false;
-
+    private LoaderOBJ objParser = null;
+    private Material material = null;
 
     public RajawaliLoadModelRenderer(Context context) {
         super(context);
@@ -70,10 +71,13 @@ public class RajawaliLoadModelRenderer extends Renderer {
             }
             getCurrentScene().addLight(mLight);
 
-                final LoaderOBJ objParser = new LoaderOBJ(mContext.getResources( ),mTextureManager, R.raw.wh3_obj );
+            if(objParser == null) {
+                objParser = new LoaderOBJ(mContext.getResources(), mTextureManager, R.raw.wh3_obj);
+//                final LoaderOBJ objParser = new LoaderOBJ(mContext.getResources(), mTextureManager, R.raw.wh3_obj);
 //            final LoaderAWD objParser = new LoaderAWD(mContext.getResources(), mTextureManager, R.raw.awd_suzanne);
                 objParser.parse();
                 mSteeringWheel = objParser.getParsedObject();
+            }
             getCurrentScene().addChild(mSteeringWheel);
 
             getCurrentCamera().setZ(7);
@@ -90,15 +94,17 @@ public class RajawaliLoadModelRenderer extends Renderer {
 //                        resourceIds);
 //                envMap.isEnvironmentTexture(true);
 //                material.addTexture(envMap);
-//                material.setColorInfluence(0);
 
-            Material material = new Material();
-            material.setColor(0xff706060);
-            material.enableLighting(true);
-            material.setDiffuseMethod(new DiffuseMethod.Lambert());
-            material.setSpecularMethod(new SpecularMethod.Phong());
+//                material.setColorInfluence(0);
+            if(material == null ) {
+                Material material = new Material();
+                material.setColor(0xff706060);
+                material.enableLighting(true);
+                material.setDiffuseMethod(new DiffuseMethod.Lambert());
+                material.setSpecularMethod(new SpecularMethod.Phong());
 
                 mSteeringWheel.setMaterial(material);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
