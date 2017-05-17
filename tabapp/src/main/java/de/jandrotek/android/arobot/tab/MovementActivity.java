@@ -423,14 +423,14 @@ public class MovementActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-        mWakeLock.acquire();
+//        mWakeLock.acquire();
         showProperFABState();
     }
 
     @Override
     public void onPause(){
     super.onPause();
-        mWakeLock.release();
+//        mWakeLock.release();
     }
 
     @Override
