@@ -42,15 +42,14 @@ private TiltView mManualTilter;
 
     private static ManualMovementFragment ourInstance = null;
 
-    public static ManualMovementFragment getInstance(RajawaliLoadModelRenderer renderer) {
+    public static ManualMovementFragment getInstance() {
         if (ourInstance == null) {
-            ourInstance = new ManualMovementFragment(renderer);
+            ourInstance = new ManualMovementFragment();
         }
         return ourInstance;
     }
 
-    private ManualMovementFragment(RajawaliLoadModelRenderer renderer) {
-        mRenderer = renderer;
+    private ManualMovementFragment() {
     }
 
     @Override
@@ -74,7 +73,7 @@ private TiltView mManualTilter;
         mVerticalSeekbarR = (VerticalSeekBar)v.findViewById(R.id.vertikalSeekBarRight);
         // Find the TextureView
         mRajawaliSurface = (ISurface) v.findViewById(R.id.rajwali_surface);
-//        mRenderer = new RajawaliLoadModelRenderer(getActivity());
+        mRenderer = new RajawaliLoadModelRenderer(getActivity());
 //        mRenderer = new TiltRenderer(getActivity());
         mRajawaliSurface.setSurfaceRenderer(mRenderer);
         return v;

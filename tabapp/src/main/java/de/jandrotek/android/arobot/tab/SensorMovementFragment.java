@@ -69,12 +69,11 @@ public class SensorMovementFragment extends Fragment
 
     private OnNavigationListener mOnNavigationListener;
 
-    private SensorMovementFragment(RajawaliLoadModelRenderer renderer){
-        mRenderer = renderer;
+    private SensorMovementFragment(){
     }
 
-    public static SensorMovementFragment newInstance(int sectionNumber, Context context, RajawaliLoadModelRenderer renderer) {
-        SensorMovementFragment fragment = new SensorMovementFragment(renderer);
+    public static SensorMovementFragment newInstance(int sectionNumber, Context context) {
+        SensorMovementFragment fragment = new SensorMovementFragment();
         Bundle args = new Bundle();
         fragment.setContext(context);
         fragment.setArguments(args);
@@ -114,8 +113,8 @@ public class SensorMovementFragment extends Fragment
 
         // Find the TextureView
         mRajawaliSurface = (ISurface) v.findViewById(R.id.rajwali_surface);
-//        mRenderer = new RajawaliLoadModelRenderer(getActivity());
-//        mRenderer = new TiltRenderer(getActivity());
+        mRenderer = new RajawaliLoadModelRenderer(getActivity());
+
         mRajawaliSurface.setSurfaceRenderer(mRenderer);
         return v;
 
