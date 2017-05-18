@@ -5,22 +5,9 @@ package de.jandrotek.android.arobot.tab;
  */
 
 
-//package com.monyetmabuk.rajawali.tutorials;
 
         import javax.microedition.khronos.egl.EGLConfig;
         import javax.microedition.khronos.opengles.GL10;
-
-//        import rajawali.BaseObject3D;
-//        import rajawali.animation.Animation3D;
-//        import rajawali.animation.RotateAnimation3D;
-//        import rajawali.animation.RotateAroundAnimation3D;
-//        import rajawali.lights.PointLight;
-//        import rajawali.math.Number3D;
-//        import rajawali.math.Number3D.Axis;
-//        import rajawali.parser.ObjParser;
-//        import rajawali.parser.AParser.ParsingException;
-//        import rajawali.renderer.RajawaliRenderer;
-
         import org.rajawali3d.Object3D;
         import org.rajawali3d.animation.Animation3D;
         import org.rajawali3d.animation.RotateAnimation3D;
@@ -41,14 +28,9 @@ package de.jandrotek.android.arobot.tab;
 
 public class RajawaliLoadModelRenderer extends Renderer {
 //    public class RajawaliLoadModelRenderer extends RajawaliRenderer {
-//    private PointLight mLight;
-//    private Object3D mObjectGroup;
-////    private BaseObject3D mObjectGroup;
-//    private Animation3D mCameraAnim, mLightAnim;
 
     private DirectionalLight mLight;
     private Object3D mSteeringWheel;
-//    private Object3D mMonkey;
     private Vector3 mAccValues;
     private Vector3 mRotateValues;
     private boolean mSceneOnceCreated = false;
@@ -125,7 +107,6 @@ public class RajawaliLoadModelRenderer extends Renderer {
     protected void onRender(long ellapsedRealtime, double deltaTime) {
         super.onRender(ellapsedRealtime, deltaTime);
         mSteeringWheel.setRotation(mRotateValues);
-//        earthSphere.rotate(Vector3.Axis.Y, 1.0);
     }
 
     public void setRotateValues(float x, float y, float z){

@@ -18,20 +18,14 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-//import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
-//import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-//import android.widget.AdapterView;
-//import android.widget.AdapterView.OnItemSelectedListener;
-//import android.widget.ArrayAdapter;
-//import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +33,6 @@ import android.widget.Toast;
 
 import de.jandrotek.android.arobot.core.ArobotDefines;
 import de.jandrotek.android.arobot.core.SensorCalc;
-//import de.jandrotek.android.arobot.libbluetooth;
 import de.jandrotek.android.arobot.libbluetooth.BTDefs;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothFragment;
@@ -75,8 +68,6 @@ public class MovementActivity extends AppCompatActivity {
     private SensorService mSensorService;
     private SensorCalc mMovCalculator; // for use in RxSensor
     private SensorManager mSensorManager = null;
-//    private RajawaliLoadModelRenderer mRenderer = null;
-
 
     // BT control vars, all moved to BTInterface
     private BluetoothInterface mBTInterface = null;
@@ -152,8 +143,6 @@ public class MovementActivity extends AppCompatActivity {
         mSensorService.setCalculator(mMovCalculator);
         mStateController = new AppStateController();
 
-//        mRenderer = new RajawaliLoadModelRenderer(this);
-
         setContentView(R.layout.activity_movement);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -178,7 +167,6 @@ public class MovementActivity extends AppCompatActivity {
 
         //        prepareBTInterface();
         mBTInterface = new BluetoothInterface(this, mHandler);
-
 
         mArobotSettings = new ArobotSettings();
         updateFromPreferences();
@@ -453,43 +441,6 @@ public class MovementActivity extends AppCompatActivity {
 ////        AppIndex.AppIndexApi.end(mClient, viewAction);
 //        mClient.disconnect();
     }
-
-//    private static class MyAdapter extends ArrayAdapter<String> implements ThemedSpinnerAdapter {
-//        private final Helper mDropDownHelper;
-//
-//        public MyAdapter(Context context, String[] objects) {
-//            super(context, android.R.layout.simple_list_item_1, objects);
-//            mDropDownHelper = new Helper(context);
-//        }
-//
-//        @Override
-//        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-//            View view;
-//
-//            if (convertView == null) {
-//                // Inflate the drop down using the helper's LayoutInflater
-//                LayoutInflater inflater = mDropDownHelper.getDropDownViewInflater();
-//                view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-//            } else {
-//                view = convertView;
-//            }
-//
-//            TextView textView = (TextView) view.findViewById(android.R.id.text1);
-//            textView.setText(getItem(position));
-//
-//            return view;
-//        }
-//
-//        @Override
-//        public Theme getDropDownViewTheme() {
-//            return mDropDownHelper.getDropDownViewTheme();
-//        }
-//
-//        @Override
-//        public void setDropDownViewTheme(Theme theme) {
-//            mDropDownHelper.setDropDownViewTheme(theme);
-//        }
-//    }
 
     private void updateFromPreferences() {
         Context context = getApplicationContext();

@@ -64,7 +64,6 @@ public class SensorMovementFragment extends Fragment
 
     /// View's members
      private RajawaliLoadModelRenderer mRenderer;
-//     private TiltRenderer mRenderer;
      private ISurface mRajawaliSurface;
 
     private OnNavigationListener mOnNavigationListener;
@@ -110,14 +109,12 @@ public class SensorMovementFragment extends Fragment
         if (BuildConfig.DEBUG) Log.i(TAG, "onCreateView");
         View v = inflater.inflate(R.layout.fragment_sensor_movement, parent, false);
 
-
         // Find the TextureView
         mRajawaliSurface = (ISurface) v.findViewById(R.id.rajwali_surface);
         mRenderer = new RajawaliLoadModelRenderer(getActivity());
 
         mRajawaliSurface.setSurfaceRenderer(mRenderer);
         return v;
-
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
