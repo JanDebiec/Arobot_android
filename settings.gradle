@@ -1,1 +1,1 @@
-include ':app', ':core', ':tabapp', ':libbluetooth', ':libwifi', ':wifitest', ':myfabapplication'
+include ':app', ':core', ':tabapp', ':libbluetooth', ':libwifi', ':wifitest'
