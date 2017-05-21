@@ -30,7 +30,6 @@ private TiltView mManualTilter;
     private float mOutputFilteredR;
 
     private Timer mDataAcqTimer;
-//    private TiltRenderer mRenderer;
     private RajawaliLoadModelRenderer mRenderer;
     private ISurface mRajawaliSurface;
 
@@ -42,20 +41,16 @@ private TiltView mManualTilter;
 
     private static ManualMovementFragment ourInstance = null;
 
-    public static ManualMovementFragment getInstance(RajawaliLoadModelRenderer renderer) {
+    public static ManualMovementFragment getInstance() {
         if (ourInstance == null) {
-            ourInstance = new ManualMovementFragment(renderer);
+            ourInstance = new ManualMovementFragment();
         }
         return ourInstance;
     }
 
-    public ManualMovementFragment(RajawaliLoadModelRenderer renderer) {
-        mRenderer = renderer;
+    private ManualMovementFragment() {
     }
 
-    public ManualMovementFragment(){
-
-    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +72,7 @@ private TiltView mManualTilter;
         mVerticalSeekbarR = (VerticalSeekBar)v.findViewById(R.id.vertikalSeekBarRight);
         // Find the TextureView
         mRajawaliSurface = (ISurface) v.findViewById(R.id.rajwali_surface);
-//        mRenderer = new RajawaliLoadModelRenderer(getActivity());
-//        mRenderer = new TiltRenderer(getActivity());
+        mRenderer = new RajawaliLoadModelRenderer(getActivity());
         mRajawaliSurface.setSurfaceRenderer(mRenderer);
         return v;
     }

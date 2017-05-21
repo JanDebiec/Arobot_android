@@ -13,10 +13,10 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         >
-        <de.jandrotek.android.arobot.tab.TiltView
-            android:id="@+id/tiltView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <!--<de.jandrotek.android.arobot.tab.TiltView-->
+            <!--android:id="@+id/tiltView"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"/>-->
         <org.rajawali3d.view.SurfaceView
             android:id="@+id/rajwali_surface"
             android:layout_width="fill_parent"

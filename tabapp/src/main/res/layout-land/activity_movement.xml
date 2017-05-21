@@ -24,11 +24,64 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="wrap_content"
+            <!--<Spinner-->
+                <!--android:id="@+id/spinner"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--app:popupTheme="@style/AppTheme.PopupOverlay"/>-->
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+                android:orientation="horizontal"
+                android:id="@+id/infoLayout">
+
+                <TextView
+                    android:text=" L: "
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+                <TextView
+                    android:id="@+id/tvTiltLeft"
+                    android:text="10.2"
+                    style="@style/aRobotMargins"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/tvFragmentName"
+                    android:text=" Sensor Control "
+                    style="@style/aRobotMargins"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"/>
+
+
+                <TextView
+                    android:id="@+id/tvTiltRight"
+                    android:text="10.2"
+                    style="@style/aRobotMargins"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="textEnd"/>
+
+                <TextView
+                    android:text=":R "
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
@@ -41,55 +94,55 @@
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/infoLayout">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:id="@+id/infoLayout">-->
 
-            <TextView
-                android:text=" L: "
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+            <!--<TextView-->
+                <!--android:text=" L: "-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--/>-->
 
-            <TextView
-                android:id="@+id/tvTiltLeft"
-                android:text="10.2"
-                style="@style/aRobotMargins"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+            <!--<TextView-->
+                <!--android:id="@+id/tvTiltLeft"-->
+                <!--android:text="10.2"-->
+                <!--style="@style/aRobotMargins"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"/>-->
 
-            <TextView
-                android:id="@+id/tvFragmentName"
-                android:text=" Sensor Control "
-                style="@style/aRobotMargins"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"/>
+            <!--<TextView-->
+                <!--android:id="@+id/tvFragmentName"-->
+                <!--android:text=" Sensor Control "-->
+                <!--style="@style/aRobotMargins"-->
+                <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textAlignment="center"/>-->
 
 
-            <TextView
-                android:id="@+id/tvTiltRight"
-                android:text="10.2"
-                style="@style/aRobotMargins"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAlignment="textEnd"/>
+            <!--<TextView-->
+                <!--android:id="@+id/tvTiltRight"-->
+                <!--android:text="10.2"-->
+                <!--style="@style/aRobotMargins"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:textAlignment="textEnd"/>-->
 
-            <TextView
-                android:text=":R "
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:text=":R "-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--/>-->
+        <!--</LinearLayout>-->
 
         <FrameLayout
             android:id="@+id/container"
@@ -99,77 +152,9 @@
             android:layout_below="@+id/infoLayout"
             android:layout_above="@+id/layoutAction"
             >
-            <!--<View xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" >-->
-
-
-            <!--<de.jandrotek.android.arobot.tab.TiltView-->
-                <!--android:id="@+id/tiltView"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"/>-->
-
-            <!--</View>-->
         </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/layoutAction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true">
-
-            <TextView
-                android:id="@+id/tVConnected"
-                style="@style/aRobotMargins"
-                android:text="@string/connected_status_off"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-
-
-            <TextView
-                android:id="@+id/tVMoving"
-                style="@style/aRobotMargins"
-                android:text="@string/moving_status_stop"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <ToggleButton
-                android:id="@+id/toggleButtonMove"
-                style="@style/aRobotMargins"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textOff="@string/move_button_off"
-                android:textOn="@string/move_button_on"/>
-
-            <TextView
-                android:id="@+id/tVSavingStatus"
-                style="@style/aRobotMargins"
-                android:text="@string/SavingStatus"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-
-        </LinearLayout>
-
     </RelativeLayout>
-
-    <!--<android.support.v4.widget.NestedScrollView-->
-    <!--android:id="@+id/container"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-
-    <!--/>-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

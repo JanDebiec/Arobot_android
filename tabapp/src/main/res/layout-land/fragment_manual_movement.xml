@@ -9,12 +9,12 @@
         android:layout_height="match_parent"
         android:id="@+id/frameLayout"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/editTextLeft"
-        android:layout_toStartOf="@+id/editTextRight">
-        <de.jandrotek.android.arobot.tab.TiltView
-            android:id="@+id/manualTiltView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        android:layout_toEndOf="@+id/vertikalSeekBarLeft"
+        android:layout_toStartOf="@+id/vertikalSeekBarRight">
+        <!--<de.jandrotek.android.arobot.tab.TiltView-->
+            <!--android:id="@+id/manualTiltView"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"/>-->
         <org.rajawali3d.view.SurfaceView
             android:id="@+id/rajwali_surface"
             android:layout_width="fill_parent"
@@ -26,39 +26,38 @@
 
 
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Right"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:ems="10"
-        android:layout_alignBottom="@+id/editTextLeft"
-        android:layout_toEndOf="@+id/seekBarLeft"
-        android:id="@+id/editTextRight"
-        android:layout_alignStart="@+id/vertikalSeekBarRight"/>
+    <!--<EditText-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Right"-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--android:ems="10"-->
+        <!--android:layout_alignBottom="@+id/editTextLeft"-->
+        <!--android:layout_toEndOf="@+id/seekBarLeft"-->
+        <!--android:id="@+id/editTextRight"-->
+        <!--android:layout_alignStart="@+id/vertikalSeekBarRight"/>-->
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="Left"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:ems="10"
-        android:id="@+id/editTextLeft"
-        android:layout_alignStart="@+id/vertikalSeekBarLeft"
-        android:layout_alignEnd="@+id/vertikalSeekBarLeft"/>
+    <!--<EditText-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="textPersonName"-->
+        <!--android:text="Left"-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--android:ems="10"-->
+        <!--android:id="@+id/editTextLeft"-->
+        <!--android:layout_alignStart="@+id/vertikalSeekBarLeft"-->
+        <!--android:layout_alignEnd="@+id/vertikalSeekBarLeft"/>-->
     <de.jandrotek.android.arobot.tab.VerticalSeekBar
         android:layout_width="64dp"
         android:layout_height="match_parent"
-        android:progress="50"
         android:id="@+id/vertikalSeekBarLeft"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_below="@+id/editTextLeft"
+        android:progress="50"
         android:thumb="@drawable/thumb_image"
         />
     <de.jandrotek.android.arobot.tab.VerticalSeekBar
@@ -72,7 +71,6 @@
         android:layout_marginBottom="16dp"
         android:minHeight="8dp"
         android:maxHeight="8dp"
-        android:layout_below="@+id/editTextRight"
         android:progress="50"
         android:thumb="@drawable/thumb_image"
         />

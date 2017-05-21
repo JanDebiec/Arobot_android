@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Resources.Theme;
-import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,29 +18,21 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 //import com.google.android.gms.appindexing.Action;
 
 import de.jandrotek.android.arobot.core.ArobotDefines;
 import de.jandrotek.android.arobot.core.SensorCalc;
-//import de.jandrotek.android.arobot.libbluetooth;
 import de.jandrotek.android.arobot.libbluetooth.BTDefs;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothDefines;
 import de.jandrotek.android.arobot.libbluetooth.BluetoothFragment;
@@ -52,14 +44,22 @@ import de.jandrotek.android.arobot.libwifi.WlanDefines;
 
 import static android.R.drawable.ic_media_pause;
 import static android.R.drawable.ic_media_play;
+import static android.R.drawable.ic_menu_help;
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 import static de.jandrotek.android.arobot.core.ArobotDefines.eBtVelCmdScaleFactor;
+import static de.jandrotek.android.arobot.tab.AppStateController.eColorConnected;
+import static de.jandrotek.android.arobot.tab.AppStateController.eColorIdle;
+import static de.jandrotek.android.arobot.tab.AppStateController.eColorMoving;
+import static de.jandrotek.android.arobot.tab.AppStateController.eColorNotConnected;
+import static de.jandrotek.android.arobot.tab.AppStateController.eColorReadyToMove;
 
 public class MovementActivity extends AppCompatActivity {
     private static final String TAG = "MovementActivity";
 
     private ArobotSettings mArobotSettings;
 //    public static DecimalFormat cmdFormat = new DecimalFormat(" ####.0; -####.0");
+
+    private AppStateController mStateController;
 
     //fragment control vars
     private SensorMovementFragment mSensorMovementFragment;
@@ -68,30 +68,29 @@ public class MovementActivity extends AppCompatActivity {
     private SensorService mSensorService;
     private SensorCalc mMovCalculator; // for use in RxSensor
     private SensorManager mSensorManager = null;
-    private RajawaliLoadModelRenderer mRenderer = null;
-
 
     // BT control vars, all moved to BTInterface
     private BluetoothInterface mBTInterface = null;
     private static boolean mBTConnected = false;
     private static String mConnectedDeviceName = null;
 
-//    private BluetoothAdapter mBluetoothAdapter = null;
-//    private boolean mBTConnected = false;
-//    // we need service here, some other fragments can write to BT too
-//    private BluetoothService mBTService = null;
-//    private String mConnectedDeviceName = null;
 
     // own widgets
-    private ToggleButton mToggleButtonMove;
-    private TextView mBTConnectStatus;
-    //private Button mBTConnectBtn;
-    private TextView mMovingStatus;
-//    private TextView mLeftCmdView;
-//    private TextView mRightCmdView;
+    // will be moved to ActBar, or removed and only FAB will be used
+//    private ToggleButton mToggleButtonMove;
+    // will be removed
+    // connect status will be shown in ActBar with icons
+//    private TextView mBTConnectStatus;
+
+//    private TextView mMovingStatus;
+    // moving status will be shown double: by ToggleButton and FAB
+
+
     private TextView mFragmentName;
-    private boolean mAppBarExpanded = true;
-    private int mVisibility = View.VISIBLE;
+
+    // will be not used
+    //    private boolean mAppBarExpanded = true;
+//    private int mVisibility = View.VISIBLE;
     private AppBarLayout mAppBarLayout;
     private FloatingActionButton mFab;
 
@@ -107,6 +106,7 @@ public class MovementActivity extends AppCompatActivity {
     private int mPWMMin;
     private float mAmplification;
     private int mRollOffsset;
+    private int mFragmentIndexOld = -1;// on start, no fragment selected
     private int mFragmentIndexAct = -1;// on start, no fragment selected
     private PowerManager mPowerManager;
     private WindowManager mWindowManager;
@@ -141,9 +141,7 @@ public class MovementActivity extends AppCompatActivity {
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorService = new SensorService(this, mSensorManager);
         mSensorService.setCalculator(mMovCalculator);
-
-        mRenderer = new RajawaliLoadModelRenderer(this);
-
+        mStateController = new AppStateController();
 
         setContentView(R.layout.activity_movement);
 
@@ -152,60 +150,24 @@ public class MovementActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mAppBarLayout = (AppBarLayout)findViewById((R.id.appbar));
 
-        // Setup spinner
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        spinner.setAdapter(new MyAdapter(
-                toolbar.getContext(),
-                ArobotDefines.fragmentNames
-        ));
-
-        spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // When the given dropdown item is selected, show its contents in the
-                // container view.
-                showProperFragment(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+//            begin with sensor fragment
+        mFragmentName = (TextView) findViewById(R.id.tvFragmentName);
+        mFragmentIndexAct = ArobotDefines.FRAGMENT_SENSOR_MOVEMENT;
+        showProperFragment(mFragmentIndexAct);
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 handleFABPress();
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
             }
         });
-//        prepareBTInterface();
+        mFab.setImageResource(ic_menu_help);
+        mFab.setBackgroundTintList(ColorStateList.valueOf(eColorIdle));
+
+        //        prepareBTInterface();
         mBTInterface = new BluetoothInterface(this, mHandler);
-//        mBluetoothFragment = BluetoothFragment.getInstance();
 
-        // own widgets
-        mBTConnectStatus = (TextView) findViewById(R.id.tVConnected);
-        if (mBTInterface.getBTConnected()) {
-            mBTConnectStatus.setBackgroundColor(ArobotDefines.COLOR_GREEN);
-        } else {
-            mBTConnectStatus.setBackgroundColor(ArobotDefines.COLOR_GREY);
-        }
-
-        mMovingStatus = (TextView) findViewById(R.id.tVMoving);
-        mFragmentName = (TextView) findViewById(R.id.tvFragmentName);
-
-        mToggleButtonMove = (ToggleButton) findViewById(R.id.toggleButtonMove);
-        mToggleButtonMove.setEnabled(false);
-        mToggleButtonMove.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                handleBtMoveToggle(!mMovementEnabled);// should be toggled, that's why parameter = negation of old value
-
-            }
-        });
         mArobotSettings = new ArobotSettings();
         updateFromPreferences();
 
@@ -225,50 +187,81 @@ public class MovementActivity extends AppCompatActivity {
 
     }
 
-    private void handleBtMoveToggle(boolean movementAllowed) {
-        if (movementAllowed == true) {
-            mMovementEnabled = true;
-            mMovingStatus.setBackgroundColor(Color.GREEN);
-            mMovingStatus.setText(R.string.moving_status_move);
-            mToggleButtonMove.setText(R.string.move_button_on);
-            mToggleButtonMove.setBackgroundColor(Color.RED);
-        } else {
-            mMovementEnabled = false;
-            mMovingStatus.setBackgroundColor(Color.LTGRAY);
-            mMovingStatus.setText(R.string.moving_status_stop);
-            mToggleButtonMove.setText(R.string.move_button_off);
-            mToggleButtonMove.setBackgroundColor(Color.LTGRAY);
-        }
-        allowMovement(mMovementEnabled);
-    }
-
     private void handleFABPress() {
-        if(mAppBarExpanded) { //not running, should run
-            if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
+        // get state form StateCOntroller
+        int state = mStateController.getAppState();
+        // depending on state, call the proper commands
+        if(state == AppStateController.eIdle){
+//            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorNotConnected));
+            mStateController.setAppState(AppStateController.eNotConnected);
+        } else if (state == AppStateController.eNotConnected){
+            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorConnected));
+            mStateController.setAppState(AppStateController.eConnected);
+        } else if (state == AppStateController.eConnected){
+            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
+            mStateController.setAppState(AppStateController.eReadyToMove);
+
+        } else if (state == AppStateController.eReadyToMove){
+            if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
                 if (mSensorService != null) {
-                    mSensorService.setFragment(mSensorMovementFragment);
-                    mSensorService.registerSensors();
-                    mSensorService.setRunFuseTask(true);
-                    mSensorService.startFuseCalc();
-                    mSensorService.setUpdateUi(true);
+                    startMoveInSensFrag();
                 }
             }
-            mAppBarExpanded = false;
-            mVisibility = View.INVISIBLE;
-//                    mVisibility = View.GONE;
             mFab.setImageResource(ic_media_pause);
-        } else { // pause
-            if(mFragmentIndexAct == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
-                mSensorService.setRunFuseTask(false);
-                mSensorService.unregisterSensors();
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorMoving));
+            mStateController.setAppState(AppStateController.eMoving);
+
+        } else if (state == AppStateController.eMoving){
+            if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
+                stopMoveInSensFrag();
             }
-            mAppBarExpanded = true;
-            mVisibility = View.VISIBLE;
             mFab.setImageResource(ic_media_play);
-            handleBtMoveToggle(false);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
+            mStateController.setAppState(AppStateController.eReadyToMove);
+
+        } else { // unknown
+
         }
-        mAppBarLayout.setExpanded(mAppBarExpanded);
-        mAppBarLayout.setVisibility(mVisibility);
+    }
+
+    private void showProperFABState() {
+        // get state form StateCOntroller
+        int state = mStateController.getAppState();
+        // depending on state, call the proper commands
+        if(state == AppStateController.eIdle){
+            mFab.setImageResource(ic_menu_help);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorIdle));
+        } else if (state == AppStateController.eNotConnected){
+            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorNotConnected));
+        } else if (state == AppStateController.eConnected){
+            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorConnected));
+        } else if (state == AppStateController.eReadyToMove){
+            mFab.setImageResource(ic_media_play);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
+        } else if (state == AppStateController.eMoving){
+            mFab.setImageResource(ic_media_pause);
+            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorMoving));
+        } else { // unknown
+
+        }
+    }
+
+    private void stopMoveInSensFrag() {
+        mSensorService.setRunFuseTask(false);
+        mSensorService.unregisterSensors();
+    }
+
+    private void startMoveInSensFrag() {
+        mSensorService.setFragment(mSensorMovementFragment);
+        mSensorService.registerSensors();
+        mSensorService.setRunFuseTask(true);
+        mSensorService.startFuseCalc();
+        mSensorService.setUpdateUi(true);
     }
 
     private void allowMovement(boolean flag) {
@@ -281,53 +274,62 @@ public class MovementActivity extends AppCompatActivity {
 
     private void showProperFragment(int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if ((mSensorMovementFragment == null) && (mManualMovementFragment == null) && (mBluetoothFragment == null)) {
-            if (position == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
-                mFragmentIndexAct = ArobotDefines.POSITION_SENSOR_MOVEMENT;
-                mSensorMovementFragment = SensorMovementFragment.newInstance(position, this, mRenderer);
+        // first option, no old fragment
+        if(mFragmentIndexOld == -1){
+            if (position == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
+                mSensorMovementFragment = SensorMovementFragment.newInstance(position, this);
                 fragmentManager
                         .beginTransaction()
                         .add(R.id.container,
                                 mSensorMovementFragment).commitAllowingStateLoss();
-            } else if (position == ArobotDefines.POSITION_MANUAL_MOVEMENT) {
-                mFragmentIndexAct = ArobotDefines.POSITION_MANUAL_MOVEMENT;
-                mManualMovementFragment = ManualMovementFragment.getInstance(mRenderer);
+            } else if (position == ArobotDefines.FRAGMENT_MANUAL_MOVEMENT) {
+                mManualMovementFragment = ManualMovementFragment.getInstance();
                 fragmentManager
                         .beginTransaction()
                         .add(R.id.container,
                                 mManualMovementFragment).commit();
-            } else if (position == ArobotDefines.POSITION_BLUETOOTH_CHAT) {
-                mFragmentIndexAct = ArobotDefines.POSITION_BLUETOOTH_CHAT;
+            } else if (position == ArobotDefines.FRAGMENT_BLUETOOTH_CHAT) {
                 mBluetoothFragment = BluetoothFragment.getInstance();
                 fragmentManager
                         .beginTransaction()
                         .add(R.id.container,
                                 mBluetoothFragment).commit();
             }
+            mFragmentIndexAct = position;
+            mFragmentIndexOld = position;
         } else {
-            if (position == ArobotDefines.POSITION_SENSOR_MOVEMENT) {
-                mFragmentIndexAct = ArobotDefines.POSITION_SENSOR_MOVEMENT;
-                mSensorMovementFragment = SensorMovementFragment.newInstance(position, this, mRenderer);
+            if (position == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
+                mFragmentIndexAct = ArobotDefines.FRAGMENT_SENSOR_MOVEMENT;
+                mSensorMovementFragment = SensorMovementFragment.newInstance(position, this);
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.container,
                                 mSensorMovementFragment).commit();
-            } else if (position == ArobotDefines.POSITION_MANUAL_MOVEMENT) {
-                mFragmentIndexAct = ArobotDefines.POSITION_MANUAL_MOVEMENT;
-                mManualMovementFragment = ManualMovementFragment.getInstance(mRenderer);
+                if(mFragmentIndexOld != ArobotDefines.FRAGMENT_SENSOR_MOVEMENT){
+                    // reset the position of wheel
+                }
+            } else if (position == ArobotDefines.FRAGMENT_MANUAL_MOVEMENT) {
+                mFragmentIndexAct = ArobotDefines.FRAGMENT_MANUAL_MOVEMENT;
+                mManualMovementFragment = ManualMovementFragment.getInstance();
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.container,
                                 mManualMovementFragment).commit();
-            } else if (position == ArobotDefines.POSITION_BLUETOOTH_CHAT) {
-                mFragmentIndexAct = ArobotDefines.POSITION_BLUETOOTH_CHAT;
+                if(mFragmentIndexOld == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
+                    stopMoveInSensFrag();
+                }
+            } else if (position == ArobotDefines.FRAGMENT_BLUETOOTH_CHAT) {
+                mFragmentIndexAct = ArobotDefines.FRAGMENT_BLUETOOTH_CHAT;
                 mBluetoothFragment = BluetoothFragment.getInstance();
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.container,
                                 mBluetoothFragment).commit();
             }
+            mFragmentIndexOld = mFragmentIndexAct;
+            mFragmentIndexAct = position;
         }
+        mFragmentName.setText(ArobotDefines.fragmentNames[position]);
         mFragmentName.setText(ArobotDefines.fragmentNames[position]);
     }
 
@@ -346,21 +348,32 @@ public class MovementActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         Intent serverIntent = null;
         int id = item.getItemId();
-        if (id == R.id.connect_device) {
-            //TODO check which interface
-            if(mExtInterfaceNew == ArobotDefines.EXT_CONN_BT) {
-                if (mBTInterface.isBTConnected() == true) {
-                    mBTInterface.stopBtService();
-                    updateUI();
-                } else {
-                    mBTInterface.startBluetooth();
-                    // Launch the DeviceListActivity to see devices and do scan
-                    serverIntent = new Intent(this, DeviceListActivity.class);
-                    startActivityForResult(serverIntent, BluetoothDefines.REQUEST_CONNECT_DEVICE);
-                }
-            } else if (mExtInterfaceNew == ArobotDefines.EXT_CONN_WLAN){
-
-            }
+        // connect will be initialzed in FAB handling
+//        if (id == R.id.connect_device) {
+//            //TODO check which interface
+//            if(mExtInterfaceNew == ArobotDefines.EXT_CONN_BT) {
+//                if (mBTInterface.isBTConnected() == true) {
+//                    mBTInterface.stopBtService();
+//                    updateUI();
+//                } else {
+//                    mBTInterface.startBluetooth();
+//                    // Launch the DeviceListActivity to see devices and do scan
+//                    serverIntent = new Intent(this, DeviceListActivity.class);
+//                    startActivityForResult(serverIntent, BluetoothDefines.REQUEST_CONNECT_DEVICE);
+//                }
+//            } else if (mExtInterfaceNew == ArobotDefines.EXT_CONN_WLAN){
+//
+//            }
+//            return true;
+//        } else if (id == R.id.action_sensor_fragment) {
+        if (id == R.id.action_sensor_fragment) {
+            showProperFragment(ArobotDefines.FRAGMENT_SENSOR_MOVEMENT);
+            return true;
+        } else if (id == R.id.action_manual_fragment) {
+            showProperFragment(ArobotDefines.FRAGMENT_MANUAL_MOVEMENT);
+            return true;
+        } else if (id == R.id.action_bluetooth_fragment) {
+            showProperFragment(ArobotDefines.FRAGMENT_BLUETOOTH_CHAT);
             return true;
         } else if (id == R.id.action_settings) {
             Intent i = new Intent(this, PreferencesActivity.class);
@@ -399,6 +412,7 @@ public class MovementActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         mWakeLock.acquire();
+        showProperFABState();
     }
 
     @Override
@@ -410,6 +424,7 @@ public class MovementActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+        // check if connections active, if yes stop
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -425,43 +440,6 @@ public class MovementActivity extends AppCompatActivity {
 //        );
 ////        AppIndex.AppIndexApi.end(mClient, viewAction);
 //        mClient.disconnect();
-    }
-
-    private static class MyAdapter extends ArrayAdapter<String> implements ThemedSpinnerAdapter {
-        private final Helper mDropDownHelper;
-
-        public MyAdapter(Context context, String[] objects) {
-            super(context, android.R.layout.simple_list_item_1, objects);
-            mDropDownHelper = new Helper(context);
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            View view;
-
-            if (convertView == null) {
-                // Inflate the drop down using the helper's LayoutInflater
-                LayoutInflater inflater = mDropDownHelper.getDropDownViewInflater();
-                view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-            } else {
-                view = convertView;
-            }
-
-            TextView textView = (TextView) view.findViewById(android.R.id.text1);
-            textView.setText(getItem(position));
-
-            return view;
-        }
-
-        @Override
-        public Theme getDropDownViewTheme() {
-            return mDropDownHelper.getDropDownViewTheme();
-        }
-
-        @Override
-        public void setDropDownViewTheme(Theme theme) {
-            mDropDownHelper.setDropDownViewTheme(theme);
-        }
     }
 
     private void updateFromPreferences() {
@@ -622,25 +600,25 @@ public class MovementActivity extends AppCompatActivity {
 
     public void updateUI() {
         if (mBTInterface.isBTConnected()) {
-            mBTConnectStatus.setBackgroundColor(Color.GREEN);
-            mBTConnectStatus.setText(R.string.connected_status_on);
-            mToggleButtonMove.setEnabled(true);
+//            mBTConnectStatus.setBackgroundColor(Color.GREEN);
+//            mBTConnectStatus.setText(R.string.connected_status_on);
+//            mToggleButtonMove.setEnabled(true);
 
         } else {
-            mBTConnectStatus.setBackgroundColor(Color.LTGRAY);
-            mBTConnectStatus.setText(R.string.connected_status_off);
-            mToggleButtonMove.setEnabled(false);
+//            mBTConnectStatus.setBackgroundColor(Color.LTGRAY);
+//            mBTConnectStatus.setText(R.string.connected_status_off);
+//            mToggleButtonMove.setEnabled(false);
         }
         if (mMovementEnabled == false) {
-            mMovingStatus.setBackgroundColor(Color.LTGRAY);
-            mMovingStatus.setText(R.string.moving_status_stop);
-            mToggleButtonMove.setText(R.string.move_button_off);
-            mToggleButtonMove.setBackgroundColor(Color.LTGRAY);
+//            mMovingStatus.setBackgroundColor(Color.LTGRAY);
+//            mMovingStatus.setText(R.string.moving_status_stop);
+//            mToggleButtonMove.setText(R.string.move_button_off);
+//            mToggleButtonMove.setBackgroundColor(Color.LTGRAY);
         } else {
-            mMovingStatus.setBackgroundColor(Color.GREEN);
-            mMovingStatus.setText(R.string.moving_status_move);
-            mToggleButtonMove.setText(R.string.move_button_on);
-            mToggleButtonMove.setBackgroundColor(Color.RED);
+//            mMovingStatus.setBackgroundColor(Color.GREEN);
+//            mMovingStatus.setText(R.string.moving_status_move);
+//            mToggleButtonMove.setText(R.string.move_button_on);
+//            mToggleButtonMove.setBackgroundColor(Color.RED);
         }
     }
 
