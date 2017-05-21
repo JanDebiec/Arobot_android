@@ -39,7 +39,7 @@ public class BluetoothFragment extends Fragment {
 
 
 
-    private BluetoothFragment() {
+    public BluetoothFragment() {
     }
 
     public void clearChatAdapter() {

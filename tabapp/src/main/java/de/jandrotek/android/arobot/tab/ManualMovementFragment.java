@@ -49,10 +49,13 @@ private TiltView mManualTilter;
         return ourInstance;
     }
 
-    private ManualMovementFragment(RajawaliLoadModelRenderer renderer) {
+    public ManualMovementFragment(RajawaliLoadModelRenderer renderer) {
         mRenderer = renderer;
     }
 
+    public ManualMovementFragment(){
+
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

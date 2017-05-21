@@ -69,7 +69,7 @@ public class RajawaliLoadModelRenderer extends Renderer {
             }
             getCurrentScene().addLight(mLight);
 
-                final LoaderOBJ objParser = new LoaderOBJ(mContext.getResources( ),mTextureManager, R.raw.wh3 );
+                final LoaderOBJ objParser = new LoaderOBJ(mContext.getResources( ),mTextureManager, R.raw.wh3_obj );
 //            final LoaderAWD objParser = new LoaderAWD(mContext.getResources(), mTextureManager, R.raw.awd_suzanne);
                 objParser.parse();
                 mSteeringWheel = objParser.getParsedObject();
