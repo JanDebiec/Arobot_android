@@ -1,1 +1,1 @@
-include ':app', ':core', ':tabapp', ':libbluetooth', ':libwifi', ':wifitest'
+include ':app', ':core', ':tabapp', ':libbluetooth', ':libwifi', ':wifitest', ':jdthingapplication'
