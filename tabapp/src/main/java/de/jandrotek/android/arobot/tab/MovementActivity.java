@@ -159,7 +159,8 @@ public class MovementActivity extends AppCompatActivity {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleFABPress();
+                int state = mStateController.getAppState();
+                handleFABPress(state);
             }
         });
         mFab.setImageResource(ic_menu_help);
@@ -187,22 +188,24 @@ public class MovementActivity extends AppCompatActivity {
 
     }
 
-    private void handleFABPress() {
+    private void handleFABPress(int state) {
         // get state form StateCOntroller
-        int state = mStateController.getAppState();
+//        int state = mStateController.getAppState();
         // depending on state, call the proper commands
         if(state == AppStateController.eIdle){
-//            mFab.setImageResource(ic_media_pause);
-            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorNotConnected));
+//            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorNotConnected));
             mStateController.setAppState(AppStateController.eNotConnected);
+            showProperFABState(AppStateController.eNotConnected);
         } else if (state == AppStateController.eNotConnected){
-            mFab.setImageResource(ic_media_pause);
-            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorConnected));
+//            mFab.setImageResource(ic_media_pause);
+//            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorConnected));
             mStateController.setAppState(AppStateController.eConnected);
+            showProperFABState(AppStateController.eConnected);
         } else if (state == AppStateController.eConnected){
-            mFab.setImageResource(ic_media_pause);
-            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
+//            mFab.setImageResource(ic_media_pause);
+//            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
             mStateController.setAppState(AppStateController.eReadyToMove);
+            showProperFABState(AppStateController.eReadyToMove);
 
         } else if (state == AppStateController.eReadyToMove){
             if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
@@ -210,26 +213,28 @@ public class MovementActivity extends AppCompatActivity {
                     startMoveInSensFrag();
                 }
             }
-            mFab.setImageResource(ic_media_pause);
-            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorMoving));
+//            mFab.setImageResource(ic_media_pause);
+//            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorMoving));
             mStateController.setAppState(AppStateController.eMoving);
+            showProperFABState(AppStateController.eMoving);
 
         } else if (state == AppStateController.eMoving){
             if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
                 stopMoveInSensFrag();
             }
-            mFab.setImageResource(ic_media_play);
-            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
+//            mFab.setImageResource(ic_media_play);
+//            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
             mStateController.setAppState(AppStateController.eReadyToMove);
+            showProperFABState(AppStateController.eReadyToMove);
 
         } else { // unknown
 
         }
     }
 
-    private void showProperFABState() {
+    private void showProperFABState(int state) {
         // get state form StateCOntroller
-        int state = mStateController.getAppState();
+//        int state = mStateController.getAppState();
         // depending on state, call the proper commands
         if(state == AppStateController.eIdle){
             mFab.setImageResource(ic_menu_help);
@@ -272,6 +277,15 @@ public class MovementActivity extends AppCompatActivity {
         }
     }
 
+    private void pauseMoveInFragment(){
+        int state = mStateController.getAppState();
+        if(state == AppStateController.eMoving){
+            mStateController.setAppState(AppStateController.eReadyToMove);
+            showProperFABState(AppStateController.eReadyToMove);
+        }
+    }
+
+    //TODO if leaving sensor or manual fragment, stop the moving
     private void showProperFragment(int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         // first option, no old fragment
@@ -306,7 +320,8 @@ public class MovementActivity extends AppCompatActivity {
                         .replace(R.id.container,
                                 mSensorMovementFragment).commit();
                 if(mFragmentIndexOld != ArobotDefines.FRAGMENT_SENSOR_MOVEMENT){
-                    // reset the position of wheel
+                    //TODO reset the position of wheel
+                    pauseMoveInFragment();
                 }
             } else if (position == ArobotDefines.FRAGMENT_MANUAL_MOVEMENT) {
                 mFragmentIndexAct = ArobotDefines.FRAGMENT_MANUAL_MOVEMENT;
@@ -317,6 +332,7 @@ public class MovementActivity extends AppCompatActivity {
                                 mManualMovementFragment).commit();
                 if(mFragmentIndexOld == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
                     stopMoveInSensFrag();
+                    pauseMoveInFragment();
                 }
             } else if (position == ArobotDefines.FRAGMENT_BLUETOOTH_CHAT) {
                 mFragmentIndexAct = ArobotDefines.FRAGMENT_BLUETOOTH_CHAT;
@@ -412,7 +428,9 @@ public class MovementActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         mWakeLock.acquire();
-        showProperFABState();
+        // get state form StateCOntroller
+        int state = mStateController.getAppState();
+        showProperFABState(state);
     }
 
     @Override
