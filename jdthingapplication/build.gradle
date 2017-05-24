@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion project.ext.jdCompileSdkVersion
+    buildToolsVersion project.ext.jdBuildToolsVersion
+//    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "de.jandrotek.android.thingapp"
-        minSdkVersion 24
-        targetSdkVersion 25
+        minSdkVersion project.ext.jdMinSdkVersion
+        targetSdkVersion project.ext.jdMinSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -28,6 +29,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     provided 'com.google.android.things:androidthings:+'
-    testCompile 'junit:junit:4.12'
+    testCompile project.ext.testDeps.junit
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }
