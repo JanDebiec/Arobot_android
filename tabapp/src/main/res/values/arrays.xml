@@ -71,12 +71,16 @@
         <item>-1</item>
         <item>0</item>
         <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
 
     <string-array name="external_interface_options">
         <item>not defined</item>
+        <item>demo</item>
         <item>BlueTooth</item>
         <item>WLAN</item>
+        <item>WLAN-ROS</item>
     </string-array>
 
 </resources>

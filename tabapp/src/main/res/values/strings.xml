@@ -60,7 +60,7 @@
     <string name="ParamDetailActValue">Parameter Act Value</string>
     <string name="pref_robot_motor_title">Robot parameters</string>
     <string name="pref_sensores_settings_title">Sensors settings</string>
-    <string name="pref_various_title">Various settings</string>
+    <string name="pref_system_title">System settings</string>
 
     <!--
     Reto dummy strings
@@ -73,6 +73,7 @@
     <string name="action_sensor_fragment">sensor_fragment</string>
     <string name="action_manual_fragment">manual_fragment</string>
     <string name="action_bluetooth_fragment">bluetooth_fragment</string>
+    <string name="running_demo_mode">No connection, app running in demo mode</string>
 
 
 </resources>

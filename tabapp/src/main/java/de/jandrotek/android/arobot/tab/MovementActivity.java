@@ -354,10 +354,11 @@ public class MovementActivity extends AppCompatActivity {
 
             } else if (mExtInterfaceNew == AppStateController.EXT_CONN_WLAN){
 
+            } else {
+                toastAboutDemoMode();
             }
             return true;
         } else if (id == R.id.action_sensor_fragment) {
-//        if (id == R.id.action_sensor_fragment) {
             showProperFragment(ArobotDefines.FRAGMENT_SENSOR_MOVEMENT);
             return true;
         } else if (id == R.id.action_manual_fragment) {
@@ -395,13 +396,13 @@ public class MovementActivity extends AppCompatActivity {
     private void handleOnStartApp(){
         int interfacePref;
         interfacePref = updateInterfaceFromPrefs();
-        if(interfacePref == AppStateController.EXT_CONN_UNKNOWN){
+        if(interfacePref <= AppStateController.EXT_CONN_DEMO){
             mExtInterfaceNew = AppStateController.EXT_CONN_DEMO;
         }
     }
 
     private void toastAboutDemoMode(){
-
+        Toast.makeText(this, R.string.running_demo_mode, Toast.LENGTH_LONG).show();
     }
 
     private boolean connectBluetooth(){
@@ -441,7 +442,7 @@ public class MovementActivity extends AppCompatActivity {
 
     private void handleOnStopApp(){
         if(mExtInterfaceNew == AppStateController.EXT_CONN_BT) {
-            stopBluetooth():
+            stopBluetooth();
         }
         mStateController.setAppState(AppStateController.eStateNotConnected);
     }

@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="@string/pref_system_title">
+        <ListPreference
+            android:defaultValue="@string/DEFAULT_EXT_INTERFACE"
+            android:dialogTitle="External interface"
+            android:entries="@array/external_interface_options"
+            android:entryValues="@array/external_interface_values"
+            android:key="@string/PREFS_KEY_EXT_INTERFACE"
+            android:summary="External interface to communicate with robot"
+            android:title="external interface"/>
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_robot_motor_title">
         <ListPreference
@@ -45,7 +55,6 @@
             android:title="Controller Amplification"/>
     </PreferenceCategory>
 
-
     <PreferenceCategory android:title="@string/pref_sensores_settings_title">
         <ListPreference
             android:defaultValue="@string/DEFAULT_SENSOR_DELAY"
@@ -85,26 +94,5 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory android:title="@string/pref_various_title">
-
-        <ListPreference
-            android:defaultValue="@string/DEFAULT_SAVING_CONTENT"
-            android:dialogTitle="Content to save"
-            android:entries="@array/saving_content_options"
-            android:entryValues="@array/saving_content_values"
-            android:key="@string/PREFS_KEY_SAVING_CONTENT"
-            android:summary="Kind of data which can be saved in memory"
-            android:title="sensors data to save"/>
-
-        <ListPreference
-            android:defaultValue="@string/DEFAULT_EXT_INTERFACE"
-            android:dialogTitle="External interface"
-            android:entries="@array/external_interface_options"
-            android:entryValues="@array/external_interface_values"
-            android:key="@string/PREFS_KEY_EXT_INTERFACE"
-            android:summary="External interface to communicate with robot"
-            android:title="external interface"/>
-
-    </PreferenceCategory>
 
 </PreferenceScreen>
