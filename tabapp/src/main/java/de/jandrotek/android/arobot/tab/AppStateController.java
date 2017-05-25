@@ -7,17 +7,26 @@ import android.graphics.Color;
  */
 
 public class AppStateController {
-    public final static int eIdle = 0;
+    // states and colors
+    public final static int eStateIdle = 0;
     public final static int eColorIdle = Color.DKGRAY;
 
-    public final static int eNotConnected = eIdle + 1;
+    public final static int eStateNotConnected = eStateIdle + 1;
     public final static int eColorNotConnected = Color.GRAY;
-    public final static int eConnected = eNotConnected + 1;
+    public final static int eStateConnected = eStateNotConnected + 1;
     public final static int eColorConnected = Color.BLUE;
-    public final static int eReadyToMove = eConnected + 1;
+    public final static int eStateReadyToMove = eStateConnected + 1;
     public final static int eColorReadyToMove = Color.GREEN;
-    public final static int eMoving = eReadyToMove + 1;
+    public final static int eStateMoving = eStateReadyToMove + 1;
     public final static int eColorMoving = Color.RED;
+
+    // external Interfaces
+    public static final int EXT_CONN_UNKNOWN = -1;
+    public static final int EXT_CONN_DEMO = 0;
+    public static final int EXT_CONN_BT = 1;
+    public static final int EXT_CONN_WLAN = 2;
+    public static final int EXT_CONN_ROS = 3;
+
 
     private int mAppState;
     public int getAppState() {
@@ -47,7 +56,7 @@ public class AppStateController {
 
 
     public AppStateController(){
-        mAppState = eIdle;
+        mAppState = eStateIdle;
     }
 
     public boolean isInterfaceInPrefsDefined(){

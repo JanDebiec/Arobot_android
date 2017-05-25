@@ -30,10 +30,10 @@ public class ArobotDefines {
 
 //    public static DecimalFormat d = new DecimalFormat("#0.0");
 
-    public static final int EXT_CONN_UNKNOWN = -1;
-    public static final int EXT_CONN_BT = 0;
-    public static final int EXT_CONN_WLAN = 1;
-    public static final int EXT_CONN_ROS = 2;
+//    public static final int EXT_CONN_UNKNOWN = -1;
+//    public static final int EXT_CONN_BT = 0;
+//    public static final int EXT_CONN_WLAN = 1;
+//    public static final int EXT_CONN_ROS = 2;
     public static final float eBtVelCmdScaleFactor = 10;
 
 }

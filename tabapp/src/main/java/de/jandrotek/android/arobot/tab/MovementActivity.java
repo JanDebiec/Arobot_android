@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.content.res.Resources.Theme;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +23,6 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -117,13 +115,13 @@ public class MovementActivity extends AppCompatActivity {
     private String mStrLeft;
     private String mStrRight;
 
-    private int mExternalConn = ArobotDefines.EXT_CONN_BT;
+    private int mExternalConn = AppStateController.EXT_CONN_BT;
     private TxBTMessage mBTMessCreator;
     private float[] mLeftRightCmd;
     private byte[] mBTMessage;
 
-    private int mExtInterfaceOld = ArobotDefines.EXT_CONN_UNKNOWN;
-    private int mExtInterfaceNew = ArobotDefines.EXT_CONN_UNKNOWN;
+    private int mExtInterfaceOld = AppStateController.EXT_CONN_UNKNOWN;
+    private int mExtInterfaceNew = AppStateController.EXT_CONN_UNKNOWN;
 
     //
     @Override
@@ -189,43 +187,30 @@ public class MovementActivity extends AppCompatActivity {
     }
 
     private void handleFABPress(int state) {
-        // get state form StateCOntroller
-//        int state = mStateController.getAppState();
-        // depending on state, call the proper commands
-        if(state == AppStateController.eIdle){
-//            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorNotConnected));
-            mStateController.setAppState(AppStateController.eNotConnected);
-            showProperFABState(AppStateController.eNotConnected);
-        } else if (state == AppStateController.eNotConnected){
-//            mFab.setImageResource(ic_media_pause);
-//            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorConnected));
-            mStateController.setAppState(AppStateController.eConnected);
-            showProperFABState(AppStateController.eConnected);
-        } else if (state == AppStateController.eConnected){
-//            mFab.setImageResource(ic_media_pause);
-//            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
-            mStateController.setAppState(AppStateController.eReadyToMove);
-            showProperFABState(AppStateController.eReadyToMove);
+        if(state == AppStateController.eStateIdle){
+            showProperFABState(AppStateController.eStateNotConnected);
+        } else if (state == AppStateController.eStateNotConnected){
+            mStateController.setAppState(AppStateController.eStateConnected);
+            showProperFABState(AppStateController.eStateConnected);
+        } else if (state == AppStateController.eStateConnected){
+            mStateController.setAppState(AppStateController.eStateReadyToMove);
+            showProperFABState(AppStateController.eStateReadyToMove);
 
-        } else if (state == AppStateController.eReadyToMove){
+        } else if (state == AppStateController.eStateReadyToMove){
             if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
                 if (mSensorService != null) {
                     startMoveInSensFrag();
                 }
             }
-//            mFab.setImageResource(ic_media_pause);
-//            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorMoving));
-            mStateController.setAppState(AppStateController.eMoving);
-            showProperFABState(AppStateController.eMoving);
+            mStateController.setAppState(AppStateController.eStateMoving);
+            showProperFABState(AppStateController.eStateMoving);
 
-        } else if (state == AppStateController.eMoving){
+        } else if (state == AppStateController.eStateMoving){
             if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
                 stopMoveInSensFrag();
             }
-//            mFab.setImageResource(ic_media_play);
-//            mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
-            mStateController.setAppState(AppStateController.eReadyToMove);
-            showProperFABState(AppStateController.eReadyToMove);
+            mStateController.setAppState(AppStateController.eStateReadyToMove);
+            showProperFABState(AppStateController.eStateReadyToMove);
 
         } else { // unknown
 
@@ -233,22 +218,19 @@ public class MovementActivity extends AppCompatActivity {
     }
 
     private void showProperFABState(int state) {
-        // get state form StateCOntroller
-//        int state = mStateController.getAppState();
-        // depending on state, call the proper commands
-        if(state == AppStateController.eIdle){
+        if(state == AppStateController.eStateIdle){
             mFab.setImageResource(ic_menu_help);
             mFab.setBackgroundTintList(ColorStateList.valueOf(eColorIdle));
-        } else if (state == AppStateController.eNotConnected){
+        } else if (state == AppStateController.eStateNotConnected){
             mFab.setImageResource(ic_media_pause);
             mFab.setBackgroundTintList(ColorStateList.valueOf(eColorNotConnected));
-        } else if (state == AppStateController.eConnected){
+        } else if (state == AppStateController.eStateConnected){
             mFab.setImageResource(ic_media_pause);
             mFab.setBackgroundTintList(ColorStateList.valueOf(eColorConnected));
-        } else if (state == AppStateController.eReadyToMove){
+        } else if (state == AppStateController.eStateReadyToMove){
             mFab.setImageResource(ic_media_play);
             mFab.setBackgroundTintList(ColorStateList.valueOf(eColorReadyToMove));
-        } else if (state == AppStateController.eMoving){
+        } else if (state == AppStateController.eStateMoving){
             mFab.setImageResource(ic_media_pause);
             mFab.setBackgroundTintList(ColorStateList.valueOf(eColorMoving));
         } else { // unknown
@@ -270,22 +252,21 @@ public class MovementActivity extends AppCompatActivity {
     }
 
     private void allowMovement(boolean flag) {
-        if(mExternalConn == ArobotDefines.EXT_CONN_BT) {
+        if(mExternalConn == AppStateController.EXT_CONN_BT) {
             mBTInterface.setMovementAllowed(flag);
-        } else if(mExternalConn == ArobotDefines.EXT_CONN_WLAN){
+        } else if(mExternalConn == AppStateController.EXT_CONN_WLAN){
 
         }
     }
 
     private void pauseMoveInFragment(){
         int state = mStateController.getAppState();
-        if(state == AppStateController.eMoving){
-            mStateController.setAppState(AppStateController.eReadyToMove);
-            showProperFABState(AppStateController.eReadyToMove);
+        if(state == AppStateController.eStateMoving){
+            mStateController.setAppState(AppStateController.eStateReadyToMove);
+            showProperFABState(AppStateController.eStateReadyToMove);
         }
     }
 
-    //TODO if leaving sensor or manual fragment, stop the moving
     private void showProperFragment(int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         // first option, no old fragment
@@ -364,25 +345,23 @@ public class MovementActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         Intent serverIntent = null;
         int id = item.getItemId();
-        // connect will be initialzed in FAB handling
-//        if (id == R.id.connect_device) {
-//            //TODO check which interface
-//            if(mExtInterfaceNew == ArobotDefines.EXT_CONN_BT) {
-//                if (mBTInterface.isBTConnected() == true) {
-//                    mBTInterface.stopBtService();
-//                    updateUI();
-//                } else {
-//                    mBTInterface.startBluetooth();
-//                    // Launch the DeviceListActivity to see devices and do scan
-//                    serverIntent = new Intent(this, DeviceListActivity.class);
-//                    startActivityForResult(serverIntent, BluetoothDefines.REQUEST_CONNECT_DEVICE);
-//                }
-//            } else if (mExtInterfaceNew == ArobotDefines.EXT_CONN_WLAN){
-//
-//            }
-//            return true;
-//        } else if (id == R.id.action_sensor_fragment) {
-        if (id == R.id.action_sensor_fragment) {
+        if (id == R.id.connect_device) {
+            if(mExtInterfaceNew == AppStateController.EXT_CONN_BT) {
+                if (mBTInterface.isBTConnected() == true) {
+                    mBTInterface.stopBtService();
+                    updateUI();
+                } else {
+                    mBTInterface.startBluetooth();
+                    // Launch the DeviceListActivity to see devices and do scan
+                    serverIntent = new Intent(this, DeviceListActivity.class);
+                    startActivityForResult(serverIntent, BluetoothDefines.REQUEST_CONNECT_DEVICE);
+                }
+            } else if (mExtInterfaceNew == AppStateController.EXT_CONN_WLAN){
+
+            }
+            return true;
+        } else if (id == R.id.action_sensor_fragment) {
+//        if (id == R.id.action_sensor_fragment) {
             showProperFragment(ArobotDefines.FRAGMENT_SENSOR_MOVEMENT);
             return true;
         } else if (id == R.id.action_manual_fragment) {
@@ -404,9 +383,63 @@ public class MovementActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void handleOnStartApp(){
+        int interfacePref;
+        interfacePref = updateInterfaceFromPrefs();
+        if(interfacePref == AppStateController.EXT_CONN_UNKNOWN){
+            mExtInterfaceNew = AppStateController.EXT_CONN_DEMO;
+        }
+    }
+
+    private void toastAboutDemoMode(){
+
+    }
+
+    private boolean connectBluetooth(){
+        return false;
+    }
+
+    private void handleOnResumeApp(){
+        // check if interface defined, if no: toast and go to demo
+        boolean connectFlag = false;
+        if(mExtInterfaceNew == AppStateController.EXT_CONN_DEMO){
+            mStateController.setAppState(AppStateController.eStateReadyToMove);
+            toastAboutDemoMode();
+        } else {
+            //TODO if defined, then try to connect, if no toast and go to demo
+            if(mExtInterfaceNew == AppStateController.EXT_CONN_BT){
+                int state = mStateController.getAppState();
+                if(state >= AppStateController.eStateConnected){
+                    connectFlag = true;
+                    mStateController.setAppState(AppStateController.eStateReadyToMove);
+                } else {
+                    connectFlag = connectBluetooth();
+                    if(connectFlag == true){
+                        mStateController.setAppState(AppStateController.eStateReadyToMove);
+                    } else {
+                        mExtInterfaceNew = AppStateController.EXT_CONN_DEMO;
+                        mStateController.setAppState(AppStateController.eStateReadyToMove);
+                        toastAboutDemoMode();
+                    }
+                }
+            }
+        }
+        int state = mStateController.getAppState();
+        showProperFABState(state);
+    }
+
+    private void handleOnStopApp(){
+        //TODO go to notConnected state
+    }
+
+    private void handleOnPauseApp(){
+        //TODO go to notConnected state
+    }
+
     @Override
     public void onStart() {
         super.onStart();
+        handleOnStartApp();
 
 //        // ATTENTION: This was auto-generated to implement the App Indexing API.
 //        // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -428,20 +461,20 @@ public class MovementActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         mWakeLock.acquire();
-        // get state form StateCOntroller
-        int state = mStateController.getAppState();
-        showProperFABState(state);
+        handleOnResumeApp();
     }
 
     @Override
     public void onPause(){
-    super.onPause();
+        super.onPause();
         mWakeLock.release();
+        handleOnPauseApp();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        handleOnStopApp();
         // check if connections active, if yes stop
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -458,6 +491,19 @@ public class MovementActivity extends AppCompatActivity {
 //        );
 ////        AppIndex.AppIndexApi.end(mClient, viewAction);
 //        mClient.disconnect();
+    }
+
+
+    private int updateInterfaceFromPrefs(){
+        Context context = getApplicationContext();
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        mArobotSettings.loadSettings(context, prefs);
+        mExtInterfaceNew = mArobotSettings.getPrefsExtInterface();
+//        if(mExtInterfaceNew != mExtInterfaceOld){
+//
+//        }
+        return mExtInterfaceNew;
     }
 
     private void updateFromPreferences() {
@@ -479,11 +525,7 @@ public class MovementActivity extends AppCompatActivity {
         mMovCalculator.setPWMMin(mPWMMin);
         mMovCalculator.setScaleCorrection(mAmplification);
 
-        //TODO check if ext-interface changed, if yes, then react
         mExtInterfaceNew = mArobotSettings.getPrefsExtInterface();
-        if(mExtInterfaceNew != mExtInterfaceOld){
-
-        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -653,13 +695,13 @@ public class MovementActivity extends AppCompatActivity {
     }
 
     public void txVelCmd(float cmdLeft, float cmdRight){
-        if(mExternalConn == ArobotDefines.EXT_CONN_BT){
+        if(mExternalConn == AppStateController.EXT_CONN_BT){
             mLeftRightCmd[0] = cmdLeft * eBtVelCmdScaleFactor;
             mLeftRightCmd[1] = cmdRight * eBtVelCmdScaleFactor;
             mBTMessage = mBTMessCreator.prepareTxMessage(mLeftRightCmd);
 
             mBTInterface.txNewBTCommand(mBTMessage);
-        } else if (mExternalConn == ArobotDefines.EXT_CONN_WLAN){
+        } else if (mExternalConn == AppStateController.EXT_CONN_WLAN){
             //TODO implement Wlan Interface
         }
     }
