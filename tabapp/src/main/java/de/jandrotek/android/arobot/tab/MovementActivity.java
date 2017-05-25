@@ -348,14 +348,10 @@ public class MovementActivity extends AppCompatActivity {
         if (id == R.id.connect_device) {
             if(mExtInterfaceNew == AppStateController.EXT_CONN_BT) {
                 if (mBTInterface.isBTConnected() == true) {
-                    mBTInterface.stopBtService();
-                    updateUI();
-                } else {
-                    mBTInterface.startBluetooth();
-                    // Launch the DeviceListActivity to see devices and do scan
-                    serverIntent = new Intent(this, DeviceListActivity.class);
-                    startActivityForResult(serverIntent, BluetoothDefines.REQUEST_CONNECT_DEVICE);
+                    stopBluetooth();
                 }
+                startAndConnectBluetooth();
+
             } else if (mExtInterfaceNew == AppStateController.EXT_CONN_WLAN){
 
             }
@@ -383,6 +379,19 @@ public class MovementActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void stopBluetooth() {
+        mBTInterface.stopBtService();
+        updateUI();
+    }
+
+    private void startAndConnectBluetooth() {
+        Intent serverIntent;
+        mBTInterface.startBluetooth();
+        // Launch the DeviceListActivity to see devices and do scan
+        serverIntent = new Intent(this, DeviceListActivity.class);
+        startActivityForResult(serverIntent, BluetoothDefines.REQUEST_CONNECT_DEVICE);
+    }
+
     private void handleOnStartApp(){
         int interfacePref;
         interfacePref = updateInterfaceFromPrefs();
@@ -396,6 +405,8 @@ public class MovementActivity extends AppCompatActivity {
     }
 
     private boolean connectBluetooth(){
+        startAndConnectBluetooth();
+        // TODO check the results and update flag
         return false;
     }
 
@@ -429,11 +440,14 @@ public class MovementActivity extends AppCompatActivity {
     }
 
     private void handleOnStopApp(){
-        //TODO go to notConnected state
+        if(mExtInterfaceNew == AppStateController.EXT_CONN_BT) {
+            stopBluetooth():
+        }
+        mStateController.setAppState(AppStateController.eStateNotConnected);
     }
 
     private void handleOnPauseApp(){
-        //TODO go to notConnected state
+        mStateController.setAppState(AppStateController.eStateReadyToMove);
     }
 
     @Override
