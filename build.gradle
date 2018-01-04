@@ -2,9 +2,12 @@
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url 'https://maven.google.com'
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-alpha1'
+        classpath 'com.android.tools.build:gradle:3.1.0-alpha01'
     }
 }
 
@@ -15,7 +18,8 @@ allprojects {
         jcenter()
     }
     project.ext {
-        jdBuildToolsVersion="25.0.0" //String
+        jdBuildToolsVersion="26.0.2" //String
+//        jdBuildToolsVersion="25.0.0" //String
         jdMinSdkVersion=21 //Integer
 //        jdMinSdkVersion=18 //Integer
         jdTargetSdkVersion=25
@@ -38,3 +42,6 @@ allprojects {
     ]
 
 }
+
+// Load dependencies
+//apply from: 'gradleScript/dependencies.gradle'
