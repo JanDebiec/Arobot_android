@@ -8,8 +8,18 @@
             android:entries="@array/external_interface_options"
             android:entryValues="@array/external_interface_values"
             android:key="@string/PREFS_KEY_EXT_INTERFACE"
-            android:summary="External interface to communicate with robot"
+            android:summary="type of external interface to communicate with robot"
             android:title="external interface"/>
+        <EditTextPreference
+            android:dialogTitle="Bluetooth device"
+            android:title="Robot bluetooth device"
+            android:summary="name of robot bluetooth in the BT devices list"
+            />
+        <EditTextPreference
+            android:dialogTitle="robot IP-addr"
+            android:title="Robot IP address"
+            android:summary="IP address of robot's WLAN interface"
+            />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_robot_motor_title">
