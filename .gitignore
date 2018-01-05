@@ -2,6 +2,7 @@
 .idea/**
 build/**
 gradle/**
+myfabapplication/
 
 *.mk
 *.d
