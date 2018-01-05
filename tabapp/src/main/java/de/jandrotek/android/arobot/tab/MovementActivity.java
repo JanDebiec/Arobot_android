@@ -202,10 +202,12 @@ public class MovementActivity extends AppCompatActivity {
                     startMoveInSensFrag();
                 }
             }
+            allowMovement(true);
             mStateController.setAppState(AppStateController.eStateMoving);
             showProperFABState(AppStateController.eStateMoving);
 
         } else if (state == AppStateController.eStateMoving){
+            allowMovement(false);
             if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT) {
                 stopMoveInSensFrag();
             }
@@ -416,7 +418,8 @@ public class MovementActivity extends AppCompatActivity {
         boolean connectFlag = false;
         if(mExtInterfaceNew == AppStateController.EXT_CONN_DEMO){
             mStateController.setAppState(AppStateController.eStateReadyToMove);
-            toastAboutDemoMode();
+            // toast first after disconnect or connection error
+//            toastAboutDemoMode();
         } else {
             //TODO if defined, then try to connect, if no toast and go to demo
             if(mExtInterfaceNew == AppStateController.EXT_CONN_BT){
@@ -431,7 +434,8 @@ public class MovementActivity extends AppCompatActivity {
                     } else {
                         mExtInterfaceNew = AppStateController.EXT_CONN_DEMO;
                         mStateController.setAppState(AppStateController.eStateReadyToMove);
-                        toastAboutDemoMode();
+                        // toast first after disconnect or connection error
+//                        toastAboutDemoMode();
                     }
                 }
             }
