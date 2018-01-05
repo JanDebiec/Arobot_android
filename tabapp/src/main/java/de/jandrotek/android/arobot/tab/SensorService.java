@@ -85,11 +85,18 @@ class SensorService
     public int mTimerPeriod = ArobotDefines.TIME_CONSTANT;
     private long mTimestamp;
 
-    public void setRunFuseTask(boolean runFuseTask) {
-        this.mRunFuseTask = runFuseTask;
-    }
+//    public void setRunFuseTask(boolean runFuseTask) {
+//        this.mRunFuseTask = runFuseTask;
+//    }
 
     private boolean mRunFuseTask = false;
+
+    public void setTransferAllowed(boolean transferAllowed) {
+        mTransferAllowed = transferAllowed;
+    }
+
+    private boolean mTransferAllowed = false;
+
     private long lastUpdate = System.currentTimeMillis();
     private long actualTime = System.currentTimeMillis();
     private static final long eUpdateUITime = 200;
@@ -177,6 +184,12 @@ class SensorService
         }
     }
 
+    public void stopFuseCalc(){
+        mRunFuseTask = false;
+        unregisterSensors();
+
+    }
+
     private  void logCounters(){
 //        if (BuildConfig.DEBUG) {
 //            Log.d(TAG,
@@ -243,7 +256,7 @@ class SensorService
 
     public void unregisterSensors(){
         mMotherActivity.handleVelCmd(0,0);
-        mRunFuseTask = false;
+//        mRunFuseTask = false;
         mSensorManager.unregisterListener(this);
         setState(STATE_STARTED);
     }
@@ -335,8 +348,9 @@ class SensorService
         @Override
         public void run() {
             logCounters();
-            if (mRunFuseTask) {
-                mCounterSensorFusion++;
+            if(mTransferAllowed) {
+                if (mRunFuseTask) {
+                    mCounterSensorFusion++;
 //                float mOneMinusCoeff = 1.0f - mFilterCoeff;
 
 				/*
@@ -348,35 +362,35 @@ class SensorService
 				 * output in positive-to-negative-transition cases.
 				 */
 
-                // azimuth
-                mFusedOrientation[0] = mCalculator.calcFusedOrientation(mGyroOrientation[0], mAccMagOrientation[0]);
+                    // azimuth
+                    mFusedOrientation[0] = mCalculator.calcFusedOrientation(mGyroOrientation[0], mAccMagOrientation[0]);
 
-                // pitch
-                mFusedOrientation[1] = mCalculator.calcFusedOrientation(mGyroOrientation[1], mAccMagOrientation[1]);
+                    // pitch
+                    mFusedOrientation[1] = mCalculator.calcFusedOrientation(mGyroOrientation[1], mAccMagOrientation[1]);
 
-                // roll
-                mFusedOrientation[2] = mCalculator.calcFusedOrientation(mGyroOrientation[2], mAccMagOrientation[2]);
+                    // roll
+                    mFusedOrientation[2] = mCalculator.calcFusedOrientation(mGyroOrientation[2], mAccMagOrientation[2]);
 
-                // overwrite gyro matrix and orientation with fused orientation
-                // to comensate gyro drift
-                mGyroMatrix = mCalculator.getRotationMatrixFromOrientation(mFusedOrientation);
-                System.arraycopy(mFusedOrientation, 0, mGyroOrientation, 0, 3);
+                    // overwrite gyro matrix and orientation with fused orientation
+                    // to comensate gyro drift
+                    mGyroMatrix = mCalculator.getRotationMatrixFromOrientation(mFusedOrientation);
+                    System.arraycopy(mFusedOrientation, 0, mGyroOrientation, 0, 3);
 
-                mMoveCmd = mCalculator.calculateMovement(mFusedOrientation);
+                    mMoveCmd = mCalculator.calculateMovement(mFusedOrientation);
 
-                // update sensor output in GUI
-                // add timing results for UI-task
-                actualTime = System.currentTimeMillis();
-//                if(!mRunFuseTask) // send stop command
-//                {
-//                    mMoveCmd[3] = 0;
-//                    mMoveCmd[4] = 0;
-//                    mSendZero = true;
-//                }
+                    // update sensor output in GUI
+                    // add timing results for UI-task
+                    actualTime = System.currentTimeMillis();
+//                mHandler.post(updateOreintationDisplayTask);
+                } else {
+                    mMoveCmd[3] = 0;
+                    mMoveCmd[4] = 0;
+                    mFuseHandler.postDelayed(calculateFusedOrientationTask, eCalculateFuseTime);
+                }
                 mHandler.post(updateOreintationDisplayTask);
-            }
-            if(mRunFuseTask){
-                mFuseHandler.postDelayed(calculateFusedOrientationTask, eCalculateFuseTime);
+                if (mRunFuseTask) {
+                    mFuseHandler.postDelayed(calculateFusedOrientationTask, eCalculateFuseTime);
+                }
             }
         }
     };

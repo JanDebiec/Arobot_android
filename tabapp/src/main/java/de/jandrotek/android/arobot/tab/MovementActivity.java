@@ -241,14 +241,15 @@ public class MovementActivity extends AppCompatActivity {
     }
 
     private void stopMoveInSensFrag() {
-        mSensorService.setRunFuseTask(false);
-        mSensorService.unregisterSensors();
+        mSensorService.stopFuseCalc();
+//        mSensorService.setRunFuseTask(false);
+//        mSensorService.unregisterSensors();
     }
 
     private void startMoveInSensFrag() {
         mSensorService.setFragment(mSensorMovementFragment);
-        mSensorService.registerSensors();
-        mSensorService.setRunFuseTask(true);
+//        mSensorService.registerSensors();
+//        mSensorService.setRunFuseTask(true);
         mSensorService.startFuseCalc();
         mSensorService.setUpdateUi(true);
     }
@@ -327,6 +328,12 @@ public class MovementActivity extends AppCompatActivity {
             }
             mFragmentIndexOld = mFragmentIndexAct;
             mFragmentIndexAct = position;
+        }
+        if(mFragmentIndexAct == ArobotDefines.FRAGMENT_SENSOR_MOVEMENT){
+            mSensorService.setTransferAllowed(true);
+        } else {
+            // stop tx messages
+            mSensorService.setTransferAllowed(false);
         }
         mFragmentName.setText(ArobotDefines.fragmentNames[position]);
         mFragmentName.setText(ArobotDefines.fragmentNames[position]);
