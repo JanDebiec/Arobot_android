@@ -23,6 +23,7 @@ class SensorService
     private SensorManager mSensorManager = null;
     private MovementActivity mMotherActivity;
     private boolean mInitState = true;
+    private boolean mSendZero = false;
 
     private int selectedSensorDelay;
     private Sensor mAccelSensor;
@@ -77,6 +78,8 @@ class SensorService
     private float mOneMinusCoeff;
     private float mFilterCoeff = ArobotDefines.FILTER_COEFFICIENT;
     private float[] mMoveCmd;
+    private float[] mMoveNormCmd = new float[2];
+    private float[] mMoveHelpCmd = new float[2];
 
     private long mStartTime;
     public int mTimerPeriod = ArobotDefines.TIME_CONSTANT;
@@ -239,6 +242,7 @@ class SensorService
     }
 
     public void unregisterSensors(){
+        mMotherActivity.handleVelCmd(0,0);
         mRunFuseTask = false;
         mSensorManager.unregisterListener(this);
         setState(STATE_STARTED);
@@ -346,66 +350,12 @@ class SensorService
 
                 // azimuth
                 mFusedOrientation[0] = mCalculator.calcFusedOrientation(mGyroOrientation[0], mAccMagOrientation[0]);
-//                if (mGyroOrientation[0] < -0.5 * Math.PI
-//                        && mAccMagOrientation[0] > 0.0) {
-//                    mFusedOrientation[0] = (float) (mFilterCoeff
-//                            * (mGyroOrientation[0] + 2.0 * Math.PI) + mOneMinusCoeff
-//                            * mAccMagOrientation[0]);
-//                    mFusedOrientation[0] -= (mFusedOrientation[0] > Math.PI) ? 2.0 * Math.PI
-//                            : 0;
-//                } else if (mAccMagOrientation[0] < -0.5 * Math.PI
-//                        && mGyroOrientation[0] > 0.0) {
-//                    mFusedOrientation[0] = (float) (mFilterCoeff
-//                            * mGyroOrientation[0] + mOneMinusCoeff
-//                            * (mAccMagOrientation[0] + 2.0 * Math.PI));
-//                    mFusedOrientation[0] -= (mFusedOrientation[0] > Math.PI) ? 2.0 * Math.PI
-//                            : 0;
-//                } else {
-//                    mFusedOrientation[0] = mFilterCoeff * mGyroOrientation[0]
-//                            + mOneMinusCoeff * mAccMagOrientation[0];
-//                }
 
                 // pitch
                 mFusedOrientation[1] = mCalculator.calcFusedOrientation(mGyroOrientation[1], mAccMagOrientation[1]);
-//                if (mGyroOrientation[1] < -0.5 * Math.PI
-//                        && mAccMagOrientation[1] > 0.0) {
-//                    mFusedOrientation[1] = (float) (mFilterCoeff
-//                            * (mGyroOrientation[1] + 2.0 * Math.PI) + mOneMinusCoeff
-//                            * mAccMagOrientation[1]);
-//                    mFusedOrientation[1] -= (mFusedOrientation[1] > Math.PI) ? 2.0 * Math.PI
-//                            : 0;
-//                } else if (mAccMagOrientation[1] < -0.5 * Math.PI
-//                        && mGyroOrientation[1] > 0.0) {
-//                    mFusedOrientation[1] = (float) (mFilterCoeff
-//                            * mGyroOrientation[1] + mOneMinusCoeff
-//                            * (mAccMagOrientation[1] + 2.0 * Math.PI));
-//                    mFusedOrientation[1] -= (mFusedOrientation[1] > Math.PI) ? 2.0 * Math.PI
-//                            : 0;
-//                } else {
-//                    mFusedOrientation[1] = mFilterCoeff * mGyroOrientation[1]
-//                            + mOneMinusCoeff * mAccMagOrientation[1];
-//                }
 
                 // roll
                 mFusedOrientation[2] = mCalculator.calcFusedOrientation(mGyroOrientation[2], mAccMagOrientation[2]);
-//                if (mGyroOrientation[2] < -0.5 * Math.PI
-//                        && mAccMagOrientation[2] > 0.0) {
-//                    mFusedOrientation[2] = (float) (mFilterCoeff
-//                            * (mGyroOrientation[2] + 2.0 * Math.PI) + mOneMinusCoeff
-//                            * mAccMagOrientation[2]);
-//                    mFusedOrientation[2] -= (mFusedOrientation[2] > Math.PI) ? 2.0 * Math.PI
-//                            : 0;
-//                } else if (mAccMagOrientation[2] < -0.5 * Math.PI
-//                        && mGyroOrientation[2] > 0.0) {
-//                    mFusedOrientation[2] = (float) (mFilterCoeff
-//                            * mGyroOrientation[2] + mOneMinusCoeff
-//                            * (mAccMagOrientation[2] + 2.0 * Math.PI));
-//                    mFusedOrientation[2] -= (mFusedOrientation[2] > Math.PI) ? 2.0 * Math.PI
-//                            : 0;
-//                } else {
-//                    mFusedOrientation[2] = mFilterCoeff * mGyroOrientation[2]
-//                            + mOneMinusCoeff * mAccMagOrientation[2];
-//                }
 
                 // overwrite gyro matrix and orientation with fused orientation
                 // to comensate gyro drift
@@ -413,16 +363,16 @@ class SensorService
                 System.arraycopy(mFusedOrientation, 0, mGyroOrientation, 0, 3);
 
                 mMoveCmd = mCalculator.calculateMovement(mFusedOrientation);
-//
-//                mLeftRightCmd[0] = mMoveCmd[3];
-//                mLeftRightCmd[1] = mMoveCmd[4];
-//                mBTMessage = mBTMessCreator.prepareTxMessage(mLeftRightCmd);
-//
-//                mCallbacks.onNewBTCommand(mBTMessage);
 
                 // update sensor output in GUI
                 // add timing results for UI-task
                 actualTime = System.currentTimeMillis();
+//                if(!mRunFuseTask) // send stop command
+//                {
+//                    mMoveCmd[3] = 0;
+//                    mMoveCmd[4] = 0;
+//                    mSendZero = true;
+//                }
                 mHandler.post(updateOreintationDisplayTask);
             }
             if(mRunFuseTask){
@@ -447,9 +397,18 @@ class SensorService
             //all data is scaled in radians
 
             //update UI, tx vel-cmd
+            mMoveHelpCmd[0] = mMoveCmd[3]/2;
+            mMoveHelpCmd[1] = mMoveCmd[4]/2;
+            mMoveNormCmd[0] = (mMoveHelpCmd[0]) * (mMoveHelpCmd[0]);
+            if(mMoveHelpCmd[0] < 0)
+                mMoveNormCmd[0] = -mMoveNormCmd[0];
+            mMoveNormCmd[1] = (mMoveHelpCmd[1]) * (mMoveHelpCmd[1]);
+            if(mMoveHelpCmd[1] < 0)
+                mMoveNormCmd[1] = -mMoveNormCmd[1];
             mFragment.mSensorReceivedData = data2Tx;
-            mFragment.updateOrientationDisplay();
-            mMotherActivity.handleVelCmd(mMoveCmd[3], mMoveCmd[4]);
+            mFragment.updateOrientationDisplay(); // val[5], [6] are used
+            mMotherActivity.handleVelCmd(mMoveNormCmd[0], mMoveNormCmd[1]);
+//            mMotherActivity.handleVelCmd(mMoveCmd[3], mMoveCmd[4]);
         }
     };
 }
