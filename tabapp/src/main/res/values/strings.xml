@@ -75,5 +75,6 @@
     <string name="action_bluetooth_fragment">bluetooth_fragment</string>
     <string name="running_demo_mode">No connection, app running in demo mode</string>
 
+    <string name="helpText">to get some help,\nabout functioning the Arobot,\nplease visit page: </string>
 
 </resources>

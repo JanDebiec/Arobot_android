@@ -53,6 +53,7 @@ import static de.jandrotek.android.arobot.tab.AppStateController.eColorReadyToMo
 
 public class MovementActivity extends AppCompatActivity {
     private static final String TAG = "MovementActivity";
+    protected ChangeLog cl;
 
     private ArobotSettings mArobotSettings;
 //    public static DecimalFormat cmdFormat = new DecimalFormat(" ####.0; -####.0");
@@ -183,6 +184,7 @@ public class MovementActivity extends AppCompatActivity {
 
         mtvTiltLeft = (TextView)findViewById(R.id.tvTiltLeft);
         mtvTiltRight = (TextView)findViewById(R.id.tvTiltRight);
+        cl = new ChangeLog(this);
 
     }
 
@@ -381,9 +383,14 @@ public class MovementActivity extends AppCompatActivity {
 
             startActivityForResult(i, SHOW_PREFERENCES);
             return true;
-        } else if (id == R.id.action_about) {
-            showAppVersion();
-            return true;
+//        } else if (id == R.id.menu_feedback){
+//            sendFeedback();
+        } else if (id == R.id.action_about){
+            showVersion();
+//        } else if (id == R.id.action_help) {
+//            Intent intent = new Intent(this, HelpActivity.class);
+//            startActivity(intent);
+//            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -730,5 +737,8 @@ public class MovementActivity extends AppCompatActivity {
         } else if (mExternalConn == AppStateController.EXT_CONN_WLAN){
             //TODO implement Wlan Interface
         }
+    }
+    protected void showVersion(){
+        cl.getFullLogDialog().show();
     }
 }
