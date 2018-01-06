@@ -3,7 +3,7 @@
 build/**
 gradle/**
 myfabapplication/
-
+wifitest/
 *.mk
 *.d
 *.o
