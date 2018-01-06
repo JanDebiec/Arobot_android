@@ -77,4 +77,12 @@
 
     <string name="helpText">to get some help,\nabout functioning the Arobot,\nplease visit page: </string>
 
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">more...</string>
+    <string name="background_color">black</string>
+    <string name="action_reference">Reference</string>
+    <string name="action_view">LiveView</string>
+
 </resources>
