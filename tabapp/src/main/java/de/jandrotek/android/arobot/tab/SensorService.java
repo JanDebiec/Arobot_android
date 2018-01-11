@@ -413,18 +413,18 @@ class SensorService
             //update UI, tx vel-cmd
             // with vel**2 the motion is a little bit to fast
             // back to 1:1 velocity
-//            mMoveHelpCmd[0] = mMoveCmd[3]/2;
-//            mMoveHelpCmd[1] = mMoveCmd[4]/2;
-//            mMoveNormCmd[0] = (mMoveHelpCmd[0]) * (mMoveHelpCmd[0]);
-//            if(mMoveHelpCmd[0] < 0)
-//                mMoveNormCmd[0] = -mMoveNormCmd[0];
-//            mMoveNormCmd[1] = (mMoveHelpCmd[1]) * (mMoveHelpCmd[1]);
-//            if(mMoveHelpCmd[1] < 0)
-//                mMoveNormCmd[1] = -mMoveNormCmd[1];
+            mMoveHelpCmd[0] = mMoveCmd[3]/2;
+            mMoveHelpCmd[1] = mMoveCmd[4]/2;
+            mMoveNormCmd[0] = (mMoveHelpCmd[0]) * (mMoveHelpCmd[0])/5;
+            if(mMoveHelpCmd[0] < 0)
+                mMoveNormCmd[0] = -mMoveNormCmd[0];
+            mMoveNormCmd[1] = (mMoveHelpCmd[1]) * (mMoveHelpCmd[1])/5;
+            if(mMoveHelpCmd[1] < 0)
+                mMoveNormCmd[1] = -mMoveNormCmd[1];
             mFragment.mSensorReceivedData = data2Tx;
             mFragment.updateOrientationDisplay(); // val[5], [6] are used
-//            mMotherActivity.handleVelCmd(mMoveNormCmd[0], mMoveNormCmd[1]);
-            mMotherActivity.handleVelCmd(mMoveCmd[3], mMoveCmd[4]);
+            mMotherActivity.handleVelCmd(mMoveNormCmd[0], mMoveNormCmd[1]);
+//            mMotherActivity.handleVelCmd(mMoveCmd[3], mMoveCmd[4]);
         }
     };
 }

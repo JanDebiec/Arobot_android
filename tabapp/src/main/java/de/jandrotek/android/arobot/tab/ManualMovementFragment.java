@@ -129,11 +129,11 @@ private TiltView mManualTilter;
             nInputR = mVerticalSeekbarR.getProgress();
             nInputR -= ArobotDefines.SLIDER_OFFSET;
             fOutputL = mFilterL.calcFilter(nInputL);
-            mOutputFilteredL = fOutputL * fOutputL;
+            mOutputFilteredL = fOutputL * fOutputL / 5;
             if(nInputL < 0)
                 mOutputFilteredL = -mOutputFilteredL;
             fOutputR = mFilterR.calcFilter(nInputR);
-            mOutputFilteredR = fOutputR * fOutputR;
+            mOutputFilteredR = fOutputR * fOutputR / 5;
             if(nInputR < 0)
                 mOutputFilteredR = -mOutputFilteredR;
             mActivity.runOnUiThread(new Runnable() {
