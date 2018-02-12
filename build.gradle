@@ -5,9 +5,10 @@ buildscript {
         maven {
             url 'https://maven.google.com'
         }
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0-alpha07'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha02'
     }
 }
 
@@ -18,7 +19,8 @@ allprojects {
         jcenter()
     }
     project.ext {
-        jdBuildToolsVersion="27.0.1" //String
+        jdBuildToolsVersion="27.0.3" //String
+//        jdBuildToolsVersion="27.0.1" //String
         jdMinSdkVersion=21 //Integer
         jdTargetSdkVersion=25
         jdCompileSdkVersion=25
