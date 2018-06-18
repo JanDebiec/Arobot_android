@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "de.jandrotek.android.arobot.tab"
         minSdkVersion project.ext.jdMinSdkVersion
-        minSdkVersion project.ext.jdMinSdkVersion
+//        minSdkVersion project.ext.jdMinSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -41,7 +41,7 @@ android {
         dev {
             dimension "mode"
             // To avoid using legacy multidex, set minSdkVersion to 21 or higher.
-            minSdkVersion 21
+//            minSdkVersion 21
             versionNameSuffix "-dev"
             applicationIdSuffix '.dev'
             resConfigs "en", "xxhdpi"
@@ -58,23 +58,32 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':core')
-    compile project(':libbluetooth')
-    compile project(':libwifi')
-    compile supportDependencies.appCompat
-    compile supportDependencies.design
-    compile 'org.rajawali3d:rajawali:1.1.346-SNAPSHOT@aar'
-    androidTestCompile supportDependencies.supportAnnotation
+    api fileTree(dir: 'libs', include: ['*.jar'])
+//    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':core')
+//    compile project(':core')
+    api project(':libbluetooth')
+//    compile project(':libbluetooth')
+    api project(':libwifi')
+//    compile project(':libwifi')
+    api supportDependencies.appCompat
+//    compile supportDependencies.appCompat
+    api supportDependencies.design
+//    compile supportDependencies.design
+    api 'org.rajawali3d:rajawali:1.1.346-SNAPSHOT@aar'
+//    compile 'org.rajawali3d:rajawali:1.1.346-SNAPSHOT@aar'
+    androidTestImplementation supportDependencies.supportAnnotation
+//    androidTestCompile supportDependencies.supportAnnotation
 //    compile 'com.google.android.gms:play-services-gcm:7.5.0'
 
 
 //    compile 'com.android.support:design:24.0.0'
 //    testCompile 'junit:junit:4.12'
-    testCompile project.ext.testDeps.junit
+    testImplementation project.ext.testDeps.junit
+//    testCompile project.ext.testDeps.junit
 
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestImplementation 'com.android.support.test:runner:0.5'
 //    androidTestCompile 'com.android.support:support-annotations:24.0.0'
-    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    api 'com.google.android.gms:play-services-appindexing:8.1.0'
 }

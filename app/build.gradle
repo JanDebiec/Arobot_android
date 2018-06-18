@@ -21,8 +21,11 @@ android {
 }
 
 dependencies {
-    compile project.ext.supportDependencies.appCompat
+    api project.ext.supportDependencies.appCompat
+//    compile project.ext.supportDependencies.appCompat
 //    compile 'com.android.support:support-v4:22.0.0'
-    compile project(':core')
-    compile project(':libbluetooth')
+    implementation project(':core')
+//    compile project(':core')
+    api project(':libbluetooth')
+//    compile project(':libbluetooth')
 }
