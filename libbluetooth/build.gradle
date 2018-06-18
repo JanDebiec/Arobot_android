@@ -1,8 +1,6 @@
 apply plugin: 'com.android.library'
 
 android {
-//    compileSdkVersion 25
-//    buildToolsVersion "25.0.2"
     compileSdkVersion project.ext.jdCompileSdkVersion
     buildToolsVersion project.ext.jdBuildToolsVersion
 
@@ -24,12 +22,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     api 'com.android.support:appcompat-v7:25.3.0'
-//    compile 'com.android.support:appcompat-v7:25.3.0'
     // Required -- JUnit 4 framework
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }

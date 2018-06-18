@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion project.ext.jdCompileSdkVersion
     buildToolsVersion project.ext.jdBuildToolsVersion
-//    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "de.jandrotek.android.thingapp"
@@ -24,11 +23,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    provided 'com.google.android.things:androidthings:+'
-    testCompile project.ext.testDeps.junit
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compileOnly 'com.google.android.things:androidthings:+'
+    testImplementation project.ext.testDeps.junit
+    api 'com.android.support.constraint:constraint-layout:1.0.2'
 }

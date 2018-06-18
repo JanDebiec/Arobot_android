@@ -22,7 +22,6 @@ allprojects {
     }
     project.ext {
         jdBuildToolsVersion="27.0.3" //String
-//        jdBuildToolsVersion="27.0.1" //String
         jdMinSdkVersion=21 //Integer
         jdTargetSdkVersion=25
         jdCompileSdkVersion=25
